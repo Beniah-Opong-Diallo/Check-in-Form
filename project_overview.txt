@@ -1,0 +1,75 @@
+TMHT Data Search Project Overview
+==================================
+
+Project Purpose:
+----------------
+A web application for managing and searching teen attendance and student information at The Master's House Teens Church. It is a single-page app using HTML, CSS (custom + Tailwind), JavaScript, and Supabase as the backend database.
+
+Key Features:
+-------------
+- Real-time search for student records by name
+- Add/Edit student records via modal form
+- Inline editing of fields in result cards
+- Attendance tracking for four specific dates
+- Statistics dashboard (total, gender, level breakdown)
+- CSV export of all data
+- Theme switcher (green, purple, blue, admin)
+- Dark mode toggle
+- Admin mode (password-protected features)
+
+File Structure:
+---------------
+- index.html: Main HTML file, UI and modals
+- style.css: Custom styles
+- adminStyles.css: Admin modal/theme styles
+- app.js: Main JS logic (UI, data, stats)
+- admin.js: Admin-only section logic
+- adminAuth.js: Admin authentication logic
+- csvExport.js: CSV export logic
+- site.webmanifest: PWA manifest
+- README.md: Documentation
+
+Supabase Integration:
+---------------------
+- Supabase is an open-source backend-as-a-service (Postgres DB, Auth, RESTful APIs)
+- Supabase client initialized in app.js with project URL and anon key
+- Table: TMHCT_Feb (update monthly)
+- Data model: Each record = student (full_name, gender, phone_number, age, current_level, attendance_2nd, attendance_9th, attendance_16th, attendance_23rd, id)
+- CRUD operations via Supabase JS client
+- Row Level Security (RLS) for data protection
+
+How the App Works:
+------------------
+1. Search & Display: User types in search bar, app.js queries Supabase, results shown as cards
+2. Add/Edit: Modal form for adding/editing, updates Supabase
+3. Attendance: Four dates tracked per student, editable in cards
+4. Statistics: Stats fetched from Supabase, shown in collapsible cards
+5. CSV Export: Fetches all data, generates CSV
+6. Theme & Dark Mode: User can switch themes and toggle dark mode
+7. Admin Auth: Admin features protected by password (default: TMHT)
+
+Updating for a New Month:
+-------------------------
+- Create new table in Supabase (e.g., TMHCT_Mar)
+- Update table name and attendance fields in index.html, app.js, csvExport.js
+- See .gitignore for update steps
+
+Security:
+---------
+- Supabase RLS for data
+- Simple password for admin features (not production secure)
+
+Useful Links:
+-------------
+- https://supabase.com/docs
+- https://tailwindcss.com/docs
+- https://github.com/supabase/supabase-js
+
+Summary:
+--------
+- All data managed in Supabase
+- Frontend is single HTML file with modular JS/CSS
+- All features handled in browser via JS and Supabase API
+- Designed for easy monthly updates
+
+Refer to this file for any project-related questions.

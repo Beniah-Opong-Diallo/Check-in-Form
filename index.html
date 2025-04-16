@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TMHT Data Search</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/csv-export@1.1.0/dist/csv-export.min.js"></script>
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iIzQ1YTA0OSIgZD0iTTEwIDRhNiA2IDAgMSAwIDAgMTIgNiA2IDAgMCAwIDAtMTJ6bTguNyAxNC43YTEgMSAwIDAgMS0xLjQgMS40bC0zLjEwNS0zLjEwNUE3Ljk2NiA3Ljk2NiAwIDAgMSAxMCAxOGE4IDggMCAxIDEgOC04IDcuOTY2IDcuOTY2IDAgMCAxLTEuODk1IDUuMTk1bDMuMSAzLjF6Ii8+PC9zdmc+" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+</head>
+
+<body>
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+        <!-- Title and Instructions -->
+        <div class="search-section mb-8">
+            <h1 class="text-3xl font-bold text-white text-center mb-4">TMHT Data Search</h1>
+            <div class="bg-white/90 p-4 rounded-lg">
+                <h2 class="text-lg font-semibold text-[#357d39] mb-2">How to use:</h2>
+                <ul class="list-disc pl-5 text-gray-700 space-y-2">
+                    <li>Type a name in the search box below to find specific records</li>
+                    <li>Click the green + button in the bottom right to add new information</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Theme Switcher -->
+        <div class="theme-switcher-container">
+            <div class="theme-preview-box">
+                <div class="theme-buttons">
+                    <button class="theme-button green-theme active" title="Green Theme"></button>
+                    <button class="theme-button purple-theme" title="Purple & Black Theme"></button>
+                    <button class="theme-button blue-theme" title="Blue & Gold Theme"></button>
+                    <button class="theme-button admin-theme" title="Admin View"></button>
+                    <button id="addButton" class="add-button" title="Add New Entry">+</button>
+                </div>
+                <button class="dark-mode-toggle" id="darkModeToggle" title="Toggle Dark Mode">
+                    🌙
+                </button>
+            </div>
+        </div>
+
+        <!-- Cards Container -->
+        <div class="relative bg-white/10 rounded-lg mb-4">
+            <div id="cardsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 
+                overflow-y-auto overscroll-contain 
+                max-h-[300px] sm:max-h-[400px] md:max-h-[500px] 
+                p-3 sm:p-4
+                transform-gpu will-change-scroll
+                scroll-smooth motion-reduce:scroll-auto
+                scrollbar-thin scrollbar-thumb-gray-400/40 hover:scrollbar-thumb-gray-400/60 active:scrollbar-thumb-gray-400/80
+                scrollbar-track-transparent
+                transition-all duration-200
+                [scrollbar-gutter:stable]
+                [-webkit-overflow-scrolling:touch]">
+            </div>
+        </div>
+
+        <!-- Stats Container -->
+        <div class="stats-container">
+            <div class="stats-outer-container">
+                <div class="stats-grid">
+                    <!-- Overall Total -->
+                    <div class="stat-card">
+                        <div class="stat-header" onclick="toggleStatContent(this)">
+                            <h3>Overall Total</h3>
+                            <span class="toggle-arrow">▼</span>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-details">
+                                <p>Total People: <span id="totalPeople">0</span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Total Boys and Girls -->
+                    <div class="stat-card">
+                        <div class="stat-header" onclick="toggleStatContent(this)">
+                            <h3>Total Boys and Girls</h3>
+                            <span class="toggle-arrow">▼</span>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-details">
+                                <p>Boys: <span id="totalBoys">0</span></p>
+                                <p>Girls: <span id="totalGirls">0</span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Total People by Level -->
+                    <div class="stat-card">
+                        <div class="stat-header" onclick="toggleStatContent(this)">
+                            <h3>Total by Level</h3>
+                            <span class="toggle-arrow">▼</span>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-details" id="levelStats">
+                                <!-- Levels will be dynamically added here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Category filter -->
+        <div class="category-filter">
+            <div class="filter-container">
+                <select id="categoryFilter" onchange="filterByCategory(this.value)">
+                    <option value="all">All Entries</option>
+                    <option value="SHS">SHS Students</option>
+                    <option value="JHS">JHS Students</option>
+                    <option value="COMPLETED">Completed</option>
+                    <option value="UNIVERSITY">University</option>
+                </select>
+                <button id="downloadButton" class="download-button" onclick="downloadCSV()">Download CSV</button>
+            </div>
+            <div class="admin-header">
+                <button id="adminLogout" class="admin-logout-button">
+                    <span>Logout</span>
+                    <span class="logout-icon">🔒</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Fixed buttons container -->
+        <div class="fixed-buttons">
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="successToast" class="toast success">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+        <span>Information saved successfully!</span>
+    </div>
+    <div id="errorToast" class="toast error">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+        <span>Failed to save information. Please try again.</span>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <button id="closeButton" class="close-button group bg-w">
+                <svg class="fill-current text-white" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+
+            <h2 id="modalTitle" class="text-2xl font-bold mb-6">Add New Information</h2>
+            <form id="infoForm" class="space-y-4">
+                <div class="form-group">
+                    <label for="nameInput">Full Name</label>
+                    <input type="text" id="nameInput" required>
+                </div>
+                <div class="form-group">
+                    <label for="genderInput">Gender</label>
+                    <select id="genderInput" required>
+                        <option value="" disabled selected>Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="phoneInput">Phone Number</label>
+                    <input type="text" id="phoneInput">
+                </div>
+                <div class="form-group">
+                    <label for="ageInput">Age</label>
+                    <input type="number" id="ageInput" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="levelInput">Current Level</label>
+                    <select id="levelInput" required>
+                        <option value="" disabled selected>Select Level</option>
+                        <option value="SHS1">SHS1</option>
+                        <option value="SHS2">SHS2</option>
+                        <option value="SHS3">SHS3</option>
+                        <option value="JHS1">JHS1</option>
+                        <option value="JHS2">JHS2</option>
+                        <option value="JHS3">JHS3</option>
+                        <option value="COMPLETED">COMPLETED</option>
+                        <option value="UNIVERSITY">UNIVERSITY</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="attendance2nd">Attendance 2nd</label>
+                    <select id="attendance2nd">
+                        <option value="" disabled selected>Select Status</option>
+                        <option value="Present">Present</option>
+                        <option value="Absent">Absent</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="attendance9th">Attendance 9th</label>
+                    <select id="attendance9th">
+                        <option value="" disabled selected>Select Status</option>
+                        <option value="Present">Present</option>
+                        <option value="Absent">Absent</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="attendance16th">Attendance 16th</label>
+                    <select id="attendance16th">
+                        <option value="" disabled selected>Select Status</option>
+                        <option value="Present">Present</option>
+                        <option value="Absent">Absent</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="attendance23rd">Attendance 23rd</label>
+                    <select id="attendance23rd">
+                        <option value="" disabled selected>Select Status</option>
+                        <option value="Present">Present</option>
+                        <option value="Absent">Absent</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" id="cancelButton" class="cancel-button">Cancel</button>
+                    <button type="submit" class="save-button">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div id="adminLoginModal" class="admin-modal">
+        <div class="admin-modal-content">
+            <div class="lock-animation">
+                <div class="lock-icon">🔒</div>
+            </div>
+            <h2>Admin Access</h2>
+            <form id="adminLoginForm" class="admin-login-form">
+                <div class="input-group">
+                    <input type="password" id="adminPassword" placeholder="Enter admin password" required>
+                    <div class="password-toggle">👁️</div>
+                </div>
+                <button type="submit" class="admin-submit">
+                    <span class="button-text">Login</span>
+                    <div class="button-loader"></div>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Search Bar at Bottom (fixed) -->
+    <div class="search-bar-container"
+        style="position:fixed;bottom:0;width:100%;z-index:10;background:rgba(255,255,255,0.95);backdrop-filter:blur(6px);box-shadow:0 -2px 8px rgba(0,0,0,0.04);">
+        <div class="search-section">
+            <input type="text" id="searchInput" placeholder="Start typing to search names..." class="w-full">
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+    <script src="adminAuth.js"></script>
+    <script src="app.js"></script>
+    <link rel="stylesheet" href="adminStyles.css">
+</body>
+
+</html>

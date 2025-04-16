@@ -6,13 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TMHT Data Search</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/csv-export@1.1.0/dist/csv-export.min.js"></script>
     <link rel="icon" type="image/svg+xml"
         href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iIzQ1YTA0OSIgZD0iTTEwIDRhNiA2IDAgMSAwIDAgMTIgNiA2IDAgMCAwIDAtMTJ6bTguNyAxNC43YTEgMSAwIDAgMS0xLjQgMS40bC0zLjEwNS0zLjEwNUE3Ljk2NiA3Ljk2NiAwIDAgMSAxMCAxOGE4IDggMCAxIDEgOC04IDcuOTY2IDcuOTY2IDAgMCAxLTEuODk1IDUuMTk1bDMuMSAzLjF6Ii8+PC9zdmc+" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="manifest" href="/site.webmanifest">
+    <link rel="stylesheet" href="css/sensitiveInfo.css">
 </head>
 
 <body>
@@ -28,6 +29,16 @@
                 </ul>
             </div>
         </div>
+
+        <!-- Security Shield Button -->
+        <button id="sensitiveInfoBtn" class="sensitive-shield-btn" title="Sensitive Info"
+            style="position:absolute;top:1.5rem;right:1.5rem;z-index:1002;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#357d39" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                <path d="M9 12v-1a3 3 0 1 1 6 0v1" />
+            </svg>
+        </button>
 
         <!-- Theme Switcher -->
         <div class="theme-switcher-container">
@@ -274,11 +285,12 @@
         </div>
     </div>
 
-    <script src="admin.js"></script>
-    <script src="adminAuth.js"></script>
-    <script src="app.js"></script>
-    <script src="deleteRecord.js"></script>
-    <link rel="stylesheet" href="adminStyles.css">
+    <script src="js/admin.js"></script>
+    <script src="js/adminAuth.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/deleteRecord.js"></script>
+    <script src="js/sensitiveInfo.js"></script>
+    <link rel="stylesheet" href="css/adminStyles.css">
 </body>
 
 </html>

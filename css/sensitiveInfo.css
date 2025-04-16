@@ -1,0 +1,98 @@
+/* sensitiveInfo.css */
+.sensitive-shield-btn {
+  background: #fff;
+  border: 2px solid #357d39;
+  border-radius: 50%;
+  padding: 0.5em;
+  box-shadow: 0 2px 8px rgba(53, 125, 57, 0.08);
+  transition: background 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  outline: none;
+}
+.sensitive-shield-btn:hover {
+  background: #e6f4ea;
+  box-shadow: 0 4px 16px rgba(53, 125, 57, 0.15);
+}
+.sensitive-modal-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.sensitive-modal {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  padding: 2.5rem 2.5rem 2rem 2.5rem;
+  min-width: 320px;
+  max-width: 90vw;
+  text-align: center;
+}
+.sensitive-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75em;
+  justify-content: center;
+  margin-bottom: 1.2em;
+}
+.sensitive-shield-icon {
+  font-size: 2.2rem;
+}
+.sensitive-modal-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #357d39;
+}
+.sensitive-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2em;
+}
+.sensitive-modal-input {
+  padding: 0.8em 1em;
+  border: 1.5px solid #357d39;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  outline: none;
+  transition: border 0.2s;
+}
+.sensitive-modal-input:focus {
+  border: 1.5px solid #285c2c;
+}
+.sensitive-modal-actions {
+  display: flex;
+  gap: 1em;
+  justify-content: center;
+}
+.sensitive-modal-btn {
+  background: #357d39;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6em 1.5em;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.sensitive-modal-btn.cancel {
+  background: #e5e7eb;
+  color: #222;
+}
+.sensitive-modal-btn:hover:not(.cancel) {
+  background: #285c2c;
+}
+.sensitive-modal-btn.cancel:hover {
+  background: #d1d5db;
+}
+.sensitive-modal-error {
+  color: #ef4444;
+  font-size: 0.98rem;
+  margin-top: 0.5em;
+}

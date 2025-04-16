@@ -3,12 +3,12 @@ TMHT Data Search Project Overview
 
 Project Purpose:
 ----------------
-A web application for managing and searching teen attendance and student information at The Master's House Teens Church. It is a single-page app using HTML, CSS (custom + Tailwind), JavaScript, and Supabase as the backend database.
+A web application for managing and searching teen attendance and student information at The Maker's House Teens Church. It is a single-page app using HTML, CSS (custom + Tailwind), JavaScript, and Supabase as the backend database.
 
 Key Features:
 -------------
 - Real-time search for student records by name
-- Add/Edit student records via modal form
+- Add/Edit/Delete student records via modal form
 - Inline editing of fields in result cards
 - Attendance tracking for four specific dates
 - Statistics dashboard (total, gender, level breakdown)

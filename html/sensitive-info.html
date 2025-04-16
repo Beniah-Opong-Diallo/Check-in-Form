@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sensitive Information</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/sensitiveInfo.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+    <h1 class="text-3xl font-bold text-[#357d39] text-center my-8">Sensitive Information</h1>
+    <div class="stats-container">
+      <div class="stats-outer-container">
+        <div class="stats-grid">
+          <!-- Overall Total -->
+          <div class="stat-card">
+            <div class="stat-header" onclick="toggleStatContent(this)">
+              <h3>Overall Total</h3>
+              <span class="toggle-arrow">▼</span>
+            </div>
+            <div class="stat-content">
+              <div class="stat-details">
+                <p>Total People: <span id="totalPeople">0</span></p>
+              </div>
+            </div>
+          </div>
+          <!-- Total Boys and Girls -->
+          <div class="stat-card">
+            <div class="stat-header" onclick="toggleStatContent(this)">
+              <h3>Total Boys and Girls</h3>
+              <span class="toggle-arrow">▼</span>
+            </div>
+            <div class="stat-content">
+              <div class="stat-details">
+                <p>Boys: <span id="totalBoys">0</span></p>
+                <p>Girls: <span id="totalGirls">0</span></p>
+              </div>
+            </div>
+          </div>
+          <!-- Total People by Level -->
+          <div class="stat-card">
+            <div class="stat-header" onclick="toggleStatContent(this)">
+              <h3>Total by Level</h3>
+              <span class="toggle-arrow">▼</span>
+            </div>
+            <div class="stat-content">
+              <div class="stat-details" id="levelStats">
+                <!-- Levels will be dynamically added here -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="category-filter">
+      <div class="filter-container">
+        <select id="categoryFilter" onchange="filterByCategory(this.value)">
+          <option value="all">All Entries</option>
+          <option value="SHS">SHS Students</option>
+          <option value="JHS">JHS Students</option>
+          <option value="COMPLETED">Completed</option>
+          <option value="UNIVERSITY">University</option>
+        </select>
+        <button id="downloadButton" class="download-button" onclick="downloadCSV()">Download CSV</button>
+      </div>
+    </div>
+    <div class="fixed-buttons"></div>
+  </div>
+  <script src="../js/app.js"></script>
+</body>
+
+</html>

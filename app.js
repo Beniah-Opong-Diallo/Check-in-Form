@@ -152,12 +152,12 @@ function handleCloseClick(e) {
   // Disable the button immediately to prevent multiple triggers
   e.target.disabled = true;
   addButtonPressAnimation(e.target);
-  requestAnimationFrame(() => hideModal(e.target));
+  hideModal(e.target);
 }
 
 // Optimized modal hide
 function hideModal(buttonToEnable) {
-   // Hide modal instantly and reset state
+  // Hide modal instantly and reset state
   elements.modal.style.display = "none";
   elements.modal.classList.remove("closing");
   elements.infoForm.reset();
@@ -173,43 +173,29 @@ function hideModal(buttonToEnable) {
   if (buttonToEnable) buttonToEnable.disabled = false;
 }
 
-// Optimized button animation
+// Remove button press animation (no requestAnimationFrame)
 function addButtonPressAnimation(button) {
-  requestAnimationFrame(() => {
-    button.classList.add("button-press");
-    setTimeout(() => button.classList.remove("button-press"), 200);
-  });
+  button.classList.add("button-press");
+  setTimeout(() => button.classList.remove("button-press"), 100); // keep short for feedback
 }
 
-// Optimized display function with batching
+// Optimized display function (no batching, no requestAnimationFrame)
 function displayItems(items) {
-  const fragment = document.createDocumentFragment();
-  const totalItems = items.length;
-  let processedItems = 0;
-
-  function processBatch() {
-    const batchEnd = Math.min(processedItems + BATCH_SIZE, totalItems);
-
-    for (let i = processedItems; i < batchEnd; i++) {
-      const item = items[i];
-      const div = document.createElement("div");
-      div.className = "result-item";
-      div.setAttribute("data-id", item.id);
-      div.innerHTML = getItemHTML(item);
-      fragment.appendChild(div);
-    }
-
-    processedItems = batchEnd;
-
-    if (processedItems < totalItems) {
-      requestAnimationFrame(processBatch);
-    } else {
-      elements.cardsContainer.innerHTML = "";
-      elements.cardsContainer.appendChild(fragment);
-    }
+  if (!Array.isArray(items) || items.length === 0) {
+    elements.cardsContainer.innerHTML =
+      '<p class="error-message">No records found.</p>';
+    return;
   }
-
-  requestAnimationFrame(processBatch);
+  const fragment = document.createDocumentFragment();
+  for (const item of items) {
+    const div = document.createElement("div");
+    div.className = "result-item";
+    div.setAttribute("data-id", item.id);
+    div.innerHTML = getItemHTML(item);
+    fragment.appendChild(div);
+  }
+  elements.cardsContainer.innerHTML = "";
+  elements.cardsContainer.appendChild(fragment);
 }
 
 // Function to handle inline editing
@@ -279,7 +265,7 @@ async function makeFieldEditable(element, itemId, fieldName) {
   element.appendChild(input);
 
   // Focus the input with a slight delay for animation
-  requestAnimationFrame(() => input.focus());
+  input.focus();
 
   // Handle save operation
   async function saveChanges() {
@@ -393,7 +379,7 @@ function createInput(type, value, attributes = {}) {
   return input;
 }
 
-// Enhanced toast notification
+// Remove requestAnimationFrame from showToast
 function showToast(type, message) {
   const toast =
     type === "success" ? elements.successToast : elements.errorToast;
@@ -411,14 +397,10 @@ function showToast(type, message) {
   `;
 
   // Show toast with animation
-  requestAnimationFrame(() => {
-    toast.classList.add("show");
-    setTimeout(() => {
-      requestAnimationFrame(() => {
-        toast.classList.remove("show");
-      });
-    }, 2000);
-  });
+  toast.classList.add("show");
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 1200); // even shorter
 }
 
 // Update the getItemHTML function to make fields directly editable
@@ -581,9 +563,6 @@ async function handleSubmit(e) {
       return;
     }
 
-    // First hide the modal
-    elements.modal.style.display = "none";
-    elements.modal.classList.remove("closing");
     elements.infoForm.reset();
 
     // Then perform the database operation
@@ -606,22 +585,18 @@ async function handleSubmit(e) {
     searchCache.clear();
     editingId = null;
 
-    // Update display in background
-    setTimeout(() => {
-      const currentSearch = elements.searchInput.value.trim();
-      if (currentSearch) {
-        filterItems();
-      } else {
-        loadInitialData();
-      }
-      // Update stats in background
-      fetchAndDisplayStats().catch(console.error);
-    }, 0);
+    // Immediately refresh the display so new info shows up right away
+    const currentSearch = elements.searchInput.value.trim();
+    if (currentSearch) {
+      await filterItems();
+    } else {
+      await loadInitialData();
+    }
+    // Update stats
+    fetchAndDisplayStats().catch(console.error);
   } catch (error) {
     console.error("Error:", error);
     showToast("error");
-    // Reopen modal if there's an error
-    elements.modal.style.display = "block";
   } finally {
     submitButton.disabled = false;
   }

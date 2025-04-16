@@ -19,7 +19,8 @@
 
 <body>
   <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-    <h1 class="text-3xl font-bold text-[#357d39] text-center my-8">Sensitive Information</h1>
+    <a href="../index.html" class="back-btn">← Back</a>
+    <h1 class="text-3xl font-bold sensitive-title">Sensitive Information</h1>
     <div class="stats-container">
       <div class="stats-outer-container">
         <div class="stats-grid">
@@ -58,21 +59,23 @@
               <div class="stat-details" id="levelStats">
                 <!-- Levels will be dynamically added here -->
               </div>
+              <div style="text-align:center; margin-top:1rem;">
+                <button id="downloadButton" class="download-button" onclick="downloadCSV()">Download CSV</button>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
     <div class="category-filter">
-      <div class="filter-container">
-        <select id="categoryFilter" onchange="filterByCategory(this.value)">
+      <div class="filter-container gradient-box">
+        <select id="categoryFilter" class="category-select" onchange="filterByCategory(this.value)">
           <option value="all">All Entries</option>
           <option value="SHS">SHS Students</option>
           <option value="JHS">JHS Students</option>
           <option value="COMPLETED">Completed</option>
           <option value="UNIVERSITY">University</option>
         </select>
-        <button id="downloadButton" class="download-button" onclick="downloadCSV()">Download CSV</button>
       </div>
     </div>
     <!-- Data Table Section -->
@@ -92,7 +95,9 @@
           </tr>
         </thead>
         <tbody id="sensitiveTableBody">
-          <tr><td colspan="9" style="text-align:center;color:#888;">Loading data...</td></tr>
+          <tr>
+            <td colspan="9" style="text-align:center;color:#888;">Loading data...</td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -101,15 +106,22 @@
   <script src="../js/app.js"></script>
   <script src="../js/sensitiveInfo.js"></script>
   <script>
-    // Fetch and display sensitive data in the table
-    document.addEventListener('DOMContentLoaded', async function() {
+    // --- Filtered Table Logic ---
+    async function updateSensitiveTable(category) {
       const tableBody = document.getElementById('sensitiveTableBody');
       tableBody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#888;">Loading data...</td></tr>';
       try {
-        const { data, error } = await window.supabase
-          .from('TMHCT_Feb')
-          .select('*')
-          .order('full_name');
+        let query = window.supabase.from('TMHCT_Feb').select('*').order('full_name');
+        if (category && category !== 'all') {
+          if (category === 'SHS') {
+            query = query.or('current_level.eq.SHS1,current_level.eq.SHS2,current_level.eq.SHS3');
+          } else if (category === 'JHS') {
+            query = query.or('current_level.eq.JHS1,current_level.eq.JHS2,current_level.eq.JHS3');
+          } else {
+            query = query.eq('current_level', category);
+          }
+        }
+        const { data, error } = await query;
         if (error) throw error;
         if (!data || data.length === 0) {
           tableBody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#888;">No records found.</td></tr>';
@@ -125,12 +137,84 @@
             <td>${item.attendance_2nd || ''}</td>
             <td>${item.attendance_9th || ''}</td>
             <td>${item.attendance_16th || ''}</td>
-            <td>${item.attendance_23rd || ''}</td>
+            <td style="display:flex;align-items:center;gap:0.5em;justify-content:space-between;">
+              <span>${item.attendance_23rd || ''}</span>
+              <button class="delete-btn" title="Delete" onclick="showDeleteConfirm('${item.id}', this)" style="background:#ef4444;color:#fff;border:none;border-radius:6px;padding:0.25em 0.6em;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+              </button>
+            </td>
           </tr>
         `).join('');
       } catch (err) {
         tableBody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#e53e3e;">Error loading data.</td></tr>';
       }
+    }
+
+    // Improved delete confirmation modal
+    function showDeleteConfirm(id, btn) {
+      // Remove any existing modal
+      const old = document.getElementById('deleteConfirmModal');
+      if (old) old.remove();
+      // Create modal
+      const modal = document.createElement('div');
+      modal.id = 'deleteConfirmModal';
+      modal.style.position = 'fixed';
+      modal.style.top = 0;
+      modal.style.left = 0;
+      modal.style.width = '100vw';
+      modal.style.height = '100vh';
+      modal.style.background = 'rgba(0,0,0,0.25)';
+      modal.style.display = 'flex';
+      modal.style.alignItems = 'center';
+      modal.style.justifyContent = 'center';
+      modal.style.zIndex = 9999;
+      modal.innerHTML = `
+        <div style="background:#fff;border-radius:14px;box-shadow:0 4px 24px rgba(53,125,57,0.13);padding:2.2rem 2.5rem 1.7rem 2.5rem;max-width:95vw;text-align:center;min-width:320px;">
+          <div style="font-size:2.2rem;margin-bottom:0.5em;">⚠️</div>
+          <div style="font-size:1.15rem;font-weight:600;color:#222;margin-bottom:1.2em;">Are you sure you want to delete this entry?</div>
+          <div style="display:flex;gap:1.5em;justify-content:center;">
+            <button id="deleteYesBtn" style="background:#ef4444;color:#fff;border:none;border-radius:8px;padding:0.7em 2.2em;font-size:1.05rem;font-weight:600;cursor:pointer;transition:background 0.18s;">Yes</button>
+            <button id="deleteNoBtn" style="background:#e5e7eb;color:#222;border:none;border-radius:8px;padding:0.7em 2.2em;font-size:1.05rem;font-weight:600;cursor:pointer;transition:background 0.18s;">No</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+      document.getElementById('deleteNoBtn').onclick = () => modal.remove();
+      document.getElementById('deleteYesBtn').onclick = () => {
+        modal.remove();
+        btn.disabled = true;
+        btn.style.opacity = '0.6';
+        window.supabase
+          .from('TMHCT_Feb')
+          .delete()
+          .eq('id', id)
+          .then(({ error }) => {
+            if (error) {
+              alert('Error deleting entry.');
+              btn.disabled = false;
+              btn.style.opacity = '';
+            } else {
+              // Remove the row from the table
+              const row = btn.closest('tr');
+              if (row) row.remove();
+              // Show a notice (toast)
+              if (window.showToast) {
+                window.showToast('success', 'Entry deleted successfully');
+              } else {
+                alert('Entry deleted successfully');
+              }
+            }
+          });
+      };
+    }
+
+    // Hook up filter
+    document.getElementById('categoryFilter').addEventListener('change', function () {
+      updateSensitiveTable(this.value);
+    });
+    // Initial load
+    document.addEventListener('DOMContentLoaded', function () {
+      updateSensitiveTable(document.getElementById('categoryFilter').value);
     });
   </script>
 </body>

@@ -410,11 +410,6 @@ function getItemHTML(item) {
       <h3 class="name-text editable-field" style="flex:1; margin:0; cursor:pointer;" onclick="makeFieldEditable(this, ${
         item.id
       }, 'full_name')">${escapeHtml(item.full_name)}</h3>
-      <button class="delete-btn" title="Delete" onclick="deleteRecord('${
-        item.id
-      }', this)" style="background:#ef4444;color:#fff;border:none;border-radius:6px;padding:0.4em 0.7em;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
-      </button>
     </div>
     <div class="info-item">
         <span>Gender:</span>

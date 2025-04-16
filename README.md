@@ -1,10 +1,10 @@
-# 🎓 TMHT Teens Search
+# 🎓 Data Search
 
-> A modern web application for tracking teen attendance and managing student information at The Master's House Teens Church.
+> A modern web application for tracking attendance and managing student information at The Master's House Teens Church.
 
 ## 📋 Overview
 
-TMHT Teens Search is a user-friendly application designed to help church administrators manage and track teen attendance, personal information, and generate reports efficiently. Built with modern web technologies and powered by Supabase backend.
+Data Search (formerly TMHT Teens Search) is a user-friendly application designed to help church administrators manage and track attendance, personal information, and generate reports efficiently. Built with modern web technologies and powered by Supabase backend.
 
 ## ✨ Features
 
@@ -12,9 +12,11 @@ TMHT Teens Search is a user-friendly application designed to help church adminis
 - ➕ **Easy Data Entry**: Quick form for adding new students
 - 📊 **Statistics Dashboard**: View attendance trends and demographics
 - 📱 **Responsive Design**: Works on desktop and mobile devices
-- 📥 **CSV Export**: Download attendance data for reporting
+- 📥 **CSV Export**: Download attendance data for reporting (now more prominent and integrated in the stats section)
 - 👥 **Gender Distribution**: Track male/female ratio
 - 📚 **Education Level**: Monitor students across different academic levels
+- 🛡️ **Sensitive Info Protection**: Password-protected access to sensitive data, with a modern unlock screen
+- 🕵️‍♂️ **Sensitive Info Search**: Search bar for filtering names in the sensitive info section
 
 ## 🚀 Getting Started
 
@@ -50,9 +52,15 @@ TMHT Teens Search is a user-friendly application designed to help church adminis
 3. Click on a card to view full details
 
 ### Downloading Reports 📊
-1. Click the 'Download CSV' button
+1. Click the 'Download CSV' button (now inside the stats card for better visibility)
 2. Choose save location
 3. Open in Excel or similar software
+
+### Sensitive Information 🛡️
+- Click the shield icon to access sensitive data
+- Enter the password on the unlock screen (with show/hide password option)
+- Use the wide search bar to filter names in the sensitive info table
+- Download filtered results as CSV
 
 ## 🎨 Features in Detail
 
@@ -74,6 +82,11 @@ TMHT Teens Search is a user-friendly application designed to help church adminis
 - Gender distribution
 - Education level breakdown
 - Monthly attendance trends
+
+### Sensitive Info Security
+- Password required to access sensitive data
+- Modern unlock screen with eye icon to show/hide password
+- No access to sensitive info without correct password
 
 ## 🤝 Contributing
 

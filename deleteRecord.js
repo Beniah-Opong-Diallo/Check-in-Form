@@ -2,21 +2,21 @@
 // Show a custom modal for delete confirmation
 function showDeleteConfirm(onConfirm) {
   // Remove any existing modal
-  const old = document.getElementById('deleteConfirmModal');
+  const old = document.getElementById("deleteConfirmModal");
   if (old) old.remove();
 
-  const modal = document.createElement('div');
-  modal.id = 'deleteConfirmModal';
-  modal.style.position = 'fixed';
-  modal.style.top = '0';
-  modal.style.left = '0';
-  modal.style.width = '100vw';
-  modal.style.height = '100vh';
-  modal.style.background = 'rgba(0,0,0,0.35)';
-  modal.style.display = 'flex';
-  modal.style.alignItems = 'center';
-  modal.style.justifyContent = 'center';
-  modal.style.zIndex = '9999';
+  const modal = document.createElement("div");
+  modal.id = "deleteConfirmModal";
+  modal.style.position = "fixed";
+  modal.style.top = "0";
+  modal.style.left = "0";
+  modal.style.width = "100vw";
+  modal.style.height = "100vh";
+  modal.style.background = "rgba(0,0,0,0.35)";
+  modal.style.display = "flex";
+  modal.style.alignItems = "center";
+  modal.style.justifyContent = "center";
+  modal.style.zIndex = "9999";
 
   modal.innerHTML = `
     <div style="background:#fff;padding:2rem 2.5rem;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.18);text-align:center;max-width:90vw;">
@@ -29,8 +29,8 @@ function showDeleteConfirm(onConfirm) {
     </div>
   `;
   document.body.appendChild(modal);
-  document.getElementById('deleteNoBtn').onclick = () => modal.remove();
-  document.getElementById('deleteYesBtn').onclick = () => {
+  document.getElementById("deleteNoBtn").onclick = () => modal.remove();
+  document.getElementById("deleteYesBtn").onclick = () => {
     modal.remove();
     onConfirm();
   };
@@ -40,19 +40,19 @@ function showDeleteConfirm(onConfirm) {
 async function deleteRecord(id, btn) {
   showDeleteConfirm(async () => {
     btn.disabled = true;
-    btn.textContent = '...';
+    btn.textContent = "...";
     try {
-      const { error } = await supabase.from('TMHCT_Feb').delete().eq('id', id);
+      const { error } = await supabase.from("TMHCT_Feb").delete().eq("id", id);
       if (error) throw error;
       // Remove the card from the UI
-      const card = btn.closest('.result-item');
+      const card = btn.closest(".result-item");
       if (card) card.remove();
-      showToast('success', 'Deleted successfully');
+      showToast("success", "Deleted successfully");
       fetchAndDisplayStats && fetchAndDisplayStats();
     } catch (err) {
-      showToast('error', 'Delete failed');
+      showToast("error", "Delete failed");
       btn.disabled = false;
-      btn.textContent = '🗑️';
+      btn.textContent = "🗑️";
     }
   });
 }

@@ -84,10 +84,54 @@
       </table>
     </div>
     <div class="fixed-buttons"></div>
+    <form id="sensitiveInfoForm" class="sensitive-modal-form">
+      <div style="position:relative;">
+        <input type="password" id="sensitivePassword" class="sensitive-modal-input" placeholder="Enter password" autocomplete="current-password" required style="background:#fff;color:#222;" />
+        <button type="button" id="togglePassword" tabindex="-1" style="position:absolute;right:0.7em;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:0.2em;">
+          <span id="eyeIcon" style="font-size:1.2em;">👁️</span>
+        </button>
+      </div>
+      <div class="sensitive-modal-actions">
+        <button type="submit" class="sensitive-modal-btn">Unlock</button>
+        <button type="button" class="sensitive-modal-btn cancel" id="sensitiveCancelBtn">Cancel</button>
+      </div>
+      <div id="sensitiveError" class="sensitive-modal-error" style="display:none;">Incorrect password. Try again.</div>
+    </form>
   </div>
   <script src="../js/app.js"></script>
   <script src="../js/sensitiveInfo.js"></script>
   <script>
+    // Password eye toggle
+    document.addEventListener('DOMContentLoaded', function() {
+      var pwInput = document.getElementById('sensitivePassword');
+      var toggleBtn = document.getElementById('togglePassword');
+      var eyeIcon = document.getElementById('eyeIcon');
+      if (toggleBtn && pwInput) {
+        toggleBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          if (pwInput.type === 'password') {
+            pwInput.type = 'text';
+            eyeIcon.textContent = '🙈';
+          } else {
+            pwInput.type = 'password';
+            eyeIcon.textContent = '👁️';
+          }
+        });
+      }
+      if (pwInput) {
+        pwInput.style.background = '#fff';
+        pwInput.style.color = '#222';
+        pwInput.addEventListener('input', function() {
+          this.style.background = '#fff';
+          this.style.color = '#222';
+        });
+        pwInput.addEventListener('change', function() {
+          this.style.background = '#fff';
+          this.style.color = '#222';
+        });
+      }
+    });
+
     // --- Filtered Table Logic ---
     async function updateSensitiveTable(category) {
       const tableBody = document.getElementById('sensitiveTableBody');
@@ -254,4 +298,3 @@
 </body>
 
 </html>
-````

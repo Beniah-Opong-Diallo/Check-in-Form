@@ -149,25 +149,28 @@ document.addEventListener("mousedown", (e) => {
 
 // Optimized close button handler
 function handleCloseClick(e) {
+  // Disable the button immediately to prevent multiple triggers
+  e.target.disabled = true;
   addButtonPressAnimation(e.target);
-  requestAnimationFrame(hideModal);
+  requestAnimationFrame(() => hideModal(e.target));
 }
 
 // Optimized modal hide
-function hideModal() {
-  elements.modal.classList.add("closing");
-  setTimeout(() => {
-    elements.modal.style.display = "none";
-    elements.modal.classList.remove("closing");
-    elements.infoForm.reset();
-    editingId = null;
-    // Restore all UI elements
-    elements.cancelButton.style.display = "";
-    elements.searchInput.style.display = "";
-    elements.addRectButton.style.display = "";
-    if (elements.searchBarContainer) elements.searchBarContainer.style.display = "";
-    elements._addModeActive = false;
-  }, 150);
+function hideModal(buttonToEnable) {
+   // Hide modal instantly and reset state
+  elements.modal.style.display = "none";
+  elements.modal.classList.remove("closing");
+  elements.infoForm.reset();
+  editingId = null;
+  // Restore all UI elements
+  elements.cancelButton.style.display = "";
+  elements.searchInput.style.display = "";
+  elements.addRectButton.style.display = "";
+  if (elements.searchBarContainer)
+    elements.searchBarContainer.style.display = "";
+  elements._addModeActive = false;
+  // Re-enable the button after modal is hidden
+  if (buttonToEnable) buttonToEnable.disabled = false;
 }
 
 // Optimized button animation
@@ -520,12 +523,14 @@ function showModal(item = null, options = {}) {
     elements.addRectButton.style.display = "none";
     elements._addModeActive = true;
     // Hide the entire search bar container
-    if (elements.searchBarContainer) elements.searchBarContainer.style.display = "none";
+    if (elements.searchBarContainer)
+      elements.searchBarContainer.style.display = "none";
   } else {
     elements.cancelButton.style.display = "";
     elements.addRectButton.style.display = "";
     elements._addModeActive = false;
-    if (elements.searchBarContainer) elements.searchBarContainer.style.display = "";
+    if (elements.searchBarContainer)
+      elements.searchBarContainer.style.display = "";
   }
 
   if (item) {
@@ -545,7 +550,8 @@ function showModal(item = null, options = {}) {
 
   // Hide "+" button and search bar container when modal is open (regardless of addMode)
   elements.addRectButton.style.display = "none";
-  if (elements.searchBarContainer) elements.searchBarContainer.style.display = "none";
+  if (elements.searchBarContainer)
+    elements.searchBarContainer.style.display = "none";
 }
 
 // Optimized form submission

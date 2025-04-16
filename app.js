@@ -406,9 +406,14 @@ function showToast(type, message) {
 // Update the getItemHTML function to make fields directly editable
 function getItemHTML(item) {
   return `
-    <h3 class="name-text editable-field" onclick="makeFieldEditable(this, ${
-      item.id
-    }, 'full_name')">${escapeHtml(item.full_name)}</h3>
+    <div class="name-row" style="display: flex; align-items: center; gap: 0.5rem;">
+      <h3 class="name-text editable-field" style="flex:1; margin:0; cursor:pointer;" onclick="makeFieldEditable(this, ${
+        item.id
+      }, 'full_name')">${escapeHtml(item.full_name)}</h3>
+      <button class="delete-btn" title="Delete" onclick="deleteRecord('${
+        item.id
+      }', this)" style="background:#ef4444;color:#fff;border:none;border-radius:6px;padding:0.4em 0.7em;cursor:pointer;font-size:1rem;">🗑️</button>
+    </div>
     <div class="info-item">
         <span>Gender:</span>
         <select class="info-select ${

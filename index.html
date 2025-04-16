@@ -37,7 +37,7 @@
                     <button class="theme-button purple-theme" title="Purple & Black Theme"></button>
                     <button class="theme-button blue-theme" title="Blue & Gold Theme"></button>
                     <button class="theme-button admin-theme" title="Admin View"></button>
-                    <button id="addButton" class="add-button" title="Add New Entry">+</button>
+                    <!-- Removed old circular add button -->
                 </div>
                 <button class="dark-mode-toggle" id="darkModeToggle" title="Toggle Dark Mode">
                     🌙
@@ -256,7 +256,10 @@
     <div class="search-bar-container"
         >
         <div class="search-section fixed-search-bar">
-            <input type="text" id="searchInput" placeholder="Start typing to search names..." class="w-full">
+            <div class="search-bar-flex">
+                <input type="text" id="searchInput" placeholder="Start typing to search names..." class="search-input">
+                <button type="button" class="add-rect-button" id="addRectButton">+</button>
+            </div>
         </div>
     </div>
 

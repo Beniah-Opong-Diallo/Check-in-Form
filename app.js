@@ -14,7 +14,7 @@ const SCROLL_THROTTLE = 16; // ~60fps
 // Cache DOM elements
 const elements = {
   searchInput: document.getElementById("searchInput"),
-  addButton: document.getElementById("addButton"),
+  addRectButton: document.getElementById("addRectButton"),
   cardsContainer: document.getElementById("cardsContainer"),
   modal: document.getElementById("modal"),
   modalTitle: document.getElementById("modalTitle"),
@@ -124,7 +124,7 @@ elements.searchInput.addEventListener("input", () => {
 });
 
 // Optimized event listeners with delegation
-elements.addButton.addEventListener("click", () => showModal());
+elements.addRectButton.addEventListener("click", () => showModal());
 elements.cancelButton.addEventListener("click", handleCloseClick);
 elements.closeButton.addEventListener("click", handleCloseClick);
 elements.infoForm.addEventListener("submit", handleSubmit);

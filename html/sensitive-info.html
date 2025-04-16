@@ -30,42 +30,24 @@
               <h3>Overall Total</h3>
               <span class="toggle-arrow">▼</span>
             </div>
-            <div class="stat-content">
+            <div class="stat-content" style="max-height:none;">
               <div class="stat-details">
                 <p>Total People: <span id="totalPeople">0</span></p>
-              </div>
-            </div>
-          </div>
-          <!-- Total Boys and Girls -->
-          <div class="stat-card">
-            <div class="stat-header" onclick="toggleStatContent(this)">
-              <h3>Total Boys and Girls</h3>
-              <span class="toggle-arrow">▼</span>
-            </div>
-            <div class="stat-content">
-              <div class="stat-details">
                 <p>Boys: <span id="totalBoys">0</span></p>
                 <p>Girls: <span id="totalGirls">0</span></p>
               </div>
-            </div>
-          </div>
-          <!-- Total People by Level -->
-          <div class="stat-card">
-            <div class="stat-header" onclick="toggleStatContent(this)">
-              <h3>Total by Level</h3>
-              <span class="toggle-arrow">▼</span>
-            </div>
-            <div class="stat-content">
               <div class="stat-details" id="levelStats">
                 <!-- Levels will be dynamically added here -->
-              </div>
-              <div style="text-align:center; margin-top:1rem;">
-                <button id="downloadButton" class="download-button" onclick="downloadCSV()">Download CSV</button>
               </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
+    <!-- Download CSV Section -->
+    <div class="gradient-box" style="text-align:center;max-width:420px;margin:2rem auto 1.5rem auto;">
+      <button id="downloadButton" class="download-button" style="margin:0 auto;"
+        onclick="downloadCSVFiltered()">Download CSV (Current Results)</button>
     </div>
     <div class="category-filter">
       <div class="filter-container gradient-box">
@@ -125,6 +107,8 @@
         if (error) throw error;
         if (!data || data.length === 0) {
           tableBody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#888;">No records found.</td></tr>';
+          updateStats([]);
+          window.currentTableData = [];
           return;
         }
         tableBody.innerHTML = data.map(item => `
@@ -145,9 +129,59 @@
             </td>
           </tr>
         `).join('');
+        updateStats(data);
+        window.currentTableData = data;
       } catch (err) {
         tableBody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#e53e3e;">Error loading data.</td></tr>';
+        updateStats([]);
+        window.currentTableData = [];
       }
+    }
+
+    // Update stats based on filtered data
+    function updateStats(data) {
+      document.getElementById('totalPeople').textContent = data.length;
+      let boys = 0, girls = 0;
+      const levelCounts = {};
+      const levelOrder = [
+        'SHS1','SHS2','SHS3','JHS1','JHS2','JHS3','COMPLETED','UNIVERSITY'
+      ];
+      for (const level of levelOrder) levelCounts[level] = 0;
+      data.forEach(item => {
+        if ((item.gender||'').toLowerCase() === 'male') boys++;
+        if ((item.gender||'').toLowerCase() === 'female') girls++;
+        const lvl = (item.current_level||'').toUpperCase();
+        if (levelCounts.hasOwnProperty(lvl)) levelCounts[lvl]++;
+      });
+      document.getElementById('totalBoys').textContent = boys;
+      document.getElementById('totalGirls').textContent = girls;
+      document.getElementById('levelStats').innerHTML = levelOrder.map(lvl =>
+        `<div class="level-stat"><span class="level-name">${lvl}</span><span class="level-count">${levelCounts[lvl]}</span></div>`
+      ).join('');
+    }
+
+    // Download only currently displayed table data
+    function downloadCSVFiltered() {
+      const data = window.currentTableData || [];
+      if (!data.length) {
+        alert('No data to export.');
+        return;
+      }
+      const headers = [
+        'Full Name','Gender','Age','Phone','Level','Attendance 2nd','Attendance 9th','Attendance 16th','Attendance 23rd'
+      ];
+      let csvContent = headers.join(',') + '\n';
+      csvContent += data.map(item => [
+        item.full_name||'', item.gender||'', item.age||'', item.phone_number||'', item.current_level||'',
+        item.attendance_2nd||'', item.attendance_9th||'', item.attendance_16th||'', item.attendance_23rd||''
+      ].map(cell => cell.toString().replace(/"/g,'""')).map(cell => cell.includes(',') ? '"'+cell+'"' : cell).join(',')).join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `TMHT_Export_${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
 
     // Improved delete confirmation modal
@@ -220,3 +254,4 @@
 </body>
 
 </html>
+````

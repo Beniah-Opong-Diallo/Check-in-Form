@@ -149,38 +149,38 @@
 
     <!-- Modal -->
     <div id="modal" class="modal">
-        <div class="modal-content">
-            <button id="closeButton" class="close-button group bg-w">
-                <svg class="fill-current text-white" viewBox="0 0 24 24">
+        <div class="modal-content bg-white rounded-2xl shadow-2xl p-8 max-w-md mx-auto relative border border-gray-200">
+            <button id="closeButton" class="absolute top-4 right-4 rounded-full bg-red-500 hover:bg-red-600 p-2 transition-colors shadow-md">
+                <svg class="fill-current text-white w-6 h-6" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
 
-            <h2 id="modalTitle" class="text-2xl font-bold mb-6">Add New Information</h2>
+            <h2 id="modalTitle" class="text-2xl font-bold mb-6 text-center text-[#357d39]">Add New Information</h2>
             <form id="infoForm" class="space-y-4">
-                <div class="form-group">
-                    <label for="nameInput">Full Name</label>
-                    <input type="text" id="nameInput" required>
+                <div class="form-group flex flex-col gap-1">
+                    <label for="nameInput" class="font-semibold text-gray-700">Full Name</label>
+                    <input type="text" id="nameInput" required class="rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#357d39] transition">
                 </div>
-                <div class="form-group">
-                    <label for="genderInput">Gender</label>
-                    <select id="genderInput" required>
+                <div class="form-group flex flex-col gap-1">
+                    <label for="genderInput" class="font-semibold text-gray-700">Gender</label>
+                    <select id="genderInput" required class="rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#357d39] transition">
                         <option value="" disabled selected>Select Gender</option>
                         <option value="Male">Male</option>
                         <option value="Female">Female</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label for="phoneInput">Phone Number</label>
-                    <input type="text" id="phoneInput">
+                <div class="form-group flex flex-col gap-1">
+                    <label for="phoneInput" class="font-semibold text-gray-700">Phone Number</label>
+                    <input type="text" id="phoneInput" class="rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#357d39] transition">
                 </div>
-                <div class="form-group">
-                    <label for="ageInput">Age</label>
-                    <input type="number" id="ageInput" min="0">
+                <div class="form-group flex flex-col gap-1">
+                    <label for="ageInput" class="font-semibold text-gray-700">Age</label>
+                    <input type="number" id="ageInput" min="0" class="rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#357d39] transition">
                 </div>
-                <div class="form-group">
-                    <label for="levelInput">Current Level</label>
-                    <select id="levelInput" required>
+                <div class="form-group flex flex-col gap-1">
+                    <label for="levelInput" class="font-semibold text-gray-700">Current Level</label>
+                    <select id="levelInput" required class="rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#357d39] transition">
                         <option value="" disabled selected>Select Level</option>
                         <option value="SHS1">SHS1</option>
                         <option value="SHS2">SHS2</option>
@@ -192,41 +192,41 @@
                         <option value="UNIVERSITY">UNIVERSITY</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label for="attendance2nd">Attendance 2nd</label>
-                    <select id="attendance2nd">
+                <div class="form-group flex flex-col gap-1">
+                    <label for="attendance2nd" class="font-semibold text-gray-700">Attendance 2nd</label>
+                    <select id="attendance2nd" class="rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#357d39] transition">
                         <option value="" disabled selected>Select Status</option>
                         <option value="Present">Present</option>
                         <option value="Absent">Absent</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label for="attendance9th">Attendance 9th</label>
-                    <select id="attendance9th">
+                <div class="form-group flex flex-col gap-1">
+                    <label for="attendance9th" class="font-semibold text-gray-700">Attendance 9th</label>
+                    <select id="attendance9th" class="rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#357d39] transition">
                         <option value="" disabled selected>Select Status</option>
                         <option value="Present">Present</option>
                         <option value="Absent">Absent</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label for="attendance16th">Attendance 16th</label>
-                    <select id="attendance16th">
+                <div class="form-group flex flex-col gap-1">
+                    <label for="attendance16th" class="font-semibold text-gray-700">Attendance 16th</label>
+                    <select id="attendance16th" class="rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#357d39] transition">
                         <option value="" disabled selected>Select Status</option>
                         <option value="Present">Present</option>
                         <option value="Absent">Absent</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label for="attendance23rd">Attendance 23rd</label>
-                    <select id="attendance23rd">
+                <div class="form-group flex flex-col gap-1">
+                    <label for="attendance23rd" class="font-semibold text-gray-700">Attendance 23rd</label>
+                    <select id="attendance23rd" class="rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#357d39] transition">
                         <option value="" disabled selected>Select Status</option>
                         <option value="Present">Present</option>
                         <option value="Absent">Absent</option>
                     </select>
                 </div>
-                <div class="form-actions">
-                    <button type="button" id="cancelButton" class="cancel-button">Cancel</button>
-                    <button type="submit" class="save-button">Save</button>
+                <div class="form-actions flex justify-between items-center mt-6">
+                    <button type="button" id="cancelButton" class="cancel-button bg-gray-200 text-gray-700 rounded-lg px-6 py-2 font-semibold hover:bg-gray-300 transition">Cancel</button>
+                    <button type="submit" class="save-button bg-[#357d39] text-white rounded-lg px-6 py-2 font-semibold hover:bg-[#285c2c] transition">Save</button>
                 </div>
             </form>
         </div>
@@ -253,8 +253,7 @@
     </div>
 
     <!-- Search Bar at Bottom (fixed) -->
-    <div class="search-bar-container"
-        >
+    <div class="search-bar-container" id="searchBarContainer">
         <div class="search-section fixed-search-bar">
             <div class="search-bar-flex">
                 <input type="text" id="searchInput" placeholder="Start typing to search names..." class="search-input">

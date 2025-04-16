@@ -33,6 +33,7 @@ const elements = {
   successToast: document.getElementById("successToast"),
   errorToast: document.getElementById("errorToast"),
   categoryFilter: document.getElementById("categoryFilter"),
+  searchBarContainer: document.getElementById("searchBarContainer"),
 };
 
 let editingId = null;
@@ -124,12 +125,26 @@ elements.searchInput.addEventListener("input", () => {
 });
 
 // Optimized event listeners with delegation
-elements.addRectButton.addEventListener("click", () => showModal());
+elements.addRectButton.addEventListener("click", () =>
+  showModal(null, { addMode: true })
+);
 elements.cancelButton.addEventListener("click", handleCloseClick);
 elements.closeButton.addEventListener("click", handleCloseClick);
 elements.infoForm.addEventListener("submit", handleSubmit);
 elements.modal.addEventListener("click", (e) => {
+  // Close modal if clicking outside modal-content
   if (e.target === elements.modal) hideModal();
+});
+
+// Also close modal if clicking outside the search bar when modal is open
+document.addEventListener("mousedown", (e) => {
+  if (
+    elements.modal.style.display === "block" &&
+    !elements.modal.contains(e.target) &&
+    !elements.searchInput.contains(e.target)
+  ) {
+    hideModal();
+  }
 });
 
 // Optimized close button handler
@@ -146,6 +161,12 @@ function hideModal() {
     elements.modal.classList.remove("closing");
     elements.infoForm.reset();
     editingId = null;
+    // Restore all UI elements
+    elements.cancelButton.style.display = "";
+    elements.searchInput.style.display = "";
+    elements.addRectButton.style.display = "";
+    if (elements.searchBarContainer) elements.searchBarContainer.style.display = "";
+    elements._addModeActive = false;
   }, 150);
 }
 
@@ -484,7 +505,7 @@ function getItemHTML(item) {
 }
 
 // Function to show modal for adding/editing
-function showModal(item = null) {
+function showModal(item = null, options = {}) {
   editingId = item ? item.id : null;
   elements.modalTitle.textContent = item
     ? "Edit Information"
@@ -492,6 +513,20 @@ function showModal(item = null) {
 
   // Reset form before setting new values
   elements.infoForm.reset();
+
+  // Hide or show cancel button and search bar based on addMode
+  if (options.addMode) {
+    elements.cancelButton.style.display = "none";
+    elements.addRectButton.style.display = "none";
+    elements._addModeActive = true;
+    // Hide the entire search bar container
+    if (elements.searchBarContainer) elements.searchBarContainer.style.display = "none";
+  } else {
+    elements.cancelButton.style.display = "";
+    elements.addRectButton.style.display = "";
+    elements._addModeActive = false;
+    if (elements.searchBarContainer) elements.searchBarContainer.style.display = "";
+  }
 
   if (item) {
     elements.nameInput.value = item.full_name || "";
@@ -507,6 +542,10 @@ function showModal(item = null) {
 
   elements.modal.style.display = "block";
   elements.nameInput.focus();
+
+  // Hide "+" button and search bar container when modal is open (regardless of addMode)
+  elements.addRectButton.style.display = "none";
+  if (elements.searchBarContainer) elements.searchBarContainer.style.display = "none";
 }
 
 // Optimized form submission

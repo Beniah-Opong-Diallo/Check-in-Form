@@ -220,6 +220,20 @@
       </table>
     </div>
     <div class="fixed-buttons"></div>
+
+    <!-- Add toast notifications -->
+    <div id="successToast" class="toast success" style="position:fixed;bottom:20px;left:50%;transform:translateX(-50%);padding:12px 20px;border-radius:8px;background:#22c55e;color:white;display:flex;align-items:center;gap:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9999;opacity:0;transition:opacity 0.3s ease;max-width:400px;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+      </svg>
+      <span>Updated successfully</span>
+    </div>
+    <div id="errorToast" class="toast error" style="position:fixed;bottom:20px;left:50%;transform:translateX(-50%);padding:12px 20px;border-radius:8px;background:#ef4444;color:white;display:flex;align-items:center;gap:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9999;opacity:0;transition:opacity 0.3s ease;max-width:400px;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+      <span>Failed to update</span>
+    </div>
   </div>
 
   <script src="../js/app.js"></script>
@@ -292,7 +306,7 @@
       const tableBody = document.getElementById('sensitiveTableBody');
       tableBody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#888;">Loading data...</td></tr>';
       try {
-        let query = window.supabase.from('TMHCT_Feb').select('*').order('full_name');
+        let query = window.supabase.from('April_2025').select('*').order('full_name');
         if (category && category !== 'all') {
           if (category === 'SHS') {
             query = query.or('current_level.eq.SHS1,current_level.eq.SHS2,current_level.eq.SHS3');
@@ -396,6 +410,33 @@
       document.body.removeChild(link);
     }
 
+    // Show toast notification
+    function showToast(type, message) {
+      const toast = type === "success" ? 
+        document.getElementById("successToast") : 
+        document.getElementById("errorToast");
+        
+      if (!toast) return;
+    
+      // Update toast content with icon
+      toast.innerHTML = `
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          ${
+            type === "success"
+              ? '<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>'
+              : '<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>'
+          }
+        </svg>
+        <span>${message}</span>
+      `;
+    
+      // Show toast with animation
+      toast.style.opacity = "1";
+      setTimeout(() => {
+        toast.style.opacity = "0";
+      }, 3000);
+    }
+
     // Improved delete confirmation modal
     function showDeleteConfirm(id, btn) {
       // Remove any existing modal
@@ -431,12 +472,13 @@
         btn.disabled = true;
         btn.style.opacity = '0.6';
         window.supabase
-          .from('TMHCT_Feb')
+          .from('April_2025')
           .delete()
           .eq('id', id)
           .then(({ error }) => {
             if (error) {
-              alert('Error deleting entry.');
+              // Replace alert with toast
+              showToast("error", "Failed to delete entry");
               btn.disabled = false;
               btn.style.opacity = '';
             } else {
@@ -450,8 +492,8 @@
                 updateStats(window.currentTableData);
               }
 
-              // Show a notice
-              alert('Entry deleted successfully');
+              // Replace alert with toast
+              showToast("success", "Entry deleted successfully");
             }
           });
       };

@@ -97,7 +97,7 @@ const filterItems = debounce(async function () {
 
     // If not in cache, fetch from database
     const { data, error } = await supabase
-      .from("TMHCT_Feb")
+      .from("April_2025")
       .select("*")
       .ilike("full_name", `%${searchTerm}%`)
       .order("full_name");
@@ -286,7 +286,7 @@ async function makeFieldEditable(element, itemId, fieldName) {
       }
 
       const { error } = await supabase
-        .from("TMHCT_Feb")
+        .from("April_2025")
         .update(updateData)
         .eq("id", itemId);
 
@@ -322,7 +322,7 @@ async function makeFieldEditable(element, itemId, fieldName) {
       element.classList.add("save-success");
       setTimeout(() => element.classList.remove("save-success"), 400);
 
-      // Show success notification
+      // Show only toast notification
       showToast("success", "Updated successfully");
 
       // Update cache and stats
@@ -332,6 +332,7 @@ async function makeFieldEditable(element, itemId, fieldName) {
       console.error("Error updating field:", error);
       element.innerHTML = originalContent;
       element.classList.remove("editing", "loading");
+      // Show only toast notification
       showToast("error", "Failed to update");
     }
   }
@@ -371,10 +372,14 @@ function createInput(type, value, attributes = {}) {
   Object.entries(attributes).forEach(([key, value]) => {
     input.setAttribute(key, value);
   });
-  // Ensure name editing input is always black text
   if (type === "text") {
     input.style.color = "#111";
     input.style.background = "#fff";
+  }
+  if (type === "number") {
+    input.style.width = "80px";
+    input.style.maxWidth = "100%";
+    input.style.boxSizing = "border-box";
   }
   return input;
 }
@@ -400,16 +405,16 @@ function showToast(type, message) {
   toast.classList.add("show");
   setTimeout(() => {
     toast.classList.remove("show");
-  }, 1200); // even shorter
+  }, 3000); // Longer duration so user can see it
 }
 
 // Update the getItemHTML function to make fields directly editable
 function getItemHTML(item) {
   return `
     <div class="name-row" style="display: flex; align-items: center; gap: 0.5rem;">
-      <h3 class="name-text editable-field" style="flex:1; margin:0; cursor:pointer;" onclick="makeFieldEditable(this, ${
+      <h3 class="name-text editable-field" style="flex:1; margin:0; cursor:pointer;" onclick="makeFieldEditable(this, '${
         item.id
-      }, 'full_name')">${escapeHtml(item.full_name)}</h3>
+      }', 'full_name')">${escapeHtml(item.full_name)}</h3>
     </div>
     <div class="info-item">
         <span>Gender:</span>
@@ -420,7 +425,9 @@ function getItemHTML(item) {
             ? "female"
             : ""
         }" 
-                onchange="updateField(this, 'gender', this.value, ${item.id})">
+                onchange="updateField(this, 'gender', this.value, '${
+                  item.id
+                }')">
             <option value="" disabled ${
               !item.gender ? "selected" : ""
             }>Select Gender</option>
@@ -435,9 +442,9 @@ function getItemHTML(item) {
     <div class="info-item">
         <span>Current Level:</span>
         <select class="info-select ${item.current_level ? "has-value" : ""}" 
-                onchange="updateField(this, 'current_level', this.value, ${
+                onchange="updateField(this, 'current_level', this.value, '${
                   item.id
-                })">
+                }')">
             <option value="" disabled ${
               !item.current_level ? "selected" : ""
             }>Select Current Level</option>
@@ -469,19 +476,19 @@ function getItemHTML(item) {
     </div>
     <div class="info-item">
         <span>Age:</span>
-        <span class="editable-field" onclick="makeFieldEditable(this, ${
-          item.id
-        }, 'age')">
-            ${item.age || "N/A"}
-        </span>
+        <input type="number" class="editable-field" value="${item.age || ""}" 
+               min="0" max="100" style="width: 60px;" 
+               onchange="updateField(this, 'age', this.value, '${item.id}')" />
     </div>
     <div class="info-item">
         <span>Phone Number:</span>
-        <span class="editable-field" onclick="makeFieldEditable(this, ${
-          item.id
-        }, 'phone_number')">
-            ${escapeHtml(item.phone_number || "N/A")}
-        </span>
+        <input type="tel" class="editable-field" value="${escapeHtml(
+          item.phone_number || ""
+        )}" 
+               style="width: 120px;" 
+               onchange="updateField(this, 'phone_number', this.value, '${
+                 item.id
+               }')" />
     </div>
     <div class="attendance-section">
         <strong>Attendance:</strong><br>
@@ -498,15 +505,12 @@ function showModal(item = null, options = {}) {
     ? "Edit Information"
     : "Add New Information";
 
-  // Reset form before setting new values
   elements.infoForm.reset();
 
-  // Hide or show cancel button and search bar based on addMode
   if (options.addMode) {
-    elements.cancelButton.style.display = "none";
+    elements.cancelButton.style.display = "";
     elements.addRectButton.style.display = "none";
     elements._addModeActive = true;
-    // Hide the entire search bar container
     if (elements.searchBarContainer)
       elements.searchBarContainer.style.display = "none";
   } else {
@@ -531,8 +535,6 @@ function showModal(item = null, options = {}) {
 
   elements.modal.style.display = "block";
   elements.nameInput.focus();
-
-  // Hide "+" button and search bar container when modal is open (regardless of addMode)
   elements.addRectButton.style.display = "none";
   if (elements.searchBarContainer)
     elements.searchBarContainer.style.display = "none";
@@ -569,8 +571,8 @@ async function handleSubmit(e) {
 
     // Then perform the database operation
     const { error } = editingId
-      ? await supabase.from("TMHCT_Feb").update(formData).eq("id", editingId)
-      : await supabase.from("TMHCT_Feb").insert([formData]);
+      ? await supabase.from("April_2025").update(formData).eq("id", editingId)
+      : await supabase.from("April_2025").insert([formData]);
 
     if (error) throw error;
 
@@ -619,37 +621,46 @@ function escapeHtml(unsafe) {
 // Update the getAttendanceDisplay function to include both Present and Absent options in the dropdown
 function getAttendanceDisplay(item) {
   const attendanceFields = [
-    { field: "attendance_2nd", display: "2nd" },
-    { field: "attendance_9th", display: "9th" },
+    { field: "attendance_6th", display: "6th" },
+    { field: "attendance_12th", display: "12th" },
     { field: "attendance_16th", display: "16th" },
     { field: "attendance_23rd", display: "23rd" },
+    { field: "attendance_30th", display: "30th" },
   ];
   return attendanceFields
     .map((field) => {
-      const value = item[field.field];
+      let value = item[field.field];
+      // Convert any value format to Present/Absent
+      if (typeof value === "string") {
+        if (value.trim().toLowerCase() === "p") value = "Present";
+        if (value.trim().toLowerCase() === "a") value = "Absent";
+      } else if (typeof value === "number") {
+        // Convert 1 to Present, 0 to Absent
+        if (value === 1) value = "Present";
+        if (value === 0) value = "Absent";
+      }
+
       const selectClass =
-        value?.toLowerCase() === "present"
-          ? "present"
-          : value?.toLowerCase() === "absent"
-          ? "absent"
-          : "";
+        value?.toString().toLowerCase() === "present"
+          ? "attendance-select present"
+          : value?.toString().toLowerCase() === "absent"
+          ? "attendance-select absent"
+          : "attendance-select";
+
       return `<div class="attendance-item">
-            <span>${field.display}:</span>
-            <select class="attendance-select ${selectClass}" 
-                    onchange="updateAttendance(this, '${
-                      field.field
-                    }', this.value, ${item.id})">
-                <option value="" disabled ${
-                  !value ? "selected" : ""
-                }>Select</option>
-                <option value="Present" ${
-                  value?.toLowerCase() === "present" ? "selected" : ""
-                }>Present</option>
-                <option value="Absent" ${
-                  value?.toLowerCase() === "absent" ? "selected" : ""
-                }>Absent</option>
-            </select>
-        </div>`;
+        <span>${field.display}:</span>
+        <select class="${selectClass}" onchange="updateAttendance(this, '${
+        field.field
+      }', this.value, '${item.id}')">
+          <option value="">Select</option>
+          <option value="Present" ${
+            value === "Present" ? "selected" : ""
+          }>Present</option>
+          <option value="Absent" ${
+            value === "Absent" ? "selected" : ""
+          }>Absent</option>
+        </select>
+      </div>`;
     })
     .join("");
 }
@@ -657,9 +668,11 @@ function getAttendanceDisplay(item) {
 // Update the attendance update function
 async function updateAttendance(select, field, value, itemId) {
   try {
+    // Now all attendance fields are TEXT type, store "Present" or "Absent" as strings
     const updateData = { [field]: value };
+
     const { error } = await supabase
-      .from("TMHCT_Feb")
+      .from("April_2025")
       .update(updateData)
       .eq("id", itemId);
 
@@ -674,11 +687,54 @@ async function updateAttendance(select, field, value, itemId) {
         : ""
     }`;
 
+    // Use toast notification only
     showToast("success", "Updated successfully");
     searchCache.clear();
     await fetchAndDisplayStats();
   } catch (error) {
     console.error("Error updating attendance:", error);
+    showToast("error", "Failed to update");
+  }
+}
+
+// Add this function to handle field updates
+async function updateField(select, field, value, itemId) {
+  try {
+    let updateData = {};
+
+    if (field === "age") {
+      // Parse age as integer before sending to database
+      updateData[field] = value ? parseInt(value) : null;
+    } else {
+      updateData[field] = value;
+    }
+
+    const { error } = await supabase
+      .from("April_2025")
+      .update(updateData)
+      .eq("id", itemId);
+
+    if (error) throw error;
+
+    if (field === "gender") {
+      select.className = `info-select ${
+        value.toLowerCase() === "male"
+          ? "male"
+          : value.toLowerCase() === "female"
+          ? "female"
+          : ""
+      }`;
+    } else if (field === "current_level") {
+      select.className = `info-select ${value ? "has-value" : ""}`;
+    }
+
+    // Use toast notification only - no alert
+    showToast("success", "Updated successfully");
+    searchCache.clear();
+    await fetchAndDisplayStats();
+  } catch (error) {
+    console.error("Error updating field:", error);
+    // Use toast notification only - no alert
     showToast("error", "Failed to update");
   }
 }
@@ -705,7 +761,7 @@ async function loadInitialData() {
 // Function to fetch and display statistics
 async function fetchAndDisplayStats() {
   try {
-    const { data, error } = await supabase.from("TMHCT_Feb").select("*");
+    const { data, error } = await supabase.from("April_2025").select("*");
 
     if (error) throw error;
 
@@ -796,7 +852,7 @@ function toggleStatContent(header) {
 // Add this function to handle category filtering
 async function filterByCategory(category) {
   try {
-    let query = supabase.from("TMHCT_Feb").select("*").order("full_name");
+    let query = supabase.from("April_2025").select("*").order("full_name");
 
     if (category !== "all") {
       if (category === "SHS") {
@@ -919,7 +975,7 @@ async function downloadCSV() {
 
     // Fetch all data from Supabase
     const { data, error } = await supabase
-      .from("TMHCT_Feb")
+      .from("April_2025")
       .select("*")
       .order("full_name");
 
@@ -1056,7 +1112,7 @@ function showDropdownEdit(element, field) {
 
         // Perform the update
         const { data, error } = await supabase
-          .from("TMHCT_Feb")
+          .from("April_2025")
           .update(updateData)
           .eq("id", itemId)
           .select();
@@ -1070,6 +1126,7 @@ function showDropdownEdit(element, field) {
         element.innerHTML = `<strong>${label}:</strong> ${opt}`;
 
         // Show success message
+        alert("Update successful");
         showToast("success", "Updated successfully");
 
         // Clear cache and update stats
@@ -1077,6 +1134,7 @@ function showDropdownEdit(element, field) {
         await fetchAndDisplayStats();
       } catch (error) {
         console.error("Error updating:", error);
+        alert("Failed to update");
         showToast("error", "Failed to update");
 
         // Restore original content
@@ -1108,37 +1166,4 @@ function showDropdownEdit(element, field) {
   // Replace content with selection interface
   element.innerHTML = "";
   element.appendChild(container);
-}
-
-// Add new function to handle field updates
-async function updateField(select, field, value, itemId) {
-  try {
-    const updateData = { [field]: value };
-    const { error } = await supabase
-      .from("TMHCT_Feb")
-      .update(updateData)
-      .eq("id", itemId);
-
-    if (error) throw error;
-
-    // Update select element class based on the field and value
-    if (field === "gender") {
-      select.className = `info-select ${
-        value.toLowerCase() === "male"
-          ? "male"
-          : value.toLowerCase() === "female"
-          ? "female"
-          : ""
-      }`;
-    } else if (field === "current_level") {
-      select.className = `info-select ${value ? "has-value" : ""}`;
-    }
-
-    showToast("success", "Updated successfully");
-    searchCache.clear();
-    await fetchAndDisplayStats();
-  } catch (error) {
-    console.error("Error updating field:", error);
-    showToast("error", "Failed to update");
-  }
 }

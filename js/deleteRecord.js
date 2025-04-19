@@ -42,19 +42,52 @@ async function deleteRecord(id, btn) {
     btn.disabled = true;
     btn.textContent = "...";
     try {
-      const { error } = await supabase.from("TMHCT_Feb").delete().eq("id", id);
+      const { error } = await supabase.from("April_2025").delete().eq("id", id);
       if (error) throw error;
+
       // Remove the card from the UI
       const card = btn.closest(".result-item");
       if (card) card.remove();
+
+      // Show toast notification (no alert dialogs)
       showToast("success", "Deleted successfully");
       fetchAndDisplayStats && fetchAndDisplayStats();
     } catch (err) {
+      // Show toast notification (no alert dialogs)
       showToast("error", "Delete failed");
       btn.disabled = false;
       btn.textContent = "🗑️";
     }
   });
 }
+
+// Show toast notification
+function showToast(type, message) {
+  const toast =
+    type === "success"
+      ? document.getElementById("successToast")
+      : document.getElementById("errorToast");
+
+  if (!toast) return;
+
+  // Update toast content with icon
+  toast.innerHTML = `
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      ${
+        type === "success"
+          ? '<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>'
+          : '<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>'
+      }
+    </svg>
+    <span>${message}</span>
+  `;
+
+  // Show toast with animation
+  toast.classList.add("show");
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 3000);
+}
+
 // Make available globally for inline HTML usage
 window.deleteRecord = deleteRecord;

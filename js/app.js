@@ -24,10 +24,10 @@ const elements = {
   phoneInput: document.getElementById("phoneInput"),
   ageInput: document.getElementById("ageInput"),
   levelInput: document.getElementById("levelInput"),
-  attendance5th: document.getElementById("attendance2nd"),
-  attendance12th: document.getElementById("attendance9th"),
-  attendance19th: document.getElementById("attendance16th"),
-  attendance26th: document.getElementById("attendance23rd"),
+  attendance6th: document.getElementById("attendance6th"),
+  attendance12th: document.getElementById("attendance12th"),
+  attendance16th: document.getElementById("attendance16th"),
+  attendance23rd: document.getElementById("attendance23rd"),
   cancelButton: document.getElementById("cancelButton"),
   closeButton: document.getElementById("closeButton"),
   successToast: document.getElementById("successToast"),
@@ -547,21 +547,42 @@ async function handleSubmit(e) {
   submitButton.disabled = true;
 
   try {
+    // DEBUG: Log attendance element references and values
+    console.log("Form Data Debug:", {
+      attendance2nd: elements.attendance2nd,
+      attendance9th: elements.attendance9th,
+      attendance16th: elements.attendance16th,
+      attendance23rd: elements.attendance23rd,
+      attendance2ndValue: elements.attendance2nd?.value,
+      attendance9thValue: elements.attendance9th?.value,
+      attendance16thValue: elements.attendance16th?.value,
+      attendance23rdValue: elements.attendance23rd?.value
+    });
     // Prepare form data efficiently
+    // Build formData, converting empty strings to null
     const formData = {
-      full_name: elements.nameInput.value.trim(),
-      gender: elements.genderInput.value,
-      phone_number: elements.phoneInput.value.trim(),
+      full_name: elements.nameInput.value.trim() || null,
+      gender: elements.genderInput.value || null,
+      phone_number: elements.phoneInput.value.trim() || null,
       age: elements.ageInput.value ? parseInt(elements.ageInput.value) : null,
-      current_level: elements.levelInput.value,
-      attendance_2nd: elements.attendance5th.value || null,
-      attendance_9th: elements.attendance12th.value || null,
-      attendance_16th: elements.attendance19th.value || null,
-      attendance_23rd: elements.attendance26th.value || null,
+      current_level: elements.levelInput.value || null,
+      attendance_6th: elements.attendance6th.value || null,
+      attendance_12th: elements.attendance12th.value || null,
+      attendance_16th: elements.attendance16th.value || null,
+      attendance_23rd: elements.attendance23rd.value || null,
     };
+    // Remove keys with null values (except full_name, gender, current_level)
+    Object.keys(formData).forEach(key => {
+      if (
+        formData[key] === null &&
+        !["full_name", "gender", "current_level"].includes(key)
+      ) {
+        delete formData[key];
+      }
+    });
 
     if (!formData.full_name) {
-      showToast("error");
+      showToast("error", "Full name is required.");
       elements.nameInput.focus();
       submitButton.disabled = false;
       return;
@@ -600,7 +621,11 @@ async function handleSubmit(e) {
     fetchAndDisplayStats().catch(console.error);
   } catch (error) {
     console.error("Error:", error);
-    showToast("error");
+    let errorMsg = "Failed to save information. Please check your input and try again.";
+    if (error && error.message) {
+      errorMsg += " (" + error.message + ")";
+    }
+    showToast("error", errorMsg);
   } finally {
     submitButton.disabled = false;
   }

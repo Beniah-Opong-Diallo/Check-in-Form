@@ -165,6 +165,7 @@ body.theme-admin {
 
 .search-input {
   flex: 1;
+  font-size: 16px;
   padding: 1rem;
   border: 2px solid rgba(255, 255, 255, 0.3);
   border-radius: 10px;

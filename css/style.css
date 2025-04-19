@@ -736,52 +736,9 @@ select {
 }
 
 /* Remove theme color previews and theme buttons except dark mode toggle */
-.theme-buttons .theme-button:not(.dark-mode-toggle),
-.theme-preview-box,
-.green-theme,
-.purple-theme,
-.blue-theme,
-.admin-theme {
-  display: none !important;
-}
+/* Removed unused theme switcher and theme color classes */
 
-/* Theme Switcher position and style */
-.theme-switcher-container {
-  max-width: 42rem;
-  margin: 0 auto 1.5rem;
-  width: 100%;
-}
-
-.dark-mode-toggle {
-  background: transparent;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  font-size: 1.5rem;
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 8px;
-  width: 50px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-@media (max-width: 768px) {
-  .dark-mode-toggle {
-    width: 40px;
-    height: 32px;
-    font-size: 1.25rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .dark-mode-toggle {
-    width: 36px;
-    height: 28px;
-    font-size: 1rem;
-  }
-}
+/* Removed dark mode toggle styles */
 
 /* Selection container styles */
 .selection-container {

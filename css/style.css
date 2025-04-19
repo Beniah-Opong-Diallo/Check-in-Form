@@ -641,10 +641,10 @@ select {
   text-align: center;
 }
 
-.stat-content[style*="max-height"] {
+/* .stat-content[style*="max-height"] {
   min-height: fit-content;
   max-height: none !important;
-}
+} */
 
 /* Attendance section styles */
 .attendance-section {

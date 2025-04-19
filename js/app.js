@@ -550,18 +550,22 @@ async function handleSubmit(e) {
   submitButton.disabled = true;
 
   try {
-    // Prepare form data efficiently
+    // Only collect fields that exist in your HTML
     const formData = {
       full_name: elements.nameInput.value.trim(),
       gender: elements.genderInput.value,
       phone_number: elements.phoneInput.value.trim(),
       age: elements.ageInput.value ? parseInt(elements.ageInput.value) : null,
       current_level: elements.levelInput.value,
-      attendance_6th: elements.attendance6th.value || null,
-      attendance_12th: elements.attendance12th.value || null,
       attendance_16th: elements.attendance16th.value || null,
       attendance_23rd: elements.attendance23rd.value || null,
-      attendance_30th: elements.attendance30th.value || null,
+      // Only include attendance2nd and attendance9th if they exist in the DOM
+      ...(elements.attendance2nd
+        ? { attendance_2nd: elements.attendance2nd.value || null }
+        : {}),
+      ...(elements.attendance9th
+        ? { attendance_9th: elements.attendance9th.value || null }
+        : {}),
     };
 
     if (!formData.full_name) {
@@ -742,7 +746,10 @@ async function updateField(select, field, value, itemId) {
 // Function to load initial data (main page version: just load all, no category or stats)
 async function loadInitialData() {
   try {
-    const { data, error } = await supabase.from("April_2025").select("*").order("full_name");
+    const { data, error } = await supabase
+      .from("April_2025")
+      .select("*")
+      .order("full_name");
     if (error) throw error;
     displayItems(data || []);
   } catch (error) {

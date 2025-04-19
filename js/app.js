@@ -24,15 +24,15 @@ const elements = {
   phoneInput: document.getElementById("phoneInput"),
   ageInput: document.getElementById("ageInput"),
   levelInput: document.getElementById("levelInput"),
-  attendance5th: document.getElementById("attendance2nd"),
-  attendance12th: document.getElementById("attendance9th"),
-  attendance19th: document.getElementById("attendance16th"),
-  attendance26th: document.getElementById("attendance23rd"),
+  attendance6th: document.getElementById("attendance6th"),
+  attendance12th: document.getElementById("attendance12th"),
+  attendance16th: document.getElementById("attendance16th"),
+  attendance23rd: document.getElementById("attendance23rd"),
+  attendance30th: document.getElementById("attendance30th"),
   cancelButton: document.getElementById("cancelButton"),
   closeButton: document.getElementById("closeButton"),
   successToast: document.getElementById("successToast"),
   errorToast: document.getElementById("errorToast"),
-  categoryFilter: document.getElementById("categoryFilter"),
   searchBarContainer: document.getElementById("searchBarContainer"),
 };
 
@@ -125,9 +125,9 @@ elements.searchInput.addEventListener("input", () => {
 });
 
 // Optimized event listeners with delegation
-elements.addRectButton.addEventListener("click", () =>
-  showModal(null, { addMode: true })
-);
+elements.addRectButton.addEventListener("click", function () {
+  showModal(null, { addMode: true });
+});
 elements.cancelButton.addEventListener("click", handleCloseClick);
 elements.closeButton.addEventListener("click", handleCloseClick);
 elements.infoForm.addEventListener("submit", handleSubmit);
@@ -159,16 +159,16 @@ function handleCloseClick(e) {
 function hideModal(buttonToEnable) {
   // Hide modal instantly and reset state
   elements.modal.style.display = "none";
-  elements.modal.classList.remove("closing");
   elements.infoForm.reset();
   editingId = null;
+
   // Restore all UI elements
-  elements.cancelButton.style.display = "";
-  elements.searchInput.style.display = "";
   elements.addRectButton.style.display = "";
-  if (elements.searchBarContainer)
+  if (elements.searchBarContainer) {
     elements.searchBarContainer.style.display = "";
+  }
   elements._addModeActive = false;
+
   // Re-enable the button after modal is hidden
   if (buttonToEnable) buttonToEnable.disabled = false;
 }
@@ -325,9 +325,8 @@ async function makeFieldEditable(element, itemId, fieldName) {
       // Show only toast notification
       showToast("success", "Updated successfully");
 
-      // Update cache and stats
+      // Update cache
       searchCache.clear();
-      fetchAndDisplayStats();
     } catch (error) {
       console.error("Error updating field:", error);
       element.innerHTML = originalContent;
@@ -505,20 +504,21 @@ function showModal(item = null, options = {}) {
     ? "Edit Information"
     : "Add New Information";
 
+  // Reset form before setting new values
   elements.infoForm.reset();
 
-  if (options.addMode) {
-    elements.cancelButton.style.display = "";
-    elements.addRectButton.style.display = "none";
-    elements._addModeActive = true;
-    if (elements.searchBarContainer)
-      elements.searchBarContainer.style.display = "none";
-  } else {
-    elements.cancelButton.style.display = "";
-    elements.addRectButton.style.display = "";
-    elements._addModeActive = false;
-    if (elements.searchBarContainer)
-      elements.searchBarContainer.style.display = "";
+  // Always show the cancel button
+  elements.cancelButton.style.display = "";
+
+  // Hide the add button when modal is open
+  elements.addRectButton.style.display = "none";
+
+  // Track modal state
+  elements._addModeActive = options.addMode || false;
+
+  // Hide search bar container when modal is open
+  if (elements.searchBarContainer) {
+    elements.searchBarContainer.style.display = "none";
   }
 
   if (item) {
@@ -527,17 +527,20 @@ function showModal(item = null, options = {}) {
     elements.phoneInput.value = item.phone_number || "";
     elements.ageInput.value = item.age || "";
     elements.levelInput.value = item.current_level || "";
-    elements.attendance5th.value = item.attendance_2nd || "";
-    elements.attendance12th.value = item.attendance_9th || "";
-    elements.attendance19th.value = item.attendance_16th || "";
-    elements.attendance26th.value = item.attendance_23rd || "";
+    elements.attendance6th.value = item.attendance_6th || "";
+    elements.attendance12th.value = item.attendance_12th || "";
+    elements.attendance16th.value = item.attendance_16th || "";
+    elements.attendance23rd.value = item.attendance_23rd || "";
+    elements.attendance30th.value = item.attendance_30th || "";
   }
 
+  // Display the modal
   elements.modal.style.display = "block";
-  elements.nameInput.focus();
-  elements.addRectButton.style.display = "none";
-  if (elements.searchBarContainer)
-    elements.searchBarContainer.style.display = "none";
+
+  // Focus on the name input for better UX
+  setTimeout(() => {
+    elements.nameInput.focus();
+  }, 100);
 }
 
 // Optimized form submission
@@ -554,10 +557,11 @@ async function handleSubmit(e) {
       phone_number: elements.phoneInput.value.trim(),
       age: elements.ageInput.value ? parseInt(elements.ageInput.value) : null,
       current_level: elements.levelInput.value,
-      attendance_2nd: elements.attendance5th.value || null,
-      attendance_9th: elements.attendance12th.value || null,
-      attendance_16th: elements.attendance19th.value || null,
-      attendance_23rd: elements.attendance26th.value || null,
+      attendance_6th: elements.attendance6th.value || null,
+      attendance_12th: elements.attendance12th.value || null,
+      attendance_16th: elements.attendance16th.value || null,
+      attendance_23rd: elements.attendance23rd.value || null,
+      attendance_30th: elements.attendance30th.value || null,
     };
 
     if (!formData.full_name) {
@@ -596,11 +600,9 @@ async function handleSubmit(e) {
     } else {
       await loadInitialData();
     }
-    // Update stats
-    fetchAndDisplayStats().catch(console.error);
   } catch (error) {
     console.error("Error:", error);
-    showToast("error");
+    showToast("error", error.message || error.description || String(error));
   } finally {
     submitButton.disabled = false;
   }
@@ -690,7 +692,6 @@ async function updateAttendance(select, field, value, itemId) {
     // Use toast notification only
     showToast("success", "Updated successfully");
     searchCache.clear();
-    await fetchAndDisplayStats();
   } catch (error) {
     console.error("Error updating attendance:", error);
     showToast("error", "Failed to update");
@@ -731,7 +732,6 @@ async function updateField(select, field, value, itemId) {
     // Use toast notification only - no alert
     showToast("success", "Updated successfully");
     searchCache.clear();
-    await fetchAndDisplayStats();
   } catch (error) {
     console.error("Error updating field:", error);
     // Use toast notification only - no alert
@@ -739,93 +739,16 @@ async function updateField(select, field, value, itemId) {
   }
 }
 
-// Function to load initial data
+// Function to load initial data (main page version: just load all, no category or stats)
 async function loadInitialData() {
   try {
-    const urlParams = new URLSearchParams(window.location.search);
-    const category = urlParams.get("category") || "all";
-
-    // Set the select element to match the URL parameter
-    elements.categoryFilter.value = category;
-
-    // Filter by the category from URL
-    await filterByCategory(category);
-    await fetchAndDisplayStats();
+    const { data, error } = await supabase.from("April_2025").select("*").order("full_name");
+    if (error) throw error;
+    displayItems(data || []);
   } catch (error) {
     console.error("Error loading data:", error);
     elements.cardsContainer.innerHTML =
       '<p class="error-message">Error loading records</p>';
-  }
-}
-
-// Function to fetch and display statistics
-async function fetchAndDisplayStats() {
-  try {
-    const { data, error } = await supabase.from("April_2025").select("*");
-
-    if (error) throw error;
-
-    // Update total count
-    document.getElementById("totalPeople").textContent = data.length;
-
-    // Update gender counts
-    const genderCounts = data.reduce(
-      (acc, item) => {
-        const gender = item.gender?.toLowerCase() || "";
-        if (gender === "male") acc.boys++;
-        if (gender === "female") acc.girls++;
-        return acc;
-      },
-      { boys: 0, girls: 0 }
-    );
-
-    document.getElementById("totalBoys").textContent = genderCounts.boys;
-    document.getElementById("totalGirls").textContent = genderCounts.girls;
-
-    // Define the order of levels with shortened names
-    const levelOrder = [
-      "SHS1",
-      "SHS2",
-      "SHS3",
-      "JHS1",
-      "JHS2",
-      "JHS3",
-      "COMPLETED",
-      "UNIVERSITY",
-    ];
-
-    // Initialize counts for all levels
-    const levelCounts = levelOrder.reduce((acc, level) => {
-      acc[level] = 0;
-      return acc;
-    }, {});
-
-    // Count students in each level
-    data.forEach((item) => {
-      // Convert COMPLETED to COMP and UNIVERSITY to UNI in the data
-      let level = item.current_level?.toUpperCase() || "UNKNOWN";
-      if (level === "COMPLETED") level = "COMPLETED";
-      if (level === "UNIVERSITY") level = "UNIVERSITY";
-      if (levelCounts.hasOwnProperty(level)) {
-        levelCounts[level]++;
-      }
-    });
-
-    // Generate HTML for level stats in the specified order
-    const levelStatsHtml = levelOrder
-      .map((level) => {
-        const count = levelCounts[level];
-        return `
-                    <div class="level-stat">
-                        <span class="level-name">${level}</span>
-                        <span class="level-count">${count}</span>
-                    </div>`;
-      })
-      .join("");
-
-    document.getElementById("levelStats").innerHTML = levelStatsHtml;
-  } catch (error) {
-    console.error("Error fetching stats:", error);
   }
 }
 
@@ -846,57 +769,6 @@ function toggleStatContent(header) {
   } else {
     content.style.maxHeight = content.scrollHeight + "px";
     arrow.textContent = "▲";
-  }
-}
-
-// Add this function to handle category filtering
-async function filterByCategory(category) {
-  try {
-    let query = supabase.from("April_2025").select("*").order("full_name");
-
-    if (category !== "all") {
-      if (category === "SHS") {
-        query = query.or(
-          "current_level.eq.SHS1,current_level.eq.SHS2,current_level.eq.SHS3"
-        );
-      } else if (category === "JHS") {
-        query = query.or(
-          "current_level.eq.JHS1,current_level.eq.JHS2,current_level.eq.JHS3"
-        );
-      } else {
-        query = query.eq("current_level", category);
-      }
-    }
-
-    const { data, error } = await query;
-
-    if (error) throw error;
-
-    // Animate out old items
-    const oldItems = elements.cardsContainer.children;
-    Array.from(oldItems).forEach((item, index) => {
-      item.style.transition = "all 0.2s ease";
-      item.style.opacity = "0";
-      item.style.transform = "scale(0.95)";
-    });
-
-    // Wait for animation
-    await new Promise((resolve) => setTimeout(resolve, 200));
-
-    // Display new items with animation
-    displayItems(data || []);
-
-    // Update the URL to reflect the current filter
-    const urlParams = new URLSearchParams(window.location.search);
-    urlParams.set("category", category);
-    window.history.replaceState(
-      {},
-      "",
-      `${window.location.pathname}?${urlParams}`
-    );
-  } catch (error) {
-    console.error("Error filtering by category:", error);
-    showToast("error");
   }
 }
 
@@ -993,10 +865,11 @@ async function downloadCSV() {
       "Phone Number": item.phone_number || "",
       Age: item.age || "",
       "Current Level": item.current_level || "",
-      "Attendance 2nd": item.attendance_2nd || "",
-      "Attendance 9th": item.attendance_9th || "",
+      "Attendance 6th": item.attendance_6th || "",
+      "Attendance 12th": item.attendance_12th || "",
       "Attendance 16th": item.attendance_16th || "",
       "Attendance 23rd": item.attendance_23rd || "",
+      "Attendance 30th": item.attendance_30th || "",
     }));
 
     // Create CSV content
@@ -1129,9 +1002,8 @@ function showDropdownEdit(element, field) {
         alert("Update successful");
         showToast("success", "Updated successfully");
 
-        // Clear cache and update stats
+        // Clear cache
         searchCache.clear();
-        await fetchAndDisplayStats();
       } catch (error) {
         console.error("Error updating:", error);
         alert("Failed to update");

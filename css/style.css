@@ -53,6 +53,8 @@
   font-size: 16px;
   font-weight: 600;
   min-width: 120px;
+  /* Only allow transition for main button */
+  transition: background 0.2s, color 0.2s;
 }
 
 .search-button.loading {
@@ -328,6 +330,8 @@ select {
   overflow-y: auto;
   position: relative;
   margin: 1rem auto;
+  /* Only allow transition for modal */
+  transition: box-shadow 0.2s, background 0.2s;
 }
 
 @media (min-width: 640px) {

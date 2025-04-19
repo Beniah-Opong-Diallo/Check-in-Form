@@ -95,12 +95,12 @@ const filterItems = debounce(async function () {
       return;
     }
 
-    // If not in cache, fetch from database
+    // Use prefix match for more accurate and faster search
     const { data, error } = await supabase
       .from("April_2025")
       .select("*")
-      .ilike("full_name", `%${searchTerm}%`)
-      .order("full_name");
+      .ilike("full_name", `${searchTerm}%`)
+      .order("full_name", { ascending: true });
 
     if (error) throw error;
 
@@ -112,7 +112,7 @@ const filterItems = debounce(async function () {
     elements.cardsContainer.innerHTML =
       '<p class="error-message">Error searching records</p>';
   }
-}, 300); // Increased debounce time slightly for better performance
+}, 100); // Faster debounce for more responsive search
 
 // Update the event listener
 elements.searchInput.removeEventListener("input", filterItems); // Remove old listener if exists

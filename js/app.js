@@ -188,11 +188,15 @@ function displayItems(items) {
   }
   const fragment = document.createDocumentFragment();
   for (const item of items) {
-    const div = document.createElement("div");
-    div.className = "result-item";
-    div.setAttribute("data-id", item.id);
-    div.innerHTML = getItemHTML(item);
-    fragment.appendChild(div);
+    try {
+      const div = document.createElement("div");
+      div.className = "result-item";
+      div.setAttribute("data-id", item.id);
+      div.innerHTML = getItemHTML(item);
+      fragment.appendChild(div);
+    } catch (err) {
+      console.error('Error rendering item:', item, err);
+    }
   }
   elements.cardsContainer.innerHTML = "";
   elements.cardsContainer.appendChild(fragment);
@@ -410,11 +414,23 @@ function showToast(type, message) {
 
 // Update the getItemHTML function to make fields directly editable
 function getItemHTML(item) {
+  let itemData = '';
+  try {
+    itemData = encodeURIComponent(JSON.stringify(item));
+  } catch (e) {
+    itemData = '';
+  }
   return `
     <div class="name-row" style="display: flex; align-items: center; gap: 0.5rem;">
-      <h3 class="name-text editable-field" style="flex:1; margin:0; cursor:pointer;" onclick="makeFieldEditable(this, '${
-        item.id
-      }', 'full_name')">${escapeHtml(item.full_name)}</h3>
+      <h3 class="name-text editable-field" style="flex:1; margin:0; cursor:pointer;">
+        ${escapeHtml(item.full_name)}
+      </h3>
+      <button class="edit-pen-btn" title="Edit" onclick="window.openEditModal(this.dataset.item ? decodeURIComponent(this.dataset.item) : '{}')" data-item="${itemData}" style="background: none; border: none; cursor: pointer; padding: 0.3rem; display: flex; align-items: center;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#357d39" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 20h9"/>
+          <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19.5 3 21l1.5-4L16.5 3.5z"/>
+        </svg>
+      </button>
     </div>
     <div class="info-item">
         <span>Gender:</span>
@@ -498,6 +514,18 @@ function getItemHTML(item) {
     </div>`;
 }
 
+// Make edit modal globally callable for pen icon
+window.openEditModal = function(itemJson) {
+  let item;
+  try {
+    item = JSON.parse(itemJson);
+  } catch (e) {
+    console.error('Failed to parse item for editing', e);
+    return;
+  }
+  showModal(item, { addMode: false });
+};
+
 // Function to show modal for adding/editing
 function showModal(item = null, options = {}) {
   editingId = item ? item.id : null;
@@ -527,10 +555,10 @@ function showModal(item = null, options = {}) {
     elements.phoneInput.value = item.phone_number || "";
     elements.ageInput.value = item.age || "";
     elements.levelInput.value = item.current_level || "";
-    elements.attendance5th.value = item.attendance_2nd || "";
-    elements.attendance12th.value = item.attendance_9th || "";
-    elements.attendance19th.value = item.attendance_16th || "";
-    elements.attendance26th.value = item.attendance_23rd || "";
+    if (elements.attendance6th) elements.attendance6th.value = item.attendance_6th || "";
+    if (elements.attendance12th) elements.attendance12th.value = item.attendance_12th || "";
+    if (elements.attendance16th) elements.attendance16th.value = item.attendance_16th || "";
+    if (elements.attendance23rd) elements.attendance23rd.value = item.attendance_23rd || "";
   }
 
   elements.modal.style.display = "block";
@@ -603,7 +631,10 @@ async function handleSubmit(e) {
       toast.querySelector("span").textContent =
         "Information saved successfully";
       toast.classList.add("show");
-      setTimeout(() => toast.classList.remove("show"), 3000);
+      setTimeout(() => {
+        toast.classList.remove("show");
+        hideModal(); // Close the modal after toast
+      }, 1500); // Close modal after 1.5s
     }
 
     // Clear cache and update display

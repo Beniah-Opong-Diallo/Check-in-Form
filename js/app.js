@@ -29,7 +29,6 @@ const elements = {
   attendance16th: document.getElementById("attendance16th"),
   attendance23rd: document.getElementById("attendance23rd"),
   cancelButton: document.getElementById("cancelButton"),
-  closeButton: document.getElementById("closeButton"),
   successToast: document.getElementById("successToast"),
   errorToast: document.getElementById("errorToast"),
   categoryFilter: document.getElementById("categoryFilter"),
@@ -114,22 +113,24 @@ const filterItems = debounce(async function () {
   }
 }, 100); // Faster debounce for more responsive search
 
-// Update the event listener
-elements.searchInput.removeEventListener("input", filterItems); // Remove old listener if exists
-elements.searchInput.addEventListener("input", () => {
-  const searchTerm = elements.searchInput.value.trim();
-  if (searchTerm === lastSearchTerm) return; // Prevent unnecessary searches
-
-  lastSearchTerm = searchTerm;
-  filterItems();
-});
+// Add manual search trigger
+const searchActionButton = document.getElementById("searchActionButton");
+if (searchActionButton && elements.searchInput) {
+  searchActionButton.addEventListener("click", () => {
+    filterItems();
+  });
+  elements.searchInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      filterItems();
+    }
+  });
+}
 
 // Optimized event listeners with delegation
 elements.addRectButton.addEventListener("click", () =>
   showModal(null, { addMode: true })
 );
 elements.cancelButton.addEventListener("click", handleCloseClick);
-elements.closeButton.addEventListener("click", handleCloseClick);
 elements.infoForm.addEventListener("submit", handleSubmit);
 elements.modal.addEventListener("click", (e) => {
   // Close modal if clicking outside modal-content
@@ -195,7 +196,7 @@ function displayItems(items) {
       div.innerHTML = getItemHTML(item);
       fragment.appendChild(div);
     } catch (err) {
-      console.error('Error rendering item:', item, err);
+      console.error("Error rendering item:", item, err);
     }
   }
   elements.cardsContainer.innerHTML = "";
@@ -414,11 +415,11 @@ function showToast(type, message) {
 
 // Update the getItemHTML function to make fields directly editable
 function getItemHTML(item) {
-  let itemData = '';
+  let itemData = "";
   try {
     itemData = encodeURIComponent(JSON.stringify(item));
   } catch (e) {
-    itemData = '';
+    itemData = "";
   }
   return `
     <div class="name-row" style="display: flex; align-items: center; gap: 0.5rem;">
@@ -515,12 +516,12 @@ function getItemHTML(item) {
 }
 
 // Make edit modal globally callable for pen icon
-window.openEditModal = function(itemJson) {
+window.openEditModal = function (itemJson) {
   let item;
   try {
     item = JSON.parse(itemJson);
   } catch (e) {
-    console.error('Failed to parse item for editing', e);
+    console.error("Failed to parse item for editing", e);
     return;
   }
   showModal(item, { addMode: false });
@@ -555,10 +556,14 @@ function showModal(item = null, options = {}) {
     elements.phoneInput.value = item.phone_number || "";
     elements.ageInput.value = item.age || "";
     elements.levelInput.value = item.current_level || "";
-    if (elements.attendance6th) elements.attendance6th.value = item.attendance_6th || "";
-    if (elements.attendance12th) elements.attendance12th.value = item.attendance_12th || "";
-    if (elements.attendance16th) elements.attendance16th.value = item.attendance_16th || "";
-    if (elements.attendance23rd) elements.attendance23rd.value = item.attendance_23rd || "";
+    if (elements.attendance6th)
+      elements.attendance6th.value = item.attendance_6th || "";
+    if (elements.attendance12th)
+      elements.attendance12th.value = item.attendance_12th || "";
+    if (elements.attendance16th)
+      elements.attendance16th.value = item.attendance_16th || "";
+    if (elements.attendance23rd)
+      elements.attendance23rd.value = item.attendance_23rd || "";
   }
 
   elements.modal.style.display = "block";
@@ -573,7 +578,7 @@ async function handleSubmit(e) {
   e.preventDefault();
   const submitButton = e.target.querySelector('button[type="submit"]');
   submitButton.disabled = true;
-
+  let formData = {};
   try {
     // DEBUG: Log attendance element references and values
     console.log("Form Data Debug:", {
@@ -584,11 +589,11 @@ async function handleSubmit(e) {
       attendance2ndValue: elements.attendance2nd?.value,
       attendance9thValue: elements.attendance9th?.value,
       attendance16thValue: elements.attendance16th?.value,
-      attendance23rdValue: elements.attendance23rd?.value
+      attendance23rdValue: elements.attendance23rd?.value,
     });
     // Prepare form data efficiently
     // Build formData, converting empty strings to null
-    const formData = {
+    formData = {
       full_name: elements.nameInput.value.trim() || null,
       gender: elements.genderInput.value || null,
       phone_number: elements.phoneInput.value.trim() || null,
@@ -598,9 +603,10 @@ async function handleSubmit(e) {
       attendance_12th: elements.attendance12th.value || null,
       attendance_16th: elements.attendance16th.value || null,
       attendance_23rd: elements.attendance23rd.value || null,
+      offline_saved_at: !navigator.onLine ? new Date().toISOString() : null,
     };
     // Remove keys with null values (except full_name, gender, current_level)
-    Object.keys(formData).forEach(key => {
+    Object.keys(formData).forEach((key) => {
       if (
         formData[key] === null &&
         !["full_name", "gender", "current_level"].includes(key)
@@ -652,11 +658,31 @@ async function handleSubmit(e) {
     fetchAndDisplayStats().catch(console.error);
   } catch (error) {
     console.error("Error:", error);
-    let errorMsg = "Failed to save information. Please check your input and try again.";
+    let errorMsg =
+      "Failed to save information. Please check your input and try again.";
     if (error && error.message) {
       errorMsg += " (" + error.message + ")";
     }
     showToast("error", errorMsg);
+    // Offline fallback: save to IndexedDB if offline
+    if (
+      !navigator.onLine &&
+      window.offlineSync &&
+      Object.keys(formData).length > 0
+    ) {
+      try {
+        await window.offlineSync.savePending(formData);
+        showToast(
+          "info",
+          "Offline: Data saved locally and will sync when online."
+        );
+      } catch (offlineError) {
+        console.error("Failed to save data offline:", offlineError);
+        showToast("error", "Failed to save data locally.");
+      }
+      await window.offlineSync.savePending(formData);
+      showToast("success", "Saved offline. Will sync when online.");
+    }
   } finally {
     submitButton.disabled = false;
   }

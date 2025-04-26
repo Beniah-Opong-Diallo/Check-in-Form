@@ -7,6 +7,7 @@
   <title>Sensitive Information</title>
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/sensitiveInfo.css">
+  <link rel="stylesheet" href="../css/monthlyExport.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     window.supabase = window.supabase || {};
@@ -137,106 +138,157 @@
     <a href="../index.html" class="back-btn">← Back</a>
     <h1 class="text-3xl font-bold sensitive-title">Sensitive Information</h1>
 
-    <!-- Search Bar -->
-    <div class="search-container">
-      <input type="text" id="name-search" class="search-input" placeholder="Search by name...">
-      <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-        stroke-width="2">
-        <circle cx="11" cy="11" r="8"></circle>
-        <path d="M21 21l-4.35-4.35"></path>
-      </svg>
+    <!-- Create Monthly Table Button -->
+    <div style="text-align:right;margin-bottom:1.5rem;">
+      <button id="openMonthlyExportBtn" class="sensitive-modal-btn"
+        style="background:#357d39;color:#fff;padding:0.7em 2em;border:none;border-radius:8px;font-size:1.08rem;font-weight:600;cursor:pointer;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:0.5em;">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+          <path d="M16 3v4a1 1 0 0 0 1 1h4" />
+        </svg>
+        Create Monthly Table
+      </button>
     </div>
 
-    <div class="stats-container">
-      <div class="stats-outer-container">
-        <div class="stats-grid">
-          <!-- Overall Total -->
-          <div class="stat-card">
-            <div class="stat-header" onclick="toggleStatContent(this)">
-              <h3>Overall Total</h3>
-              <span class="toggle-arrow">▼</span>
+    <!-- Search Bar -->
+    <div class="search-container">
+      
+    </div>
+    <input type="text" id="name-search" class="search-input" placeholder="Search by name...">
+    <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2">
+      <circle cx="11" cy="11" r="8"></circle>
+      <path d="M21 21l-4.35-4.35"></path>
+    </svg>
+  </div>
+
+  <div class="stats-container">
+    <div class="stats-outer-container">
+      <div class="stats-grid">
+        <!-- Overall Total -->
+        <div class="stat-card">
+          <div class="stat-header" onclick="toggleStatContent(this)">
+            <h3>Overall Total</h3>
+            <span class="toggle-arrow">▼</span>
+          </div>
+          <div class="stat-content"
+            style="max-height:0;overflow:hidden;transition:max-height 0.4s cubic-bezier(0.4,0,0.2,1);">
+            <div class="stat-details">
+              <p>Total People: <span id="totalPeople">0</span></p>
+              <p>Boys: <span id="totalBoys">0</span></p>
+              <p>Girls: <span id="totalGirls">0</span></p>
             </div>
-            <div class="stat-content" style="max-height:0;overflow:hidden;transition:max-height 0.4s cubic-bezier(0.4,0,0.2,1);">
-              <div class="stat-details">
-                <p>Total People: <span id="totalPeople">0</span></p>
-                <p>Boys: <span id="totalBoys">0</span></p>
-                <p>Girls: <span id="totalGirls">0</span></p>
-              </div>
-              <div class="stat-details" id="levelStats">
-                <!-- Levels will be dynamically added here -->
-              </div>
-              <!-- Integrated Download Button -->
-              <div
-                style="text-align:center;margin-top:1.5rem;padding:0.75rem;background:rgba(69,160,73,0.1);border-radius:8px;">
-                <button id="downloadButton" class="download-button"
-                  style="width:100%;max-width:600px;padding:0.9rem;font-size:1.1rem;display:flex;align-items:center;justify-content:center;gap:0.6rem;margin:0 auto;"
-                  onclick="downloadCSVFiltered()">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                    <polyline points="7 10 12 15 17 10"></polyline>
-                    <line x1="12" y1="15" x2="12" y2="3"></line>
-                  </svg>
-                  Download CSV (Current Results)
-                </button>
-              </div>
+            <div class="stat-details" id="levelStats">
+              <!-- Levels will be dynamically added here -->
+            </div>
+            <!-- Integrated Download Button -->
+            <div
+              style="text-align:center;margin-top:1.5rem;padding:0.75rem;background:rgba(69,160,73,0.1);border-radius:8px;">
+              <button id="downloadButton" class="download-button"
+                style="width:100%;max-width:600px;padding:0.9rem;font-size:1.1rem;display:flex;align-items:center;justify-content:center;gap:0.6rem;margin:0 auto;"
+                onclick="downloadCSVFiltered()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Download CSV (Current Results)
+              </button>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="category-filter">
-      <div class="filter-container gradient-box">
-        <select id="categoryFilter" class="category-select" onchange="filterByCategory(this.value)">
-          <option value="all">All Entries</option>
-          <option value="SHS">SHS Students</option>
-          <option value="JHS">JHS Students</option>
-          <option value="COMPLETED">Completed</option>
-          <option value="UNIVERSITY">University</option>
-        </select>
-      </div>
+  </div>
+  <div class="category-filter">
+    <div class="filter-container gradient-box">
+      <select id="categoryFilter" class="category-select" onchange="filterByCategory(this.value)">
+        <option value="all">All Entries</option>
+        <option value="SHS">SHS Students</option>
+        <option value="JHS">JHS Students</option>
+        <option value="COMPLETED">Completed</option>
+        <option value="UNIVERSITY">University</option>
+      </select>
     </div>
-    <!-- Data Table Section -->
-    <div class="sensitive-table-container">
-      <table class="sensitive-table" id="sensitiveTable">
-        <thead>
-          <tr>
-            <th>Full Name</th>
-            <th>Gender</th>
-            <th>Age</th>
-            <th>Phone</th>
-            <th>Level</th>
-            <th>Attendance 2nd</th>
-            <th>Attendance 9th</th>
-            <th>Attendance 16th</th>
-            <th>Attendance 23rd</th>
-          </tr>
-        </thead>
-        <tbody id="sensitiveTableBody">
-          <tr>
-            <td colspan="9" style="text-align:center;color:#888;">Loading data...</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="fixed-buttons"></div>
+  </div>
+  <!-- Data Table Section -->
+  <div class="sensitive-table-container">
+    <table class="sensitive-table" id="sensitiveTable">
+      <thead>
+        <tr>
+          <th>Full Name</th>
+          <th>Gender</th>
+          <th>Age</th>
+          <th>Phone</th>
+          <th>Level</th>
+          <th>Attendance 2nd</th>
+          <th>Attendance 9th</th>
+          <th>Attendance 16th</th>
+          <th>Attendance 23rd</th>
+        </tr>
+      </thead>
+      <tbody id="sensitiveTableBody">
+        <tr>
+          <td colspan="9" style="text-align:center;color:#888;">Loading data...</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="fixed-buttons"></div>
 
-    <!-- Add toast notifications -->
-    <div id="successToast" class="toast success" style="position:fixed;bottom:20px;left:50%;transform:translateX(-50%);padding:12px 20px;border-radius:8px;background:#22c55e;color:white;display:flex;align-items:center;gap:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9999;opacity:0;transition:opacity 0.3s ease;max-width:400px;">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
-      </svg>
-      <span>Updated successfully</span>
-    </div>
-    <div id="errorToast" class="toast error" style="position:fixed;bottom:20px;left:50%;transform:translateX(-50%);padding:12px 20px;border-radius:8px;background:#ef4444;color:white;display:flex;align-items:center;gap:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9999;opacity:0;transition:opacity 0.3s ease;max-width:400px;">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
-      </svg>
-      <span>Failed to update</span>
+  <!-- Add toast notifications -->
+  <div id="successToast" class="toast success"
+    style="position:fixed;bottom:20px;left:50%;transform:translateX(-50%);padding:12px 20px;border-radius:8px;background:#22c55e;color:white;display:flex;align-items:center;gap:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9999;opacity:0;transition:opacity 0.3s ease;max-width:400px;">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+    </svg>
+    <span>Updated successfully</span>
+  </div>
+  <div id="errorToast" class="toast error"
+    style="position:fixed;bottom:20px;left:50%;transform:translateX(-50%);padding:12px 20px;border-radius:8px;background:#ef4444;color:white;display:flex;align-items:center;gap:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9999;opacity:0;transition:opacity 0.3s ease;max-width:400px;">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+    </svg>
+    <span>Failed to update</span>
+  </div>
+  </div>
+
+  <!-- Monthly Export Modal -->
+  <div id="monthlyExportModal">
+    <div class="modal-content">
+      <h2>Create Monthly Table</h2>
+      <label for="monthSelect">Select Month:</label>
+      <select id="monthSelect">
+        <option value="" disabled selected>Select Month</option>
+        <option value="January">January</option>
+        <option value="February">February</option>
+        <option value="March">March</option>
+        <option value="April">April</option>
+        <option value="May">May</option>
+        <option value="June">June</option>
+        <option value="July">July</option>
+        <option value="August">August</option>
+        <option value="September">September</option>
+        <option value="October">October</option>
+        <option value="November">November</option>
+        <option value="December">December</option>
+      </select>
+
+      <label for="yearInput">Enter Year:</label>
+      <input id="yearInput" type="number" min="1900" max="9999" maxlength="4" pattern="\\d{4}" placeholder="e.g. 2025"
+        style="width:100%;padding:0.75rem;border-radius:8px;border:1px solid #ddd;font-size:1rem;"
+        oninput="if(this.value.length>4)this.value=this.value.slice(0,4);">
+
+      <div id="monthlyExportError"></div>
+
+      <button id="createMonthlyTableBtn">Create Table</button>
     </div>
   </div>
 
   <script src="../js/app.js"></script>
+  <script src="../js/monthlyExport.js"></script>
   <script>
     // Password authentication system
     document.addEventListener('DOMContentLoaded', function () {
@@ -299,6 +351,21 @@
         renderTable(filteredData);
         updateStats(filteredData);
       });
+
+      // Open Monthly Export Modal
+      const openMonthlyExportBtn = document.getElementById('openMonthlyExportBtn');
+      const monthlyExportModal = document.getElementById('monthlyExportModal');
+      if (openMonthlyExportBtn && monthlyExportModal) {
+        openMonthlyExportBtn.onclick = function () {
+          monthlyExportModal.classList.add('show');
+        };
+        // Optional: close modal when clicking outside modal-content
+        monthlyExportModal.onclick = function (e) {
+          if (e.target === monthlyExportModal) {
+            monthlyExportModal.classList.remove('show');
+          }
+        };
+      }
     });
 
     // --- Filtered Table Logic ---
@@ -412,24 +479,23 @@
 
     // Show toast notification
     function showToast(type, message) {
-      const toast = type === "success" ? 
-        document.getElementById("successToast") : 
+      const toast = type === "success" ?
+        document.getElementById("successToast") :
         document.getElementById("errorToast");
-        
+
       if (!toast) return;
-    
+
       // Update toast content with icon
       toast.innerHTML = `
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          ${
-            type === "success"
-              ? '<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>'
-              : '<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>'
-          }
+          ${type === "success"
+          ? '<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>'
+          : '<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>'
+        }
         </svg>
         <span>${message}</span>
       `;
-    
+
       // Show toast with animation
       toast.style.opacity = "1";
       setTimeout(() => {
@@ -509,3 +575,4 @@
 </body>
 
 </html>
+```

@@ -48,7 +48,7 @@
   color: white;
   padding: 15px 30px;
   border: none;
-  border-radius: 10px;
+  border-radius: 0;
   cursor: pointer;
   font-size: 16px;
   font-weight: 600;
@@ -78,7 +78,7 @@
   width: 100%;
   height: 100%;
   background: linear-gradient(135deg, #45a049, #357d39);
-  border-radius: 10px;
+  border-radius: 0;
   opacity: 0.9;
   z-index: 1;
 }
@@ -86,7 +86,7 @@
 body {
   font-family: Arial, sans-serif;
   line-height: 1.6;
-  background: linear-gradient(135deg, #45a049, #245326) !important;
+  background: #030712 !important;
   background-attachment: fixed;
   background-repeat: no-repeat;
   background-size: cover;
@@ -102,7 +102,7 @@ body.theme-purple,
 body.theme-blue,
 body.theme-green,
 body.theme-admin {
-  background: linear-gradient(135deg, #45a049, #245326) !important;
+  background: #030712 !important;
 }
 
 @media (min-width: 640px) {
@@ -176,18 +176,39 @@ body.theme-admin {
 }
 
 .add-rect-button {
-  padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #45a049, #357d39);
-  color: #fff;
-  font-size: 1.5rem;
-  font-weight: bold;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
+  width: 44px;
+  height: 44px;
+  border-radius: 0;
+  margin: 0 0.5rem 0 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
+  font-size: 1.5rem;
+  background: #357d39;
+  color: #fff;
+  border: none;
+  transition: background 0.2s;
+}
+.add-rect-button:hover {
+  background: #285c2c;
+}
+
+.search-action-button {
+  width: 44px;
+  height: 44px;
+  border-radius: 0;
+  margin: 0 0.5rem 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  background: #357d39;
+  color: #fff;
+  border: none;
+  transition: background 0.2s;
+}
+.search-action-button:hover {
+  background: #285c2c;
 }
 
 /* Add spacing at the bottom of the main content to prevent overlap */
@@ -214,8 +235,8 @@ body {
 }
 
 .result-item {
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: #232533 !important;
+  border: 2px solid #181924 !important;
   border-radius: 12px;
   padding: 1rem;
   margin-bottom: 0.75rem;
@@ -349,7 +370,11 @@ select {
   gap: 0.75rem;
   margin-top: 1.5rem;
   padding: 0.875rem;
-  background: linear-gradient(135deg, rgba(180, 200, 180, 0.18), rgba(69, 160, 73, 0.10));
+  background: linear-gradient(
+    135deg,
+    rgba(180, 200, 180, 0.18),
+    rgba(69, 160, 73, 0.1)
+  );
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.3);
   position: sticky;
@@ -654,9 +679,9 @@ select {
 
 /* Attendance section styles */
 .attendance-section {
-  margin-top: 0.75rem;
+  background: #1c2029 !important;
+  color: #fff !important;
   padding: 0.75rem;
-  background: rgba(255, 255, 255, 0.8);
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
@@ -669,30 +694,30 @@ select {
 }
 
 .attendance-item {
+  background: #2d2f3a !important;
+  color: #fff !important;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
   font-size: 0.95rem;
-  background: rgba(255, 255, 255, 0.9);
   padding: 0.5rem 0.75rem;
-  border-radius: 8px;
 }
 
-.attendance-item span:first-child {
-  font-weight: 600;
-  color: #374151;
-  font-size: 0.95rem;
-  min-width: 45px;
+.attendance-item span,
+.attendance-item label {
+  color: #fff !important;
 }
 
-.attendance-select {
+.attendance-item select {
+  color: #fff !important;
+  background: #2d2f3a !important;
   flex: 1;
   padding: 6px 12px;
   border-radius: 6px;
   border: 1px solid #e5e7eb;
   background-color: white;
-  color: #6b7280;
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
@@ -717,6 +742,27 @@ select {
   border-color: #dc2626;
   color: #dc2626;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23DC2626'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+}
+
+.attendance-date-btn {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #d2d9e0;
+  color: #327535;
+  border: none;
+  border-radius: 18px;
+  padding: 0;
+  margin-left: 0.5em;
+  transition: background 0.18s;
+}
+.attendance-date-btn:hover {
+  background: #c2c8ce;
+}
+.attendance-date-btn svg {
+  stroke: #327535;
 }
 
 /* Dark mode adjustments */
@@ -1066,13 +1112,33 @@ select {
   gap: 0.75rem;
   margin-bottom: 0.5rem;
   padding: 0.5rem;
-  background: rgba(255, 255, 255, 0.9);
+  background: #2d2f3a !important;
   border-radius: 8px;
+}
+
+.info-item select,
+.info-item input[type="number"],
+.info-item input[type="text"] {
+  background: #55575e !important;
+  color: #fff !important;
+  border: 1.5px solid #888a90 !important;
+}
+
+.info-item input[type="text"]#phoneInput {
+  background: transparent !important;
+  color: #fff !important;
+  border: 1.5px solid #888a90 !important;
+  box-shadow: none !important;
+}
+
+.info-item label,
+.info-item span {
+  color: #fff !important;
 }
 
 .info-item span:first-child {
   font-weight: 600;
-  color: #374151;
+  color: #fff;
   font-size: 0.95rem;
   min-width: 60px;
 }
@@ -1163,4 +1229,44 @@ select {
   font-size: 1.1rem;
   font-weight: 500;
   text-align: center;
+}
+
+.data-search-header {
+  max-width: 340px;
+  margin: 0 auto;
+  background: #1c2029;
+  border-radius: 18px;
+  padding: 1.1rem 1.5rem 1.1rem 1.5rem;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  box-shadow: 0 0 0 8px #1c2029;
+}
+
+.data-search-title {
+  flex: 1;
+}
+
+.sensitive-shield-btn-flat {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e0e7ef;
+  color: #357d39;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.35rem;
+  font-weight: 600;
+  box-shadow: none;
+  outline: none;
+  transition: background 0.2s;
+}
+
+.user-select-none {
+  user-select: none;
+  -webkit-user-select: none;
 }

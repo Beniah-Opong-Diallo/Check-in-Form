@@ -25,9 +25,9 @@ const elements = {
   ageInput: document.getElementById("ageInput"),
   levelInput: document.getElementById("levelInput"),
   attendance6th: document.getElementById("attendance6th"),
-  attendance12th: document.getElementById("attendance12th"),
-  attendance16th: document.getElementById("attendance16th"),
-  attendance23rd: document.getElementById("attendance23rd"),
+  attendance13th: document.getElementById("attendance13th"), // Changed ID
+  attendance20th: document.getElementById("attendance20th"), // Changed ID
+  attendance27th: document.getElementById("attendance27th"), // Changed ID
   cancelButton: document.getElementById("cancelButton"),
   successToast: document.getElementById("successToast"),
   errorToast: document.getElementById("errorToast"),
@@ -558,12 +558,12 @@ function showModal(item = null, options = {}) {
     elements.levelInput.value = item.current_level || "";
     if (elements.attendance6th)
       elements.attendance6th.value = item.attendance_6th || "";
-    if (elements.attendance12th)
-      elements.attendance12th.value = item.attendance_12th || "";
-    if (elements.attendance16th)
-      elements.attendance16th.value = item.attendance_16th || "";
-    if (elements.attendance23rd)
-      elements.attendance23rd.value = item.attendance_23rd || "";
+    if (elements.attendance13th) // Changed ID
+      elements.attendance13th.value = item.attendance_13th || ""; // Changed property
+    if (elements.attendance20th) // Changed ID
+      elements.attendance20th.value = item.attendance_20th || ""; // Changed property
+    if (elements.attendance27th) // Changed ID
+      elements.attendance27th.value = item.attendance_27th || ""; // Changed property
   }
 
   elements.modal.style.display = "block";
@@ -582,14 +582,14 @@ async function handleSubmit(e) {
   try {
     // DEBUG: Log attendance element references and values
     console.log("Form Data Debug:", {
-      attendance2nd: elements.attendance2nd,
-      attendance9th: elements.attendance9th,
-      attendance16th: elements.attendance16th,
-      attendance23rd: elements.attendance23rd,
-      attendance2ndValue: elements.attendance2nd?.value,
-      attendance9thValue: elements.attendance9th?.value,
-      attendance16thValue: elements.attendance16th?.value,
-      attendance23rdValue: elements.attendance23rd?.value,
+      attendance6th: elements.attendance6th, // Corrected existing debug
+      attendance13th: elements.attendance13th, // Changed ID
+      attendance20th: elements.attendance20th, // Changed ID
+      attendance27th: elements.attendance27th, // Changed ID
+      attendance6thValue: elements.attendance6th?.value, // Corrected existing debug
+      attendance13thValue: elements.attendance13th?.value, // Changed ID
+      attendance20thValue: elements.attendance20th?.value, // Changed ID
+      attendance27thValue: elements.attendance27th?.value, // Changed ID
     });
     // Prepare form data efficiently
     // Build formData, converting empty strings to null
@@ -600,9 +600,9 @@ async function handleSubmit(e) {
       age: elements.ageInput.value ? parseInt(elements.ageInput.value) : null,
       current_level: elements.levelInput.value || null,
       attendance_6th: elements.attendance6th.value || null,
-      attendance_12th: elements.attendance12th.value || null,
-      attendance_16th: elements.attendance16th.value || null,
-      attendance_23rd: elements.attendance23rd.value || null,
+      attendance_13th: elements.attendance13th.value || null, // Changed ID and property
+      attendance_20th: elements.attendance20th.value || null, // Changed ID and property
+      attendance_27th: elements.attendance27th.value || null, // Changed ID and property
       offline_saved_at: !navigator.onLine ? new Date().toISOString() : null,
     };
     // Remove keys with null values (except full_name, gender, current_level)
@@ -704,10 +704,10 @@ function escapeHtml(unsafe) {
 function getAttendanceDisplay(item) {
   const attendanceFields = [
     { field: "attendance_6th", display: "6th" },
-    { field: "attendance_12th", display: "12th" },
-    { field: "attendance_16th", display: "16th" },
-    { field: "attendance_23rd", display: "23rd" },
-    { field: "attendance_30th", display: "30th" },
+    { field: "attendance_13th", display: "13th" }, // Changed field and display
+    { field: "attendance_20th", display: "20th" }, // Changed field and display
+    { field: "attendance_27th", display: "27th" }, // Changed field and display
+    // Removed 30th as it wasn't in the original request or other parts of the code
   ];
   return attendanceFields
     .map((field) => {

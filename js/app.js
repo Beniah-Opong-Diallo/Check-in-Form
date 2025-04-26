@@ -189,19 +189,23 @@ function displayItems(items) {
   if (!Array.isArray(items) || items.length === 0) {
     elements.cardsContainer.innerHTML =
       '<p class="error-message">No records found.</p>';
+    window.currentItems = [];
     return;
   }
-  let htmlString = '';
+  let htmlString = "";
   for (const item of items) {
     try {
       // Wrap each item's HTML in the result-item div and build the string
-      htmlString += `<div class="result-item" data-id="${item.id}">${getItemHTML(item)}</div>`;
+      htmlString += `<div class="result-item" data-id="${
+        item.id
+      }">${getItemHTML(item)}</div>`;
     } catch (err) {
       console.error("Error rendering item:", item, err);
     }
   }
   // Set innerHTML only once for potentially better performance
   elements.cardsContainer.innerHTML = htmlString;
+  window.currentItems = items; // Ensure this is always set for quickMarkAttendance
 }
 
 // Function to handle inline editing
@@ -434,9 +438,15 @@ function getItemHTML(item) {
         </svg>
       </button>
     </div>
-    <div class="quick-attendance-mobile" data-id="${item.id}" style="display:none;">
-      <button class="quick-present-btn" onclick="quickMarkAttendance('${item.id}', 'Present')">Present</button>
-      <button class="quick-absent-btn" onclick="quickMarkAttendance('${item.id}', 'Absent')">Absent</button>
+    <div class="quick-attendance-mobile" data-id="${
+      item.id
+    }" style="display:none;">
+      <button class="quick-present-btn" onclick="quickMarkAttendance('${
+        item.id
+      }', 'Present')">Present</button>
+      <button class="quick-absent-btn" onclick="quickMarkAttendance('${
+        item.id
+      }', 'Absent')">Absent</button>
     </div>
     <div class="info-item">
         <span>Gender:</span>
@@ -563,11 +573,14 @@ function showModal(item = null, options = {}) {
     elements.levelInput.value = item.current_level || "";
     if (elements.attendance6th)
       elements.attendance6th.value = item.attendance_6th || "";
-    if (elements.attendance13th) // Changed ID
+    if (elements.attendance13th)
+      // Changed ID
       elements.attendance13th.value = item.attendance_13th || ""; // Changed property
-    if (elements.attendance20th) // Changed ID
+    if (elements.attendance20th)
+      // Changed ID
       elements.attendance20th.value = item.attendance_20th || ""; // Changed property
-    if (elements.attendance27th) // Changed ID
+    if (elements.attendance27th)
+      // Changed ID
       elements.attendance27th.value = item.attendance_27th || ""; // Changed property
   }
 
@@ -762,15 +775,30 @@ function getAttendanceDisplay(item) {
     .join("");
 }
 
-window.quickMarkAttendance = async function(id, value) {
-  // Find the item in the current data set (assumes items are globally accessible)
-  const item = (window.currentItems || []).find(i => i.id == id);
-  const fields = ["attendance_27th", "attendance_20th", "attendance_13th", "attendance_6th"];
-  let lastField = fields.find(f => typeof item[f] !== "undefined");
-  if (!lastField) lastField = fields[0];
-  await updateAttendance(document.createElement('select'), lastField, value, id);
-  // Optionally refresh the UI after update
-  if (typeof filterItems === "function") filterItems();
+window.quickMarkAttendance = async function (id, value) {
+  const item = (window.currentItems || []).find((i) => i.id == id);
+  if (!item) return;
+  await updateAttendance(
+    document.createElement("select"),
+    "attendance_27th",
+    value,
+    id
+  );
+  // Show feedback (toast) only on small screens
+  if (window.innerWidth <= 600) {
+    showToast("success", "Successfully updated");
+  }
+  // Optionally, visually highlight the button
+  const row = document.querySelector(
+    `.quick-attendance-mobile[data-id='${id}']`
+  );
+  if (row) {
+    row
+      .querySelectorAll("button")
+      .forEach((btn) => btn.classList.remove("selected"));
+    const btn = row.querySelector(`.quick-${value.toLowerCase()}-btn`);
+    if (btn) btn.classList.add("selected");
+  }
 };
 
 // Update the attendance update function

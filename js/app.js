@@ -187,20 +187,17 @@ function displayItems(items) {
       '<p class="error-message">No records found.</p>';
     return;
   }
-  const fragment = document.createDocumentFragment();
+  let htmlString = '';
   for (const item of items) {
     try {
-      const div = document.createElement("div");
-      div.className = "result-item";
-      div.setAttribute("data-id", item.id);
-      div.innerHTML = getItemHTML(item);
-      fragment.appendChild(div);
+      // Wrap each item's HTML in the result-item div and build the string
+      htmlString += `<div class="result-item" data-id="${item.id}">${getItemHTML(item)}</div>`;
     } catch (err) {
       console.error("Error rendering item:", item, err);
     }
   }
-  elements.cardsContainer.innerHTML = "";
-  elements.cardsContainer.appendChild(fragment);
+  // Set innerHTML only once for potentially better performance
+  elements.cardsContainer.innerHTML = htmlString;
 }
 
 // Function to handle inline editing

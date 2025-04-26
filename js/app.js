@@ -131,7 +131,11 @@ elements.addRectButton.addEventListener("click", () =>
   showModal(null, { addMode: true })
 );
 elements.cancelButton.addEventListener("click", handleCloseClick);
-elements.infoForm.addEventListener("submit", handleSubmit);
+document.addEventListener("DOMContentLoaded", () => {
+  if (elements.infoForm) {
+    elements.infoForm.addEventListener("submit", handleSubmit);
+  }
+});
 elements.modal.addEventListener("click", (e) => {
   // Close modal if clicking outside modal-content
   if (e.target === elements.modal) hideModal();
@@ -430,6 +434,10 @@ function getItemHTML(item) {
         </svg>
       </button>
     </div>
+    <div class="quick-attendance-mobile" data-id="${item.id}" style="display:none;">
+      <button class="quick-present-btn" onclick="quickMarkAttendance('${item.id}', 'Present')">Present</button>
+      <button class="quick-absent-btn" onclick="quickMarkAttendance('${item.id}', 'Absent')">Absent</button>
+    </div>
     <div class="info-item">
         <span>Gender:</span>
         <select class="info-select ${
@@ -568,10 +576,16 @@ function showModal(item = null, options = {}) {
   elements.addRectButton.style.display = "none";
   if (elements.searchBarContainer)
     elements.searchBarContainer.style.display = "none";
+  // Ensure submit handler is attached every time modal is shown
+  if (elements.infoForm) {
+    elements.infoForm.removeEventListener("submit", handleSubmit);
+    elements.infoForm.addEventListener("submit", handleSubmit);
+  }
 }
 
 // Optimized form submission
 async function handleSubmit(e) {
+  console.log("handleSubmit called");
   e.preventDefault();
   const submitButton = e.target.querySelector('button[type="submit"]');
   submitButton.disabled = true;
@@ -638,7 +652,11 @@ async function handleSubmit(e) {
         toast.classList.remove("show");
         hideModal(); // Close the modal after toast
       }, 1500); // Close modal after 1.5s
+    } else {
+      alert("Information saved successfully");
+      hideModal();
     }
+    console.log("handleSubmit completed: data saved and notification shown.");
 
     // Clear cache and update display
     searchCache.clear();
@@ -743,6 +761,17 @@ function getAttendanceDisplay(item) {
     })
     .join("");
 }
+
+window.quickMarkAttendance = async function(id, value) {
+  // Find the item in the current data set (assumes items are globally accessible)
+  const item = (window.currentItems || []).find(i => i.id == id);
+  const fields = ["attendance_27th", "attendance_20th", "attendance_13th", "attendance_6th"];
+  let lastField = fields.find(f => typeof item[f] !== "undefined");
+  if (!lastField) lastField = fields[0];
+  await updateAttendance(document.createElement('select'), lastField, value, id);
+  // Optionally refresh the UI after update
+  if (typeof filterItems === "function") filterItems();
+};
 
 // Update the attendance update function
 async function updateAttendance(select, field, value, itemId) {

@@ -172,34 +172,36 @@
 
     <!-- Modal -->
     <div id="modal" class="modal">
-        <div class="modal-content rounded-tr-2xl rounded-br-2xl shadow-2xl p-8 max-w-md mx-auto relative border border-gray-700" style="background-color: #232532; overflow-y: auto;">
-            <!-- Moved Form Actions to Top Right -->
-            <div class="form-actions absolute top-4 right-4 flex gap-2">
-                <button type="button" id="cancelButton" title="Cancel"
-                    class="cancel-button p-2 rounded-full bg-gray-600 hover:bg-gray-700 transition text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-                    </svg>
-                </button>
-                <button type="submit" title="Save"
-                    class="save-button p-2 rounded-full bg-[#357d39] hover:bg-[#285c2c] transition text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                    </svg>
-                </button>
-            </div>
-
+        <div class="modal-content rounded-tr-2xl rounded-br-2xl shadow-2xl p-8 max-w-md mx-auto relative border border-gray-700"
+            style="background-color: #232532; overflow-y: auto;">
             <h2 id="modalTitle" class="text-2xl font-bold mb-6 text-center text-white pt-8">Add New Information</h2>
             <form id="infoForm" class="space-y-4">
+                <div class="form-actions absolute top-4 right-4 flex gap-2">
+                    <button type="button" id="cancelButton" title="Cancel"
+                        class="cancel-button p-2 rounded-full bg-gray-600 hover:bg-gray-700 transition text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                            stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                    <button type="submit" title="Save"
+                        class="save-button p-2 rounded-full bg-[#357d39] hover:bg-[#285c2c] transition text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                            stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                        </svg>
+                    </button>
+                </div>
                 <div class="form-group flex flex-col gap-1">
                     <label for="nameInput" class="font-semibold text-white">Full Name</label>
                     <input type="text" id="nameInput" required
-                        class="rounded-lg border px-3 py-2 focus:outline-none transition" style="background-color: #55575e; color: white; border-color: #777; font-size: 16px;">
+                        class="rounded-lg border px-3 py-2 focus:outline-none transition"
+                        style="background-color: #55575e; color: white; border-color: #777; font-size: 16px;">
                 </div>
                 <div class="form-group flex flex-col gap-1">
                     <label for="genderInput" class="font-semibold text-white">Gender</label>
-                    <select id="genderInput" required
-                        class="rounded-lg border px-3 py-2 focus:outline-none transition" style="background-color: #55575e; color: white; border-color: #777; font-size: 16px;">
+                    <select id="genderInput" required class="rounded-lg border px-3 py-2 focus:outline-none transition"
+                        style="background-color: #55575e; color: white; border-color: #777; font-size: 16px;">
                         <option value="" disabled selected>Select Gender</option>
                         <option value="Male">Male</option>
                         <option value="Female">Female</option>
@@ -207,18 +209,19 @@
                 </div>
                 <div class="form-group flex flex-col gap-1">
                     <label for="phoneInput" class="font-semibold text-white">Phone Number</label>
-                    <input type="text" id="phoneInput"
-                        class="rounded-lg border px-3 py-2 focus:outline-none transition" style="background-color: #55575e; color: white; border-color: #777; font-size: 16px;">
+                    <input type="text" id="phoneInput" class="rounded-lg border px-3 py-2 focus:outline-none transition"
+                        style="background-color: #55575e; color: white; border-color: #777; font-size: 16px;">
                 </div>
                 <div class="form-group flex flex-col gap-1">
                     <label for="ageInput" class="font-semibold text-white">Age</label>
                     <input type="number" id="ageInput" min="0"
-                        class="rounded-lg border px-3 py-2 focus:outline-none transition" style="background-color: #55575e; color: white; border-color: #777; font-size: 16px;">
+                        class="rounded-lg border px-3 py-2 focus:outline-none transition"
+                        style="background-color: #55575e; color: white; border-color: #777; font-size: 16px;">
                 </div>
                 <div class="form-group flex flex-col gap-1">
                     <label for="levelInput" class="font-semibold text-white">Current Level</label>
-                    <select id="levelInput" required
-                        class="rounded-lg border px-3 py-2 focus:outline-none transition" style="background-color: #55575e; color: white; border-color: #777; font-size: 16px;">
+                    <select id="levelInput" required class="rounded-lg border px-3 py-2 focus:outline-none transition"
+                        style="background-color: #55575e; color: white; border-color: #777; font-size: 16px;">
                         <option value="" disabled selected>Select Level</option>
                         <option value="SHS1">SHS1</option>
                         <option value="SHS2">SHS2</option>
@@ -232,8 +235,8 @@
                 </div>
                 <div class="form-group flex flex-col gap-1">
                     <label for="attendance6th" class="font-semibold text-white">6th</label>
-                    <select id="attendance6th"
-                        class="rounded-lg border px-3 py-2 focus:outline-none transition" style="background-color: #55575e; color: white; border-color: #777; font-size: 16px;">
+                    <select id="attendance6th" class="rounded-lg border px-3 py-2 focus:outline-none transition"
+                        style="background-color: #55575e; color: white; border-color: #777; font-size: 16px;">
                         <option value="" disabled selected>Select Status</option>
                         <option value="Present">Present</option>
                         <option value="Absent">Absent</option>
@@ -241,8 +244,8 @@
                 </div>
                 <div class="form-group flex flex-col gap-1">
                     <label for="attendance13th" class="font-semibold text-white">13th:</label>
-                    <select id="attendance13th"
-                        class="rounded-lg border px-3 py-2 focus:outline-none transition" style="background-color: #55575e; color: white; border-color: #777; font-size: 16px;">
+                    <select id="attendance13th" class="rounded-lg border px-3 py-2 focus:outline-none transition"
+                        style="background-color: #55575e; color: white; border-color: #777; font-size: 16px;">
                         <option value="" disabled selected>Select Status</option>
                         <option value="Present">Present</option>
                         <option value="Absent">Absent</option>
@@ -250,8 +253,8 @@
                 </div>
                 <div class="form-group flex flex-col gap-1">
                     <label for="attendance20th" class="font-semibold text-white">20th:</label>
-                    <select id="attendance20th"
-                        class="rounded-lg border px-3 py-2 focus:outline-none transition" style="background-color: #55575e; color: white; border-color: #777; font-size: 16px;">
+                    <select id="attendance20th" class="rounded-lg border px-3 py-2 focus:outline-none transition"
+                        style="background-color: #55575e; color: white; border-color: #777; font-size: 16px;">
                         <option value="" disabled selected>Select Status</option>
                         <option value="Present">Present</option>
                         <option value="Absent">Absent</option>
@@ -259,14 +262,13 @@
                 </div>
                 <div class="form-group flex flex-col gap-1">
                     <label for="attendance27th" class="font-semibold text-white">27th:</label>
-                    <select id="attendance27th"
-                        class="rounded-lg border px-3 py-2 focus:outline-none transition" style="background-color: #55575e; color: white; border-color: #777; font-size: 16px;">
+                    <select id="attendance27th" class="rounded-lg border px-3 py-2 focus:outline-none transition"
+                        style="background-color: #55575e; color: white; border-color: #777; font-size: 16px;">
                         <option value="" disabled selected>Select Status</option>
                         <option value="Present">Present</option>
                         <option value="Absent">Absent</option>
                     </select>
                 </div>
-                <!-- Original form-actions div removed -->
             </form>
         </div>
     </div>
@@ -302,10 +304,12 @@
                     style="flex:1;max-width:600px;margin:0 0.5rem 0 0.5rem;height:44px;border-radius:12px 0 0 12px;">
                 <button type="button" class="search-action-button" id="searchActionButton"
                     style="width:44px;height:44px;margin:0 0.5rem 0 0;display:flex;align-items:center;justify-content:center;background:#357d39;color:#fff;">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                     </svg>
-                  </button>
+                </button>
                 <button type="button" class="add-rect-button" id="addRectButton"
                     style="width:44px;height:44px;border-radius:0 12px 12px 0;margin:0 0.5rem 0 0;display:flex;align-items:center;justify-content:center;font-size:1.5rem;background:#357d39;color:#fff;">+</button>
             </div>

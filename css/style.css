@@ -97,6 +97,7 @@ body {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
+max-height: 80vh; /* Limit height to enable internal scrolling */
 
 body.theme-purple,
 body.theme-blue,
@@ -472,6 +473,7 @@ select {
   max-width: 500px;
   width: 90%;
   margin: 2rem auto;
+  max-height: 80vh; /* Limit height to enable internal scrolling */
 }
 
 .close-button {

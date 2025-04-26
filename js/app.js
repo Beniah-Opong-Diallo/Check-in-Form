@@ -501,8 +501,8 @@ function getItemHTML(item) {
         <span>Phone Number:</span>
         <input type="tel" class="editable-field" value="${escapeHtml(
           item.phone_number || ""
-        )}" 
-               style="width: 120px;" 
+        )}"
+               style="width: 120px; background-color: transparent; color: white; border: 1px solid rgba(255, 255, 255, 0.3); padding: 2px 4px; border-radius: 4px;"
                onchange="updateField(this, 'phone_number', this.value, '${
                  item.id
                }')" />

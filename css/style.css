@@ -1270,3 +1270,13 @@ select {
   user-select: none;
   -webkit-user-select: none;
 }
+
+/* Hide scrollbar for modal content */
+.modal-content::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.modal-content {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}

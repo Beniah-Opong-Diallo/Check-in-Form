@@ -86,6 +86,7 @@
 body {
   font-family: Arial, sans-serif;
   line-height: 1.6;
+  font-size: 16px;
   background: #030712 !important;
   background-attachment: fixed;
   background-repeat: no-repeat;

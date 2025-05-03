@@ -763,7 +763,7 @@ window.quickMarkAttendance = async function (id, value) {
   if (!item) return;
   await updateAttendance(
     document.createElement("select"),
-    "attendance_27th",
+    "Attendance 4nd", // Changed to use the 4th date (May 4th) attendance column
     value,
     id
   );

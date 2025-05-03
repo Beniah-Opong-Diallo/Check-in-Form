@@ -327,18 +327,18 @@
                         <option value="December">December</option>
                     </select>
                 </div>
-                
+
                 <div class="flex flex-col gap-2">
                     <label for="yearInput" class="font-semibold text-white">Enter Year:</label>
-                    <input id="yearInput" type="number" min="1900" max="9999" maxlength="4" pattern="\\d{4}" 
+                    <input id="yearInput" type="number" min="1900" max="9999" maxlength="4" pattern="\\d{4}"
                         placeholder="e.g. 2025" value="2025"
                         class="rounded-lg border px-3 py-2 focus:outline-none transition"
                         style="background-color: #55575e; color: white; border-color: #777; font-size: 16px;"
                         oninput="if(this.value.length>4)this.value=this.value.slice(0,4);">
                 </div>
-                
+
                 <div id="monthlyExportError" class="text-red-500 text-sm py-2"></div>
-                
+
                 <button id="createMonthlyTableBtn"
                     class="w-full py-3 bg-[#357d39] hover:bg-[#285c2c] text-white font-semibold rounded-lg transition">
                     Create Table
@@ -346,7 +346,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Search Bar at Bottom (fixed) -->
     <div class="search-bar-container" id="searchBarContainer"
         style="width:100vw;max-width:100vw;position:fixed;left:0;right:0;bottom:0;margin:0;padding:0 2vw 1.1rem 2vw;z-index:1001;">

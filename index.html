@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="viewport" content="width=width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>Data Search</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="css/style.css">
@@ -293,6 +293,60 @@
         </div>
     </div>
 
+    <!-- Monthly Export Modal -->
+    <div id="monthlyExportModal" class="modal" style="display:none;">
+        <div class="modal-content rounded-tr-2xl rounded-br-2xl shadow-2xl p-8 max-w-md mx-auto relative border border-gray-700"
+            style="background-color: #232532; overflow-y: auto;">
+            <h2 class="text-2xl font-bold mb-6 text-center text-white pt-4">Create Monthly Table</h2>
+            <div class="form-actions absolute top-4 right-4">
+                <button type="button" id="closeMonthlyModalBtn" title="Close"
+                    class="cancel-button p-2 rounded-full bg-gray-600 hover:bg-gray-700 transition text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div class="space-y-6">
+                <div class="flex flex-col gap-2">
+                    <label for="monthSelect" class="font-semibold text-white">Select Month:</label>
+                    <select id="monthSelect" class="rounded-lg border px-3 py-2 focus:outline-none transition"
+                        style="background-color: #55575e; color: white; border-color: #777; font-size: 16px;">
+                        <option value="" disabled selected>Select Month</option>
+                        <option value="January">January</option>
+                        <option value="February">February</option>
+                        <option value="March">March</option>
+                        <option value="April">April</option>
+                        <option value="May">May</option>
+                        <option value="June">June</option>
+                        <option value="July">July</option>
+                        <option value="August">August</option>
+                        <option value="September">September</option>
+                        <option value="October">October</option>
+                        <option value="November">November</option>
+                        <option value="December">December</option>
+                    </select>
+                </div>
+                
+                <div class="flex flex-col gap-2">
+                    <label for="yearInput" class="font-semibold text-white">Enter Year:</label>
+                    <input id="yearInput" type="number" min="1900" max="9999" maxlength="4" pattern="\\d{4}" 
+                        placeholder="e.g. 2025" value="2025"
+                        class="rounded-lg border px-3 py-2 focus:outline-none transition"
+                        style="background-color: #55575e; color: white; border-color: #777; font-size: 16px;"
+                        oninput="if(this.value.length>4)this.value=this.value.slice(0,4);">
+                </div>
+                
+                <div id="monthlyExportError" class="text-red-500 text-sm py-2"></div>
+                
+                <button id="createMonthlyTableBtn"
+                    class="w-full py-3 bg-[#357d39] hover:bg-[#285c2c] text-white font-semibold rounded-lg transition">
+                    Create Table
+                </button>
+            </div>
+        </div>
+    </div>
+    
     <!-- Search Bar at Bottom (fixed) -->
     <div class="search-bar-container" id="searchBarContainer"
         style="width:100vw;max-width:100vw;position:fixed;left:0;right:0;bottom:0;margin:0;padding:0 2vw 1.1rem 2vw;z-index:1001;">

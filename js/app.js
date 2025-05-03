@@ -623,19 +623,30 @@ async function handleSubmit(e) {
     // Prepare form data efficiently using the correct column names in May_2025 table
     formData = {
       "Full Name": elements.nameInput.value.trim() || null,
-      "Gender": elements.genderInput.value || null,
+      Gender: elements.genderInput.value || null,
       "Phone Number": elements.phoneInput.value.trim() || null,
-      "Age": elements.ageInput.value ? parseInt(elements.ageInput.value) : null,
+      Age: elements.ageInput.value ? parseInt(elements.ageInput.value) : null,
       "Current Level": elements.levelInput.value || null,
-      "Attendance 4nd": elements.attendance6th ? elements.attendance6th.value : null,
-      "Attendance 11th": elements.attendance13th ? elements.attendance13th.value : null,
-      "Attendance 18th": elements.attendance20th ? elements.attendance20th.value : null,
-      "Attendance 25rd": elements.attendance27th ? elements.attendance27th.value : null,
+      "Attendance 4nd": elements.attendance6th
+        ? elements.attendance6th.value
+        : null,
+      "Attendance 11th": elements.attendance13th
+        ? elements.attendance13th.value
+        : null,
+      "Attendance 18th": elements.attendance20th
+        ? elements.attendance20th.value
+        : null,
+      "Attendance 25rd": elements.attendance27th
+        ? elements.attendance27th.value
+        : null,
     };
 
     // Remove null values
-    Object.keys(formData).forEach(key => {
-      if (formData[key] === null && !["Full Name", "Gender", "Current Level"].includes(key)) {
+    Object.keys(formData).forEach((key) => {
+      if (
+        formData[key] === null &&
+        !["Full Name", "Gender", "Current Level"].includes(key)
+      ) {
         delete formData[key];
       }
     });
@@ -658,7 +669,7 @@ async function handleSubmit(e) {
 
     // Show success message
     showToast("success", "Information saved successfully");
-    
+
     setTimeout(() => {
       hideModal(); // Close the modal after toast
     }, 1500); // Close modal after 1.5s
@@ -678,7 +689,8 @@ async function handleSubmit(e) {
     fetchAndDisplayStats().catch(console.error);
   } catch (error) {
     console.error("Error:", error);
-    let errorMsg = "Failed to save information. Please check your input and try again.";
+    let errorMsg =
+      "Failed to save information. Please check your input and try again.";
     if (error && error.message) {
       errorMsg += " (" + error.message + ")";
     }

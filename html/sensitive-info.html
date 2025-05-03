@@ -5,6 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sensitive Information</title>
+  <!-- Add favicon -->
+  <link rel="icon" type="image/svg+xml" href="../img/secure-info.svg">
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/sensitiveInfo.css">
   <link rel="stylesheet" href="../css/monthlyExport.css">
@@ -395,7 +397,7 @@
 
         // Debug info in console
         console.log(`Loaded ${data.length} records successfully`);
-        
+
         window.currentTableData = data;
         renderTable(data);
         updateStats(data);
@@ -466,7 +468,7 @@
         'SHS1', 'SHS2', 'SHS3', 'JHS1', 'JHS2', 'JHS3', 'COMPLETED', 'UNIVERSITY'
       ];
       for (const level of levelOrder) levelCounts[level] = 0;
-      
+
       data.forEach(item => {
         // Updated to use proper column names in May_2025 table
         if ((item["Gender"] || '').toLowerCase() === 'male') boys++;
@@ -474,7 +476,7 @@
         const lvl = (item["Current Level"] || '').toUpperCase();
         if (levelCounts.hasOwnProperty(lvl)) levelCounts[lvl]++;
       });
-      
+
       document.getElementById('totalBoys').textContent = boys;
       document.getElementById('totalGirls').textContent = girls;
       document.getElementById('levelStats').innerHTML = levelOrder.map(lvl =>
@@ -489,26 +491,26 @@
         alert('No data to export.');
         return;
       }
-      
+
       // Use the correct column names from May_2025 table
       const headers = [
-        'Full Name', 'Gender', 'Age', 'Phone Number', 'Current Level', 
+        'Full Name', 'Gender', 'Age', 'Phone Number', 'Current Level',
         'Attendance 4nd', 'Attendance 11th', 'Attendance 18th', 'Attendance 25rd'
       ];
-      
+
       let csvContent = headers.join(',') + '\n';
       csvContent += data.map(item => [
-        item["Full Name"] || '', 
-        item["Gender"] || '', 
-        item["Age"] || '', 
-        item["Phone Number"] || '', 
+        item["Full Name"] || '',
+        item["Gender"] || '',
+        item["Age"] || '',
+        item["Phone Number"] || '',
         item["Current Level"] || '',
-        item["Attendance 4nd"] || '', 
-        item["Attendance 11th"] || '', 
-        item["Attendance 18th"] || '', 
+        item["Attendance 4nd"] || '',
+        item["Attendance 11th"] || '',
+        item["Attendance 18th"] || '',
         item["Attendance 25rd"] || ''
       ].map(cell => cell.toString().replace(/"/g, '""')).map(cell => cell.includes(',') ? '"' + cell + '"' : cell).join(',')).join('\n');
-      
+
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
@@ -617,35 +619,35 @@
     async function fetchSensitiveData() {
       // Show loading indicator
       document.getElementById('sensitiveTableBody').innerHTML = '<tr><td colspan="9" class="loading-row">Loading data...</td></tr>';
-      
+
       try {
         // Get filter value
         const filterValue = document.getElementById('name-search')?.value?.toLowerCase() || '';
-        
+
         // Prepare query
         let query = window.supabase.from('May_2025').select('*').order('Full Name');
-        
+
         // Apply name filter if any
         if (filterValue) {
           query = query.ilike('Full Name', `%${filterValue}%`);
         }
-        
+
         const { data, error } = await query;
-        
+
         if (error) throw error;
-        
+
         if (!data || data.length === 0) {
           document.getElementById('sensitiveTableBody').innerHTML = '<tr><td colspan="9" class="empty-row">No records found</td></tr>';
           updateStats([]);
           return;
         }
-        
+
         // Store data globally for filtering
         window.currentTableData = data;
-        
+
         // Render table with the data
         renderTable(data);
-        
+
         // Update statistics
         updateStats(data);
       } catch (err) {

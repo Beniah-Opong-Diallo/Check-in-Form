@@ -153,7 +153,7 @@
 
     <!-- Search Bar -->
     <div class="search-container">
-      
+
     </div>
     <input type="text" id="name-search" class="search-input" placeholder="Search by name...">
     <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -373,7 +373,7 @@
       const tableBody = document.getElementById('sensitiveTableBody');
       tableBody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#888;">Loading data...</td></tr>';
       try {
-        let query = window.supabase.from('April_2025').select('*').order('full_name');
+        let query = window.supabase.from('May_2025').select('*').order('full_name');
         if (category && category !== 'all') {
           if (category === 'SHS') {
             query = query.or('current_level.eq.SHS1,current_level.eq.SHS2,current_level.eq.SHS3');
@@ -538,7 +538,7 @@
         btn.disabled = true;
         btn.style.opacity = '0.6';
         window.supabase
-          .from('April_2025')
+          .from('May_2025')
           .delete()
           .eq('id', id)
           .then(({ error }) => {
@@ -575,4 +575,3 @@
 </body>
 
 </html>
-```

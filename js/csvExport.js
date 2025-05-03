@@ -10,7 +10,7 @@ async function downloadCSV() {
 
     // Fetch all data from Supabase
     const { data, error } = await supabase
-      .from("April_2025")
+      .from("May_2025")
       .select("*")
       .order("full_name");
 
@@ -24,10 +24,10 @@ async function downloadCSV() {
       { header: "Phone Number", key: "phone_number" },
       { header: "Age", key: "age" },
       { header: "Current Level", key: "current_level" },
-      { header: "Attendance 2nd", key: "attendance_2nd" },
-      { header: "Attendance 9th", key: "attendance_9th" },
-      { header: "Attendance 16th", key: "attendance_16th" },
-      { header: "Attendance 23rd", key: "attendance_23rd" },
+      { header: "Attendance 4nd", key: "attendance_4nd" },
+      { header: "Attendance 11th", key: "attendance_11th" },
+      { header: "Attendance 18th", key: "attendance_18th" },
+      { header: "Attendance 25rd", key: "attendance_25rd" },
     ];
 
     // Create CSV content

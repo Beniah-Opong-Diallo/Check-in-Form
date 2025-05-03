@@ -4,6 +4,22 @@ const supabase = window.supabase.createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpudXhhaGRxeGVuY3F0c3Z4dmphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzc4MDQzNjUsImV4cCI6MjA1MzM4MDM2NX0.8evCXHMfkn1yhsVB8lQ62BL3b6-j4KZ_oszTuYLT6G0"
 );
 
+// Change current table to May_2025
+const CURRENT_TABLE = "May_2025";
+
+// Define column mappings to match May_2025 table's structure
+const COLUMN_MAPPINGS = {
+  full_name: "Full Name",
+  gender: "Gender",
+  phone_number: "Phone Number",
+  age: "Age",
+  current_level: "Current Level",
+  attendance_4nd: "Attendance 4nd",
+  attendance_11th: "Attendance 11th",
+  attendance_18th: "Attendance 18th",
+  attendance_25rd: "Attendance 25rd",
+};
+
 // Performance optimization constants
 const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes cache
 const DEBOUNCE_DELAY = 250; // Increased debounce delay
@@ -96,10 +112,10 @@ const filterItems = debounce(async function () {
 
     // Use prefix match for more accurate and faster search
     const { data, error } = await supabase
-      .from("April_2025")
+      .from(CURRENT_TABLE)
       .select("*")
-      .ilike("full_name", `${searchTerm}%`)
-      .order("full_name", { ascending: true });
+      .ilike("Full Name", `${searchTerm}%`)
+      .order("Full Name", { ascending: true });
 
     if (error) throw error;
 
@@ -296,7 +312,7 @@ async function makeFieldEditable(element, itemId, fieldName) {
       }
 
       const { error } = await supabase
-        .from("April_2025")
+        .from(CURRENT_TABLE)
         .update(updateData)
         .eq("id", itemId);
 
@@ -429,7 +445,7 @@ function getItemHTML(item) {
   return `
     <div class="name-row" style="display: flex; align-items: center; gap: 0.5rem;">
       <h3 class="name-text editable-field" style="flex:1; margin:0; cursor:pointer;">
-        ${escapeHtml(item.full_name)}
+        ${escapeHtml(item["Full Name"] || "")}
       </h3>
       <button class="edit-pen-btn" title="Edit" onclick="window.openEditModal(this.dataset.item ? decodeURIComponent(this.dataset.item) : '{}')" data-item="${itemData}" style="background: none; border: none; cursor: pointer; padding: 0.3rem; display: flex; align-items: center;">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#357d39" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -451,74 +467,76 @@ function getItemHTML(item) {
     <div class="info-item">
         <span>Gender:</span>
         <select class="info-select ${
-          item.gender?.toLowerCase() === "male"
+          item["Gender"]?.toLowerCase() === "male"
             ? "male"
-            : item.gender?.toLowerCase() === "female"
+            : item["Gender"]?.toLowerCase() === "female"
             ? "female"
             : ""
         }" 
-                onchange="updateField(this, 'gender', this.value, '${
+                onchange="updateField(this, 'Gender', this.value, '${
                   item.id
                 }')">
             <option value="" disabled ${
-              !item.gender ? "selected" : ""
+              !item["Gender"] ? "selected" : ""
             }>Select Gender</option>
             <option value="Male" ${
-              item.gender === "Male" ? "selected" : ""
+              item["Gender"] === "Male" ? "selected" : ""
             }>Male</option>
             <option value="Female" ${
-              item.gender === "Female" ? "selected" : ""
+              item["Gender"] === "Female" ? "selected" : ""
             }>Female</option>
         </select>
     </div>
     <div class="info-item">
         <span>Current Level:</span>
-        <select class="info-select ${item.current_level ? "has-value" : ""}" 
-                onchange="updateField(this, 'current_level', this.value, '${
+        <select class="info-select ${item["Current Level"] ? "has-value" : ""}" 
+                onchange="updateField(this, 'Current Level', this.value, '${
                   item.id
                 }')">
             <option value="" disabled ${
-              !item.current_level ? "selected" : ""
+              !item["Current Level"] ? "selected" : ""
             }>Select Current Level</option>
             <option value="SHS1" ${
-              item.current_level === "SHS1" ? "selected" : ""
+              item["Current Level"] === "SHS1" ? "selected" : ""
             }>SHS1</option>
             <option value="SHS2" ${
-              item.current_level === "SHS2" ? "selected" : ""
+              item["Current Level"] === "SHS2" ? "selected" : ""
             }>SHS2</option>
             <option value="SHS3" ${
-              item.current_level === "SHS3" ? "selected" : ""
+              item["Current Level"] === "SHS3" ? "selected" : ""
             }>SHS3</option>
             <option value="JHS1" ${
-              item.current_level === "JHS1" ? "selected" : ""
+              item["Current Level"] === "JHS1" ? "selected" : ""
             }>JHS1</option>
             <option value="JHS2" ${
-              item.current_level === "JHS2" ? "selected" : ""
+              item["Current Level"] === "JHS2" ? "selected" : ""
             }>JHS2</option>
             <option value="JHS3" ${
-              item.current_level === "JHS3" ? "selected" : ""
+              item["Current Level"] === "JHS3" ? "selected" : ""
             }>JHS3</option>
             <option value="COMPLETED" ${
-              item.current_level === "COMPLETED" ? "selected" : ""
+              item["Current Level"] === "COMPLETED" ? "selected" : ""
             }>COMPLETED</option>
             <option value="UNIVERSITY" ${
-              item.current_level === "UNIVERSITY" ? "selected" : ""
+              item["Current Level"] === "UNIVERSITY" ? "selected" : ""
             }>UNIVERSITY</option>
         </select>
     </div>
     <div class="info-item">
         <span>Age:</span>
-        <input type="number" class="editable-field" value="${item.age || ""}" 
+        <input type="number" class="editable-field" value="${
+          item["Age"] || ""
+        }" 
                min="0" max="100" style="width: 60px;" 
-               onchange="updateField(this, 'age', this.value, '${item.id}')" />
+               onchange="updateField(this, 'Age', this.value, '${item.id}')" />
     </div>
     <div class="info-item">
         <span>Phone Number:</span>
         <input type="tel" class="editable-field" value="${escapeHtml(
-          item.phone_number || ""
+          item["Phone Number"] || ""
         )}"
                style="width: 120px; background-color: transparent; color: white; border: 1px solid rgba(255, 255, 255, 0.3); padding: 2px 4px; border-radius: 4px;"
-               onchange="updateField(this, 'phone_number', this.value, '${
+               onchange="updateField(this, 'Phone Number', this.value, '${
                  item.id
                }')" />
     </div>
@@ -650,8 +668,8 @@ async function handleSubmit(e) {
 
     // Then perform the database operation
     const { error } = editingId
-      ? await supabase.from("April_2025").update(formData).eq("id", editingId)
-      : await supabase.from("April_2025").insert([formData]);
+      ? await supabase.from(CURRENT_TABLE).update(formData).eq("id", editingId)
+      : await supabase.from(CURRENT_TABLE).insert([formData]);
 
     if (error) throw error;
 
@@ -731,11 +749,10 @@ function escapeHtml(unsafe) {
 // Update the getAttendanceDisplay function to include both Present and Absent options in the dropdown
 function getAttendanceDisplay(item) {
   const attendanceFields = [
-    { field: "attendance_6th", display: "6th" },
-    { field: "attendance_13th", display: "13th" }, // Changed field and display
-    { field: "attendance_20th", display: "20th" }, // Changed field and display
-    { field: "attendance_27th", display: "27th" }, // Changed field and display
-    // Removed 30th as it wasn't in the original request or other parts of the code
+    { field: "Attendance 4nd", display: "4th" },
+    { field: "Attendance 11th", display: "11th" },
+    { field: "Attendance 18th", display: "18th" },
+    { field: "Attendance 25rd", display: "25th" },
   ];
   return attendanceFields
     .map((field) => {
@@ -808,7 +825,7 @@ async function updateAttendance(select, field, value, itemId) {
     const updateData = { [field]: value };
 
     const { error } = await supabase
-      .from("April_2025")
+      .from(CURRENT_TABLE)
       .update(updateData)
       .eq("id", itemId);
 
@@ -846,7 +863,7 @@ async function updateField(select, field, value, itemId) {
     }
 
     const { error } = await supabase
-      .from("April_2025")
+      .from(CURRENT_TABLE)
       .update(updateData)
       .eq("id", itemId);
 
@@ -897,7 +914,7 @@ async function loadInitialData() {
 // Function to fetch and display statistics
 async function fetchAndDisplayStats() {
   try {
-    const { data, error } = await supabase.from("April_2025").select("*");
+    const { data, error } = await supabase.from(CURRENT_TABLE).select("*");
 
     if (error) throw error;
 
@@ -988,19 +1005,19 @@ function toggleStatContent(header) {
 // Add this function to handle category filtering
 async function filterByCategory(category) {
   try {
-    let query = supabase.from("April_2025").select("*").order("full_name");
+    let query = supabase.from(CURRENT_TABLE).select("*").order("Full Name");
 
     if (category !== "all") {
       if (category === "SHS") {
         query = query.or(
-          "current_level.eq.SHS1,current_level.eq.SHS2,current_level.eq.SHS3"
+          "Current Level.eq.SHS1,Current Level.eq.SHS2,Current Level.eq.SHS3"
         );
       } else if (category === "JHS") {
         query = query.or(
-          "current_level.eq.JHS1,current_level.eq.JHS2,current_level.eq.JHS3"
+          "Current Level.eq.JHS1,Current Level.eq.JHS2,Current Level.eq.JHS3"
         );
       } else {
-        query = query.eq("current_level", category);
+        query = query.eq("Current Level", category);
       }
     }
 
@@ -1111,7 +1128,7 @@ async function downloadCSV() {
 
     // Fetch all data from Supabase
     const { data, error } = await supabase
-      .from("April_2025")
+      .from(CURRENT_TABLE)
       .select("*")
       .order("full_name");
 
@@ -1248,7 +1265,7 @@ function showDropdownEdit(element, field) {
 
         // Perform the update
         const { data, error } = await supabase
-          .from("April_2025")
+          .from(CURRENT_TABLE)
           .update(updateData)
           .eq("id", itemId)
           .select();

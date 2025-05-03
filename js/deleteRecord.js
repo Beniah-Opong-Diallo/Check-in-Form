@@ -42,7 +42,7 @@ async function deleteRecord(id, btn) {
     btn.disabled = true;
     btn.textContent = "...";
     try {
-      const { error } = await supabase.from("April_2025").delete().eq("id", id);
+      const { error } = await supabase.from("May_2025").delete().eq("id", id);
       if (error) throw error;
 
       // Remove the card from the UI

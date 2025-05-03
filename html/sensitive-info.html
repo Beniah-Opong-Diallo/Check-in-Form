@@ -100,9 +100,10 @@
   <div id="password-screen">
     <div class="password-container">
       <div class="password-header">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-          <path d="M9 12v-1a3 3 0 1 1 6 0v1" />
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #357d39;">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          <circle cx="12" cy="16" r="1"></circle>
         </svg>
         <h2>Sensitive Information</h2>
         <p>Please enter the password to continue</p>
@@ -345,7 +346,7 @@
         }
 
         const filteredData = window.currentTableData.filter(item =>
-          (item.full_name || '').toLowerCase().includes(searchTerm)
+          (item["Full Name"] || '').toLowerCase().includes(searchTerm)
         );
 
         renderTable(filteredData);
@@ -373,14 +374,14 @@
       const tableBody = document.getElementById('sensitiveTableBody');
       tableBody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#888;">Loading data...</td></tr>';
       try {
-        let query = window.supabase.from('May_2025').select('*').order('full_name');
+        let query = window.supabase.from('May_2025').select('*').order('Full Name');
         if (category && category !== 'all') {
           if (category === 'SHS') {
-            query = query.or('current_level.eq.SHS1,current_level.eq.SHS2,current_level.eq.SHS3');
+            query = query.or('Current Level.eq.SHS1,Current Level.eq.SHS2,Current Level.eq.SHS3');
           } else if (category === 'JHS') {
-            query = query.or('current_level.eq.JHS1,current_level.eq.JHS2,current_level.eq.JHS3');
+            query = query.or('Current Level.eq.JHS1,Current Level.eq.JHS2,Current Level.eq.JHS3');
           } else {
-            query = query.eq('current_level', category);
+            query = query.eq('Current Level', category);
           }
         }
         const { data, error } = await query;
@@ -392,14 +393,39 @@
           return;
         }
 
+        // Debug info in console
+        console.log(`Loaded ${data.length} records successfully`);
+        
         window.currentTableData = data;
         renderTable(data);
         updateStats(data);
       } catch (err) {
-        tableBody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#e53e3e;">Error loading data.</td></tr>';
+        console.error('Database Error:', err);
+        // Detailed error message for diagnosis
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="9" style="padding:15px;text-align:center;color:#e53e3e;">
+              <div style="margin-bottom:8px;font-weight:bold">❌ Error loading data</div>
+              <div style="font-size:0.9rem;padding:8px;background:#fff1f1;border-radius:4px;white-space:pre-wrap;text-align:left;max-width:100%;overflow:auto;">
+                ${err.message || 'Unknown error occurred'}
+              </div>
+              <div style="margin-top:10px;">
+                <button onclick="retryDataLoad()" style="padding:6px 12px;background:#3182ce;color:white;border:none;border-radius:4px;cursor:pointer;">
+                  🔄 Retry
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
         updateStats([]);
         window.currentTableData = [];
       }
+    }
+
+    // Retry function for when data fails to load
+    function retryDataLoad() {
+      const category = document.getElementById('categoryFilter').value;
+      updateSensitiveTable(category);
     }
 
     // Function to render table with provided data
@@ -413,16 +439,16 @@
 
       tableBody.innerHTML = data.map(item => `
         <tr>
-          <td>${item.full_name || ''}</td>
-          <td>${item.gender || ''}</td>
-          <td>${item.age || ''}</td>
-          <td>${item.phone_number || ''}</td>
-          <td>${item.current_level || ''}</td>
-          <td>${item.attendance_2nd || ''}</td>
-          <td>${item.attendance_9th || ''}</td>
-          <td>${item.attendance_16th || ''}</td>
+          <td>${item["Full Name"] || ''}</td>
+          <td>${item["Gender"] || ''}</td>
+          <td>${item["Age"] || ''}</td>
+          <td>${item["Phone Number"] || ''}</td>
+          <td>${item["Current Level"] || ''}</td>
+          <td>${item["Attendance 4nd"] || ''}</td>
+          <td>${item["Attendance 11th"] || ''}</td>
+          <td>${item["Attendance 18th"] || ''}</td>
           <td style="display:flex;align-items:center;gap:0.5em;justify-content:space-between;">
-            <span>${item.attendance_23rd || ''}</span>
+            <span>${item["Attendance 25rd"] || ''}</span>
             <button class="delete-btn" title="Delete" onclick="showDeleteConfirm('${item.id}', this)" style="background:#ef4444;color:#fff;border:none;border-radius:6px;padding:0.25em 0.6em;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
             </button>
@@ -440,12 +466,15 @@
         'SHS1', 'SHS2', 'SHS3', 'JHS1', 'JHS2', 'JHS3', 'COMPLETED', 'UNIVERSITY'
       ];
       for (const level of levelOrder) levelCounts[level] = 0;
+      
       data.forEach(item => {
-        if ((item.gender || '').toLowerCase() === 'male') boys++;
-        if ((item.gender || '').toLowerCase() === 'female') girls++;
-        const lvl = (item.current_level || '').toUpperCase();
+        // Updated to use proper column names in May_2025 table
+        if ((item["Gender"] || '').toLowerCase() === 'male') boys++;
+        if ((item["Gender"] || '').toLowerCase() === 'female') girls++;
+        const lvl = (item["Current Level"] || '').toUpperCase();
         if (levelCounts.hasOwnProperty(lvl)) levelCounts[lvl]++;
       });
+      
       document.getElementById('totalBoys').textContent = boys;
       document.getElementById('totalGirls').textContent = girls;
       document.getElementById('levelStats').innerHTML = levelOrder.map(lvl =>
@@ -460,14 +489,26 @@
         alert('No data to export.');
         return;
       }
+      
+      // Use the correct column names from May_2025 table
       const headers = [
-        'Full Name', 'Gender', 'Age', 'Phone', 'Level', 'Attendance 2nd', 'Attendance 9th', 'Attendance 16th', 'Attendance 23rd'
+        'Full Name', 'Gender', 'Age', 'Phone Number', 'Current Level', 
+        'Attendance 4nd', 'Attendance 11th', 'Attendance 18th', 'Attendance 25rd'
       ];
+      
       let csvContent = headers.join(',') + '\n';
       csvContent += data.map(item => [
-        item.full_name || '', item.gender || '', item.age || '', item.phone_number || '', item.current_level || '',
-        item.attendance_2nd || '', item.attendance_9th || '', item.attendance_16th || '', item.attendance_23rd || ''
+        item["Full Name"] || '', 
+        item["Gender"] || '', 
+        item["Age"] || '', 
+        item["Phone Number"] || '', 
+        item["Current Level"] || '',
+        item["Attendance 4nd"] || '', 
+        item["Attendance 11th"] || '', 
+        item["Attendance 18th"] || '', 
+        item["Attendance 25rd"] || ''
       ].map(cell => cell.toString().replace(/"/g, '""')).map(cell => cell.includes(',') ? '"' + cell + '"' : cell).join(',')).join('\n');
+      
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
@@ -571,6 +612,47 @@
       document.getElementById('name-search').value = '';
       updateSensitiveTable(this.value);
     });
+
+    // Fetch and display sensitive data
+    async function fetchSensitiveData() {
+      // Show loading indicator
+      document.getElementById('sensitiveTableBody').innerHTML = '<tr><td colspan="9" class="loading-row">Loading data...</td></tr>';
+      
+      try {
+        // Get filter value
+        const filterValue = document.getElementById('name-search')?.value?.toLowerCase() || '';
+        
+        // Prepare query
+        let query = window.supabase.from('May_2025').select('*').order('Full Name');
+        
+        // Apply name filter if any
+        if (filterValue) {
+          query = query.ilike('Full Name', `%${filterValue}%`);
+        }
+        
+        const { data, error } = await query;
+        
+        if (error) throw error;
+        
+        if (!data || data.length === 0) {
+          document.getElementById('sensitiveTableBody').innerHTML = '<tr><td colspan="9" class="empty-row">No records found</td></tr>';
+          updateStats([]);
+          return;
+        }
+        
+        // Store data globally for filtering
+        window.currentTableData = data;
+        
+        // Render table with the data
+        renderTable(data);
+        
+        // Update statistics
+        updateStats(data);
+      } catch (err) {
+        console.error('Error fetching data:', err);
+        document.getElementById('sensitiveTableBody').innerHTML = '<tr><td colspan="9" class="error-row">Error loading data</td></tr>';
+      }
+    }
   </script>
 </body>
 

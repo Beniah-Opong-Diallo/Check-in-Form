@@ -584,22 +584,20 @@ function showModal(item = null, options = {}) {
   }
 
   if (item) {
-    elements.nameInput.value = item.full_name || "";
-    elements.genderInput.value = item.gender || "";
-    elements.phoneInput.value = item.phone_number || "";
-    elements.ageInput.value = item.age || "";
-    elements.levelInput.value = item.current_level || "";
+    // Updated to use proper column names from May_2025 table
+    elements.nameInput.value = item["Full Name"] || "";
+    elements.genderInput.value = item["Gender"] || "";
+    elements.phoneInput.value = item["Phone Number"] || "";
+    elements.ageInput.value = item["Age"] || "";
+    elements.levelInput.value = item["Current Level"] || "";
     if (elements.attendance6th)
-      elements.attendance6th.value = item.attendance_6th || "";
+      elements.attendance6th.value = item["Attendance 4nd"] || "";
     if (elements.attendance13th)
-      // Changed ID
-      elements.attendance13th.value = item.attendance_13th || ""; // Changed property
+      elements.attendance13th.value = item["Attendance 11th"] || "";
     if (elements.attendance20th)
-      // Changed ID
-      elements.attendance20th.value = item.attendance_20th || ""; // Changed property
+      elements.attendance20th.value = item["Attendance 18th"] || "";
     if (elements.attendance27th)
-      // Changed ID
-      elements.attendance27th.value = item.attendance_27th || ""; // Changed property
+      elements.attendance27th.value = item["Attendance 25rd"] || "";
   }
 
   elements.modal.style.display = "block";
@@ -622,42 +620,27 @@ async function handleSubmit(e) {
   submitButton.disabled = true;
   let formData = {};
   try {
-    // DEBUG: Log attendance element references and values
-    console.log("Form Data Debug:", {
-      attendance6th: elements.attendance6th, // Corrected existing debug
-      attendance13th: elements.attendance13th, // Changed ID
-      attendance20th: elements.attendance20th, // Changed ID
-      attendance27th: elements.attendance27th, // Changed ID
-      attendance6thValue: elements.attendance6th?.value, // Corrected existing debug
-      attendance13thValue: elements.attendance13th?.value, // Changed ID
-      attendance20thValue: elements.attendance20th?.value, // Changed ID
-      attendance27thValue: elements.attendance27th?.value, // Changed ID
-    });
-    // Prepare form data efficiently
-    // Build formData, converting empty strings to null
+    // Prepare form data efficiently using the correct column names in May_2025 table
     formData = {
-      full_name: elements.nameInput.value.trim() || null,
-      gender: elements.genderInput.value || null,
-      phone_number: elements.phoneInput.value.trim() || null,
-      age: elements.ageInput.value ? parseInt(elements.ageInput.value) : null,
-      current_level: elements.levelInput.value || null,
-      attendance_6th: elements.attendance6th.value || null,
-      attendance_13th: elements.attendance13th.value || null, // Changed ID and property
-      attendance_20th: elements.attendance20th.value || null, // Changed ID and property
-      attendance_27th: elements.attendance27th.value || null, // Changed ID and property
-      offline_saved_at: !navigator.onLine ? new Date().toISOString() : null,
+      "Full Name": elements.nameInput.value.trim() || null,
+      "Gender": elements.genderInput.value || null,
+      "Phone Number": elements.phoneInput.value.trim() || null,
+      "Age": elements.ageInput.value ? parseInt(elements.ageInput.value) : null,
+      "Current Level": elements.levelInput.value || null,
+      "Attendance 4nd": elements.attendance6th ? elements.attendance6th.value : null,
+      "Attendance 11th": elements.attendance13th ? elements.attendance13th.value : null,
+      "Attendance 18th": elements.attendance20th ? elements.attendance20th.value : null,
+      "Attendance 25rd": elements.attendance27th ? elements.attendance27th.value : null,
     };
-    // Remove keys with null values (except full_name, gender, current_level)
-    Object.keys(formData).forEach((key) => {
-      if (
-        formData[key] === null &&
-        !["full_name", "gender", "current_level"].includes(key)
-      ) {
+
+    // Remove null values
+    Object.keys(formData).forEach(key => {
+      if (formData[key] === null && !["Full Name", "Gender", "Current Level"].includes(key)) {
         delete formData[key];
       }
     });
 
-    if (!formData.full_name) {
+    if (!formData["Full Name"]) {
       showToast("error", "Full name is required.");
       elements.nameInput.focus();
       submitButton.disabled = false;
@@ -666,7 +649,7 @@ async function handleSubmit(e) {
 
     elements.infoForm.reset();
 
-    // Then perform the database operation
+    // Then perform the database operation with the correct column names
     const { error } = editingId
       ? await supabase.from(CURRENT_TABLE).update(formData).eq("id", editingId)
       : await supabase.from(CURRENT_TABLE).insert([formData]);
@@ -674,20 +657,11 @@ async function handleSubmit(e) {
     if (error) throw error;
 
     // Show success message
-    const toast = document.getElementById("successToast");
-    if (toast) {
-      toast.querySelector("span").textContent =
-        "Information saved successfully";
-      toast.classList.add("show");
-      setTimeout(() => {
-        toast.classList.remove("show");
-        hideModal(); // Close the modal after toast
-      }, 1500); // Close modal after 1.5s
-    } else {
-      alert("Information saved successfully");
-      hideModal();
-    }
-    console.log("handleSubmit completed: data saved and notification shown.");
+    showToast("success", "Information saved successfully");
+    
+    setTimeout(() => {
+      hideModal(); // Close the modal after toast
+    }, 1500); // Close modal after 1.5s
 
     // Clear cache and update display
     searchCache.clear();
@@ -704,31 +678,11 @@ async function handleSubmit(e) {
     fetchAndDisplayStats().catch(console.error);
   } catch (error) {
     console.error("Error:", error);
-    let errorMsg =
-      "Failed to save information. Please check your input and try again.";
+    let errorMsg = "Failed to save information. Please check your input and try again.";
     if (error && error.message) {
       errorMsg += " (" + error.message + ")";
     }
     showToast("error", errorMsg);
-    // Offline fallback: save to IndexedDB if offline
-    if (
-      !navigator.onLine &&
-      window.offlineSync &&
-      Object.keys(formData).length > 0
-    ) {
-      try {
-        await window.offlineSync.savePending(formData);
-        showToast(
-          "info",
-          "Offline: Data saved locally and will sync when online."
-        );
-      } catch (offlineError) {
-        console.error("Failed to save data offline:", offlineError);
-        showToast("error", "Failed to save data locally.");
-      }
-      await window.offlineSync.savePending(formData);
-      showToast("success", "Saved offline. Will sync when online.");
-    }
   } finally {
     submitButton.disabled = false;
   }

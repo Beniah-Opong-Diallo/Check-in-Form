@@ -211,7 +211,9 @@ function displayItems(items) {
   let htmlString = "";
   for (const item of items) {
     try {
-      htmlString += `<div class="result-item" data-id="${item.id}">${getItemHTML(item)}</div>`;
+      htmlString += `<div class="result-item" data-id="${
+        item.id
+      }">${getItemHTML(item)}</div>`;
     } catch (err) {
       console.error("Error rendering item:", item, err);
     }

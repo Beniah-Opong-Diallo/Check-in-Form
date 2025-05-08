@@ -200,7 +200,7 @@ function addButtonPressAnimation(button) {
   setTimeout(() => button.classList.remove("button-press"), 100); // keep short for feedback
 }
 
-// Optimized display function (no batching, no requestAnimationFrame)
+// Optimized display function using requestAnimationFrame and batching
 function displayItems(items) {
   if (!Array.isArray(items) || items.length === 0) {
     elements.cardsContainer.innerHTML =
@@ -211,18 +211,27 @@ function displayItems(items) {
   let htmlString = "";
   for (const item of items) {
     try {
-      // Wrap each item's HTML in the result-item div and build the string
-      htmlString += `<div class="result-item" data-id="${
-        item.id
-      }">${getItemHTML(item)}</div>`;
+      htmlString += `<div class="result-item" data-id="${item.id}">${getItemHTML(item)}</div>`;
     } catch (err) {
       console.error("Error rendering item:", item, err);
     }
   }
-  // Set innerHTML only once for potentially better performance
-  elements.cardsContainer.innerHTML = htmlString;
-  window.currentItems = items; // Ensure this is always set for quickMarkAttendance
+  // Batch DOM update with requestAnimationFrame
+  window.requestAnimationFrame(() => {
+    elements.cardsContainer.innerHTML = htmlString;
+    window.currentItems = items;
+  });
 }
+
+// Throttle scroll events for virtual scroll (if used)
+let lastScroll = 0;
+elements.cardsContainer.addEventListener("scroll", function (e) {
+  const now = Date.now();
+  if (now - lastScroll > SCROLL_THROTTLE) {
+    lastScroll = now;
+    // Add scroll/virtualization logic here if needed
+  }
+});
 
 // Function to handle inline editing
 async function makeFieldEditable(element, itemId, fieldName) {

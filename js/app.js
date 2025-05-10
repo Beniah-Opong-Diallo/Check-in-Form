@@ -596,8 +596,8 @@ function showModal(item = null, options = {}) {
     // Updated to use proper column names from May_2025 table
     elements.nameInput.value = item["Full Name"] || "";
     elements.genderInput.value = item["Gender"] || "";
-    elements.phoneInput.value = item["Age"] || ""; // swapped
-    elements.ageInput.value = item["Phone Number"] || ""; // swapped
+    elements.phoneInput.value = item["Phone Number"] || ""; // corrected: phoneInput gets Phone Number
+    elements.ageInput.value = item["Age"] || ""; // corrected: ageInput gets Age
     elements.levelInput.value = item["Current Level"] || "";
     if (elements.attendance6th)
       elements.attendance6th.value = item["Attendance 4nd"] || "";

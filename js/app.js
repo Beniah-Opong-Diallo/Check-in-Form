@@ -11,8 +11,8 @@ const CURRENT_TABLE = "May_2025";
 const COLUMN_MAPPINGS = {
   full_name: "Full Name",
   gender: "Gender",
-  phone_number: "Phone Number",
-  age: "Age",
+  phone_number: "Age", // swapped
+  age: "Phone Number", // swapped
   current_level: "Current Level",
   attendance_4nd: "Attendance 4nd",
   attendance_11th: "Attendance 11th",
@@ -535,21 +535,17 @@ function getItemHTML(item) {
     </div>
     <div class="info-item">
         <span>Age:</span>
-        <input type="number" class="editable-field" value="${
-          item["Age"] || ""
-        }" 
-               min="0" max="100" style="width: 60px;" 
-               onchange="updateField(this, 'Age', this.value, '${item.id}')" />
-    </div>
-    <div class="info-item">
-        <span>Phone Number:</span>
         <input type="tel" class="editable-field" value="${escapeHtml(
           item["Phone Number"] || ""
         )}"
                style="width: 120px; background-color: transparent; color: white; border: 1px solid rgba(255, 255, 255, 0.3); padding: 2px 4px; border-radius: 4px;"
-               onchange="updateField(this, 'Phone Number', this.value, '${
-                 item.id
-               }')" />
+               onchange="updateField(this, 'Phone Number', this.value, '${item.id}')" />
+    </div>
+    <div class="info-item">
+        <span>Phone Number:</span>
+        <input type="number" class="editable-field" value="${item["Age"] || ""}"
+               min="0" max="100" style="width: 60px;"
+               onchange="updateField(this, 'Age', this.value, '${item.id}')" />
     </div>
     <div class="attendance-section">
         <strong>Attendance:</strong><br>
@@ -598,8 +594,8 @@ function showModal(item = null, options = {}) {
     // Updated to use proper column names from May_2025 table
     elements.nameInput.value = item["Full Name"] || "";
     elements.genderInput.value = item["Gender"] || "";
-    elements.phoneInput.value = item["Phone Number"] || "";
-    elements.ageInput.value = item["Age"] || "";
+    elements.phoneInput.value = item["Age"] || ""; // swapped
+    elements.ageInput.value = item["Phone Number"] || ""; // swapped
     elements.levelInput.value = item["Current Level"] || "";
     if (elements.attendance6th)
       elements.attendance6th.value = item["Attendance 4nd"] || "";
@@ -635,8 +631,8 @@ async function handleSubmit(e) {
     formData = {
       "Full Name": elements.nameInput.value.trim() || null,
       Gender: elements.genderInput.value || null,
-      "Phone Number": elements.phoneInput.value.trim() || null,
-      Age: elements.ageInput.value ? parseInt(elements.ageInput.value) : null,
+      Age: elements.phoneInput.value.trim() || null, // swapped
+      "Phone Number": elements.ageInput.value ? parseInt(elements.ageInput.value) : null, // swapped
       "Current Level": elements.levelInput.value || null,
       "Attendance 4nd": elements.attendance6th
         ? elements.attendance6th.value

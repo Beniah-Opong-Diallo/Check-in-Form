@@ -223,8 +223,8 @@
         <tr>
           <th>Full Name</th>
           <th>Gender</th>
+          <th>Phone Number</th>
           <th>Age</th>
-          <th>Phone</th>
           <th>Level</th>
           <th>Attendance 2nd</th>
           <th>Attendance 9th</th>
@@ -443,8 +443,8 @@
         <tr>
           <td>${item["Full Name"] || ''}</td>
           <td>${item["Gender"] || ''}</td>
-          <td>${item["Age"] || ''}</td>
           <td>${item["Phone Number"] || ''}</td>
+          <td>${item["Age"] || ''}</td>
           <td>${item["Current Level"] || ''}</td>
           <td>${item["Attendance 4nd"] || ''}</td>
           <td>${item["Attendance 11th"] || ''}</td>
@@ -494,7 +494,7 @@
 
       // Use the correct column names from May_2025 table
       const headers = [
-        'Full Name', 'Gender', 'Age', 'Phone Number', 'Current Level',
+        'Full Name', 'Gender', 'Phone Number', 'Age', 'Current Level',
         'Attendance 4nd', 'Attendance 11th', 'Attendance 18th', 'Attendance 25rd'
       ];
 
@@ -502,8 +502,8 @@
       csvContent += data.map(item => [
         item["Full Name"] || '',
         item["Gender"] || '',
-        item["Age"] || '',
-        item["Phone Number"] || '',
+        item["Phone Number"] || '', // swapped
+        item["Age"] || '', // swapped
         item["Current Level"] || '',
         item["Attendance 4nd"] || '',
         item["Attendance 11th"] || '',

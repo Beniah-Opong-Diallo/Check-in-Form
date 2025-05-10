@@ -539,7 +539,9 @@ function getItemHTML(item) {
           item["Phone Number"] || ""
         )}"
                style="width: 120px; background-color: transparent; color: white; border: 1px solid rgba(255, 255, 255, 0.3); padding: 2px 4px; border-radius: 4px;"
-               onchange="updateField(this, 'Phone Number', this.value, '${item.id}')" />
+               onchange="updateField(this, 'Phone Number', this.value, '${
+                 item.id
+               }')" />
     </div>
     <div class="info-item">
         <span>Phone Number:</span>
@@ -632,7 +634,9 @@ async function handleSubmit(e) {
       "Full Name": elements.nameInput.value.trim() || null,
       Gender: elements.genderInput.value || null,
       Age: elements.phoneInput.value.trim() || null, // swapped
-      "Phone Number": elements.ageInput.value ? parseInt(elements.ageInput.value) : null, // swapped
+      "Phone Number": elements.ageInput.value
+        ? parseInt(elements.ageInput.value)
+        : null, // swapped
       "Current Level": elements.levelInput.value || null,
       "Attendance 4nd": elements.attendance6th
         ? elements.attendance6th.value

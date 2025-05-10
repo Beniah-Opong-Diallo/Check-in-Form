@@ -213,6 +213,7 @@
         <option value="JHS">JHS Students</option>
         <option value="COMPLETED">Completed</option>
         <option value="UNIVERSITY">University</option>
+        <option value="duplicates">Show Duplicates</option>
       </select>
     </div>
   </div>
@@ -221,6 +222,8 @@
     <table class="sensitive-table" id="sensitiveTable">
       <thead>
         <tr>
+          <th style="width: 40px;"><input type="checkbox" id="selectAllCheckbox"
+              style="transform: scale(1.2); cursor: pointer;" title="Select/Deselect All"></th>
           <th>Full Name</th>
           <th>Gender</th>
           <th>Phone Number</th>
@@ -428,19 +431,83 @@
     function retryDataLoad() {
       const category = document.getElementById('categoryFilter').value;
       updateSensitiveTable(category);
-    }
-
-    // Function to render table with provided data
+    }    // Function to render table with provided data
     function renderTable(data) {
       const tableBody = document.getElementById('sensitiveTableBody');
+      const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+
+      // Reset select all checkbox state
+      if (selectAllCheckbox) {
+        selectAllCheckbox.checked = false;
+      }
 
       if (!data || data.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#888;">No records found.</td></tr>';
+        tableBody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:#888;">No records found.</td></tr>';
         return;
       }
 
-      tableBody.innerHTML = data.map(item => `
-        <tr>
+      // For duplicate highlighting if we're in duplicates mode
+      const isDuplicateMode = document.getElementById('categoryFilter').value === 'duplicates';
+      const nameCounts = {};
+      const duplicateNames = [];
+
+      if (isDuplicateMode) {
+        // Count occurrences of each name
+        data.forEach(item => {
+          const name = item["Full Name"] || '';
+          nameCounts[name] = (nameCounts[name] || 0) + 1;
+        });
+
+        // Find names that appear more than once
+        for (const name in nameCounts) {
+          if (nameCounts[name] > 1) {
+            duplicateNames.push(name);
+          }
+        }
+
+        // Filter data to only include duplicates
+        data = data.filter(item => duplicateNames.includes(item["Full Name"] || ''));
+      }
+
+      // Add delete multiple button if in duplicate mode
+      if (isDuplicateMode && data.length > 0) {
+        const deleteBtn = document.createElement('button');
+        deleteBtn.id = 'deleteMultipleBtn';
+        deleteBtn.className = 'sensitive-modal-btn';
+        deleteBtn.innerHTML = `
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" 
+            stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:0.5em;">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/>
+            <line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/>
+          </svg>
+          Delete Selected
+        `;
+        deleteBtn.style.cssText = "background:#ef4444;color:#fff;padding:0.7em 2em;border:none;border-radius:8px;font-size:1.08rem;font-weight:600;cursor:pointer;margin-bottom:1rem;";
+        deleteBtn.onclick = deleteSelectedRecords;
+
+        const buttonContainer = document.createElement('div');
+        buttonContainer.style.textAlign = 'right';
+        buttonContainer.appendChild(deleteBtn);
+
+        const tableContainer = document.querySelector('.sensitive-table-container');
+        tableContainer.insertBefore(buttonContainer, tableContainer.firstChild);
+      }
+
+      if (data.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:#888;">No duplicate records found.</td></tr>';
+        return;
+      }
+
+      tableBody.innerHTML = data.map(item => {
+        const isDuplicate = isDuplicateMode && duplicateNames.includes(item["Full Name"] || '');
+        const rowStyle = isDuplicate ? 'background-color: rgba(254, 202, 202, 0.2);' : '';
+
+        return `
+        <tr style="${rowStyle}" class="data-row" data-id="${item.id}">
+          <td style="text-align:center;">
+            <input type="checkbox" class="record-checkbox" data-id="${item.id}" style="transform: scale(1.2); cursor: pointer;" onchange="updateSelectedState()">
+          </td>
           <td>${item["Full Name"] || ''}</td>
           <td>${item["Gender"] || ''}</td>
           <td>${item["Phone Number"] || ''}</td>
@@ -456,7 +523,116 @@
             </button>
           </td>
         </tr>
-      `).join('');
+      `}).join('');
+
+      // Add event listener to select all checkbox
+      selectAllCheckbox.addEventListener('change', function () {
+        const checkboxes = document.querySelectorAll('.record-checkbox');
+        checkboxes.forEach(checkbox => {
+          checkbox.checked = this.checked;
+        });
+        updateSelectedState();
+      });
+    }
+
+    // Function to update selected state and button visibility
+    function updateSelectedState() {
+      const checkboxes = document.querySelectorAll('.record-checkbox:checked');
+      const deleteBtn = document.getElementById('deleteMultipleBtn');
+
+      if (deleteBtn) {
+        if (checkboxes.length > 0) {
+          deleteBtn.textContent = `Delete Selected (${checkboxes.length})`;
+          deleteBtn.style.display = 'inline-block';
+        } else {
+          deleteBtn.textContent = 'Delete Selected';
+        }
+      }
+    }
+
+    // Function to delete selected records
+    function deleteSelectedRecords() {
+      const selectedCheckboxes = document.querySelectorAll('.record-checkbox:checked');
+
+      if (selectedCheckboxes.length === 0) {
+        showToast("error", "No records selected");
+        return;
+      }
+
+      const selectedIds = Array.from(selectedCheckboxes).map(checkbox => checkbox.dataset.id);
+
+      // Show confirmation modal
+      showMultiDeleteConfirm(selectedIds);
+    }
+
+    // Confirmation modal for multi-delete
+    function showMultiDeleteConfirm(ids) {
+      // Remove any existing modal
+      const old = document.getElementById('multiDeleteConfirmModal');
+      if (old) old.remove();
+
+      const modal = document.createElement('div');
+      modal.id = 'multiDeleteConfirmModal';
+      modal.style.position = 'fixed';
+      modal.style.top = 0;
+      modal.style.left = 0;
+      modal.style.width = '100vw';
+      modal.style.height = '100vh';
+      modal.style.background = 'rgba(0,0,0,0.25)';
+      modal.style.display = 'flex';
+      modal.style.alignItems = 'center';
+      modal.style.justifyContent = 'center';
+      modal.style.zIndex = 9999;
+      modal.innerHTML = `
+        <div style="background:#fff;border-radius:14px;box-shadow:0 4px 24px rgba(53,125,57,0.13);padding:2.2rem 2.5rem 1.7rem 2.5rem;max-width:95vw;text-align:center;min-width:320px;">
+          <div style="font-size:2.2rem;margin-bottom:0.5em;">⚠️</div>
+          <div style="font-size:1.15rem;font-weight:600;color:#222;margin-bottom:1.2em;">Are you sure you want to delete <b>${ids.length}</b> selected entr${ids.length === 1 ? 'y' : 'ies'}?</div>
+          <div style="display:flex;gap:1.5em;justify-content:center;">
+            <button id="multiDeleteYesBtn" style="background:#ef4444;color:#fff;border:none;border-radius:8px;padding:0.7em 2.2em;font-size:1.05rem;font-weight:600;cursor:pointer;transition:background 0.18s;">Yes</button>
+            <button id="multiDeleteNoBtn" style="background:#e5e7eb;color:#222;border:none;border-radius:8px;padding:0.7em 2.2em;font-size:1.05rem;font-weight:600;cursor:pointer;transition:background 0.18s;">No</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+      document.getElementById('multiDeleteNoBtn').onclick = () => modal.remove();
+      document.getElementById('multiDeleteYesBtn').onclick = async () => {
+        modal.remove();
+        await performMultiDelete(ids);
+      };
+    }
+
+    // Perform the actual multi-delete
+    async function performMultiDelete(ids) {
+      try {
+        // Disable the delete button while processing
+        const deleteBtn = document.getElementById('deleteMultipleBtn');
+        if (deleteBtn) {
+          deleteBtn.disabled = true;
+          deleteBtn.textContent = 'Deleting...';
+        }
+        // Delete all selected records in parallel
+        const { error } = await window.supabase.from('May_2025').delete().in('id', ids);
+        if (error) throw error;
+
+        // Remove deleted rows from the table and from currentTableData
+        ids.forEach(id => {
+          const row = document.querySelector(`tr[data-id='${id}']`);
+          if (row) row.remove();
+        });
+        if (window.currentTableData) {
+          window.currentTableData = window.currentTableData.filter(item => !ids.includes(item.id));
+          updateStats(window.currentTableData);
+        }
+        showToast('success', 'Selected entries deleted successfully!');
+      } catch (err) {
+        showToast('error', 'Failed to delete selected entries');
+      } finally {
+        const deleteBtn = document.getElementById('deleteMultipleBtn');
+        if (deleteBtn) {
+          deleteBtn.disabled = false;
+          deleteBtn.textContent = 'Delete Selected';
+        }
+      }
     }
 
     // Update stats based on filtered data
@@ -606,14 +782,31 @@
             }
           });
       };
-    }
-
-    // Hook up filter
+    }    // Hook up filter
     document.getElementById('categoryFilter').addEventListener('change', function () {
       // Clear search when changing category
       document.getElementById('name-search').value = '';
+
+      // Remove multi-delete button if switching away from duplicates view
+      if (this.value !== 'duplicates') {
+        const deleteBtn = document.getElementById('deleteMultipleBtn');
+        if (deleteBtn) {
+          deleteBtn.parentNode.removeChild(deleteBtn);
+        }
+      }
+
       updateSensitiveTable(this.value);
     });
+
+    // Function to filter by category
+    function filterByCategory(category) {
+      if (category === 'duplicates') {
+        // We'll handle duplicates in the renderTable function
+        updateSensitiveTable('all'); // First get all data
+      } else {
+        updateSensitiveTable(category);
+      }
+    }
 
     // Fetch and display sensitive data
     async function fetchSensitiveData() {

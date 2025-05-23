@@ -452,53 +452,127 @@
     };
 
     // Function to save the selected attendance date
-    window.saveActiveAttendanceDate = function() {
+    window.saveActiveAttendanceDate = async function() {
       if (!pendingSelectedDate) {
         showToast("error", "No date selected to save");
         return;
       }
 
-      // Save the selected date
-      globalActiveAttendanceDate = pendingSelectedDate;
-      localStorage.setItem('globalActiveAttendanceDate', globalActiveAttendanceDate);
-      
-      // Update display
-      document.getElementById('active-date-display').textContent = `${globalActiveAttendanceDate} attendance is active (saved)`;
-      document.getElementById('active-date-display').style.color = '#22c55e';
-      
-      // Hide save button
-      document.getElementById('saveAttendanceDateBtn').style.display = 'none';
-      
-      // Update main app's active date if it exists
-      if (window.activeAttendanceDate !== undefined) {
-        window.activeAttendanceDate = globalActiveAttendanceDate;
-      }
-      
-      // Clear pending selection
-      pendingSelectedDate = null;
-      
-      showToast("success", `${globalActiveAttendanceDate} attendance date saved successfully!`);
-    };
+      try {
+        // Disable save button while processing
+        const saveBtn = document.getElementById('saveAttendanceDateBtn');
+        saveBtn.disabled = true;
+        saveBtn.textContent = 'Saving...';
 
-    // Load active date from localStorage on page load
-    document.addEventListener('DOMContentLoaded', function() {
-      const savedActiveDate = localStorage.getItem('globalActiveAttendanceDate');
-      if (savedActiveDate) {
-        globalActiveAttendanceDate = savedActiveDate;
-        const checkbox = document.getElementById(`global-date-${savedActiveDate}`);
-        if (checkbox) {
-          checkbox.checked = true;
-          document.getElementById('active-date-display').textContent = `${savedActiveDate} attendance is active (saved)`;
-          document.getElementById('active-date-display').style.color = '#22c55e';
-        }
-        // Set main app's active date if it exists
+        // Save to database for global access across all devices
+        const { data, error } = await window.supabase
+          .from('May_2025')
+          .upsert({
+            id: 'global_attendance_date',
+            'Full Name': 'SYSTEM_SETTING_ACTIVE_ATTENDANCE_DATE',
+            'Gender': pendingSelectedDate,
+            'Phone Number': new Date().toISOString(),
+            'Age': 'SYSTEM',
+            'Current Level': 'ACTIVE_DATE'
+          }, {
+            onConflict: 'id'
+          });
+
+        if (error) throw error;
+
+        // Also save locally as backup
+        globalActiveAttendanceDate = pendingSelectedDate;
+        localStorage.setItem('globalActiveAttendanceDate', globalActiveAttendanceDate);
+        
+        // Update display
+        document.getElementById('active-date-display').textContent = `${globalActiveAttendanceDate} attendance is active (saved globally)`;
+        document.getElementById('active-date-display').style.color = '#22c55e';
+        
+        // Hide save button
+        saveBtn.style.display = 'none';
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Save Selection';
+        
+        // Update main app's active date if it exists
         if (window.activeAttendanceDate !== undefined) {
           window.activeAttendanceDate = globalActiveAttendanceDate;
         }
-        // Hide save button since we're loading a saved state
-        document.getElementById('saveAttendanceDateBtn').style.display = 'none';
+        
+        // Clear pending selection
+        pendingSelectedDate = null;
+        
+        showToast("success", `${globalActiveAttendanceDate} attendance date saved globally for all devices!`);
+
+      } catch (error) {
+        console.error('Error saving attendance date:', error);
+        showToast("error", "Failed to save attendance date globally");
+        
+        // Re-enable button
+        const saveBtn = document.getElementById('saveAttendanceDateBtn');
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Save Selection';
       }
+    };
+
+    // Load active date from database on page load
+    document.addEventListener('DOMContentLoaded', async function() {
+      await loadGlobalAttendanceDate();
     });
+
+    // Function to load global attendance date from database
+    async function loadGlobalAttendanceDate() {
+      try {
+        // Try to fetch from database first
+        const { data, error } = await window.supabase
+          .from('May_2025')
+          .select('Gender')
+          .eq('id', 'global_attendance_date')
+          .eq('Full Name', 'SYSTEM_SETTING_ACTIVE_ATTENDANCE_DATE')
+          .single();
+
+        let savedActiveDate = null;
+        
+        if (!error && data && data.Gender) {
+          // Found in database
+          savedActiveDate = data.Gender;
+          // Also save to localStorage as backup
+          localStorage.setItem('globalActiveAttendanceDate', savedActiveDate);
+        } else {
+          // Fallback to localStorage if database doesn't have it
+          savedActiveDate = localStorage.getItem('globalActiveAttendanceDate');
+        }
+
+        if (savedActiveDate) {
+          globalActiveAttendanceDate = savedActiveDate;
+          const checkbox = document.getElementById(`global-date-${savedActiveDate}`);
+          if (checkbox) {
+            checkbox.checked = true;
+            document.getElementById('active-date-display').textContent = `${savedActiveDate} attendance is active (saved globally)`;
+            document.getElementById('active-date-display').style.color = '#22c55e';
+          }
+          // Set main app's active date if it exists
+          if (window.activeAttendanceDate !== undefined) {
+            window.activeAttendanceDate = globalActiveAttendanceDate;
+          }
+          // Hide save button since we're loading a saved state
+          document.getElementById('saveAttendanceDateBtn').style.display = 'none';
+        }
+      } catch (error) {
+        console.error('Error loading global attendance date:', error);
+        // Fallback to localStorage
+        const savedActiveDate = localStorage.getItem('globalActiveAttendanceDate');
+        if (savedActiveDate) {
+          globalActiveAttendanceDate = savedActiveDate;
+          const checkbox = document.getElementById(`global-date-${savedActiveDate}`);
+          if (checkbox) {
+            checkbox.checked = true;
+            document.getElementById('active-date-display').textContent = `${savedActiveDate} attendance is active (local backup)`;
+            document.getElementById('active-date-display').style.color = '#22c55e';
+          }
+          document.getElementById('saveAttendanceDateBtn').style.display = 'none';
+        }
+      }
+    }
 
     // --- Filtered Table Logic ---
     async function updateSensitiveTable(category) {

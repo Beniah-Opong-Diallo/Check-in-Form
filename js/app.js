@@ -1017,10 +1017,48 @@ async function fetchAndDisplayStats() {
 }
 
 // Load initial data when page loads
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   initializeThemeSwitcher();
+  await loadGlobalAttendanceDate();
   loadInitialData();
 });
+
+// Function to load global attendance date from database
+async function loadGlobalAttendanceDate() {
+  try {
+    // Try to fetch from database first
+    const { data, error } = await supabase
+      .from(CURRENT_TABLE)
+      .select('Gender')
+      .eq('id', 'global_attendance_date')
+      .eq('Full Name', 'SYSTEM_SETTING_ACTIVE_ATTENDANCE_DATE')
+      .single();
+
+    let savedActiveDate = null;
+    
+    if (!error && data && data.Gender) {
+      // Found in database
+      savedActiveDate = data.Gender;
+      // Also save to localStorage as backup
+      localStorage.setItem('globalActiveAttendanceDate', savedActiveDate);
+    } else {
+      // Fallback to localStorage if database doesn't have it
+      savedActiveDate = localStorage.getItem('globalActiveAttendanceDate');
+    }
+
+    if (savedActiveDate) {
+      // Set the global active attendance date for quick attendance
+      window.globalActiveAttendanceDate = savedActiveDate;
+    }
+  } catch (error) {
+    console.error('Error loading global attendance date:', error);
+    // Fallback to localStorage
+    const savedActiveDate = localStorage.getItem('globalActiveAttendanceDate');
+    if (savedActiveDate) {
+      window.globalActiveAttendanceDate = savedActiveDate;
+    }
+  }
+}
 
 // Function to toggle stat content
 function toggleStatContent(header) {

@@ -516,12 +516,17 @@
 
     // Load active date from database on page load
     document.addEventListener('DOMContentLoaded', async function() {
-      await loadGlobalAttendanceDate();
+      // Wait a bit for all elements to be ready
+      setTimeout(async () => {
+        await loadGlobalAttendanceDate();
+      }, 100);
     });
 
     // Function to load global attendance date from database
     async function loadGlobalAttendanceDate() {
       try {
+        console.log('Loading global attendance date...');
+        
         // Try to fetch from database first
         const { data, error } = await window.supabase
           .from('May_2025')
@@ -535,27 +540,58 @@
         if (!error && data && data.Gender) {
           // Found in database
           savedActiveDate = data.Gender;
+          console.log('Found saved date in database:', savedActiveDate);
           // Also save to localStorage as backup
           localStorage.setItem('globalActiveAttendanceDate', savedActiveDate);
         } else {
           // Fallback to localStorage if database doesn't have it
           savedActiveDate = localStorage.getItem('globalActiveAttendanceDate');
+          console.log('Using localStorage fallback:', savedActiveDate);
         }
 
         if (savedActiveDate) {
+          // Set the global variable
           globalActiveAttendanceDate = savedActiveDate;
+          
+          // Find and check the correct checkbox
           const checkbox = document.getElementById(`global-date-${savedActiveDate}`);
+          console.log('Looking for checkbox:', `global-date-${savedActiveDate}`, 'Found:', checkbox);
+          
           if (checkbox) {
+            // Uncheck all other checkboxes first
+            const allCheckboxes = document.querySelectorAll('.global-date-checkbox');
+            allCheckboxes.forEach(cb => cb.checked = false);
+            
+            // Check the correct one
             checkbox.checked = true;
-            document.getElementById('active-date-display').textContent = `${savedActiveDate} attendance is active (saved globally)`;
-            document.getElementById('active-date-display').style.color = '#22c55e';
+            
+            // Update display
+            const displayElement = document.getElementById('active-date-display');
+            if (displayElement) {
+              displayElement.textContent = `${savedActiveDate} attendance is active (saved globally)`;
+              displayElement.style.color = '#22c55e';
+            }
+            
+            console.log('Successfully applied saved state for:', savedActiveDate);
+          } else {
+            console.error('Checkbox not found for date:', savedActiveDate);
           }
+          
           // Set main app's active date if it exists
           if (window.activeAttendanceDate !== undefined) {
             window.activeAttendanceDate = globalActiveAttendanceDate;
           }
+          
           // Hide save button since we're loading a saved state
-          document.getElementById('saveAttendanceDateBtn').style.display = 'none';
+          const saveBtn = document.getElementById('saveAttendanceDateBtn');
+          if (saveBtn) {
+            saveBtn.style.display = 'none';
+          }
+          
+          // Clear any pending selection
+          pendingSelectedDate = null;
+        } else {
+          console.log('No saved attendance date found');
         }
       } catch (error) {
         console.error('Error loading global attendance date:', error);
@@ -565,11 +601,16 @@
           globalActiveAttendanceDate = savedActiveDate;
           const checkbox = document.getElementById(`global-date-${savedActiveDate}`);
           if (checkbox) {
+            // Uncheck all first
+            const allCheckboxes = document.querySelectorAll('.global-date-checkbox');
+            allCheckboxes.forEach(cb => cb.checked = false);
+            
             checkbox.checked = true;
             document.getElementById('active-date-display').textContent = `${savedActiveDate} attendance is active (local backup)`;
             document.getElementById('active-date-display').style.color = '#22c55e';
           }
           document.getElementById('saveAttendanceDateBtn').style.display = 'none';
+          pendingSelectedDate = null;
         }
       }
     }

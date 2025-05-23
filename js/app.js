@@ -782,8 +782,28 @@ window.quickMarkAttendance = async function (id, value) {
   const item = (window.currentItems || []).find((i) => i.id == id);
   if (!item) return;
   
-  // Check for saved active attendance date from localStorage
-  const activeAttendanceDate = localStorage.getItem('globalActiveAttendanceDate');
+  // First try to get from global variable, then localStorage, then database
+  let activeAttendanceDate = window.globalActiveAttendanceDate || localStorage.getItem('globalActiveAttendanceDate');
+  
+  // If we don't have a date, try loading from database
+  if (!activeAttendanceDate) {
+    try {
+      const { data, error } = await supabase
+        .from(CURRENT_TABLE)
+        .select('Gender')
+        .eq('id', 'global_attendance_date')
+        .eq('Full Name', 'SYSTEM_SETTING_ACTIVE_ATTENDANCE_DATE')
+        .single();
+      
+      if (!error && data && data.Gender) {
+        activeAttendanceDate = data.Gender;
+        window.globalActiveAttendanceDate = activeAttendanceDate;
+        localStorage.setItem('globalActiveAttendanceDate', activeAttendanceDate);
+      }
+    } catch (error) {
+      console.error('Error loading attendance date:', error);
+    }
+  }
   
   if (!activeAttendanceDate) {
     showToast("error", "Please select an attendance date first in Sensitive Information page");

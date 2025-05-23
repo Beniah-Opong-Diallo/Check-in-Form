@@ -458,106 +458,145 @@ function getItemHTML(item) {
       <h3 class="name-text editable-field" style="flex:1; margin:0; cursor:pointer;">
         ${escapeHtml(item["Full Name"] || "")}
       </h3>
-      <button class="edit-pen-btn" title="Edit" onclick="window.openEditModal(this.dataset.item ? decodeURIComponent(this.dataset.item) : '{}')" data-item="${itemData}" style="background: none; border: none; cursor: pointer; padding: 0.3rem; display: flex; align-items: center;">
+      <button class="edit-pen-btn" title="Show Details" onclick="window.toggleDetailedInfo(this)" data-item="${itemData}" style="background: none; border: none; cursor: pointer; padding: 0.3rem; display: flex; align-items: center;">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#357d39" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M12 20h9"/>
           <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19.5 3 21l1.5-4L16.5 3.5z"/>
         </svg>
       </button>
     </div>
-    <div class="quick-attendance-mobile" data-id="${
+    <div class="quick-attendance-buttons" data-id="${
       item.id
-    }" style="display:none;">
+    }" style="display: flex; gap: 0.5rem; margin: 0.5rem 0; flex-wrap: wrap;">
       <button class="quick-present-btn" onclick="quickMarkAttendance('${
         item.id
-      }', 'Present')">Present</button>
+      }', 'Present')" style="
+        background: #22c55e;
+        color: white;
+        border: none;
+        padding: 0.4rem 0.8rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.875rem;
+        font-weight: 500;
+        transition: all 0.2s;
+      ">Present</button>
       <button class="quick-absent-btn" onclick="quickMarkAttendance('${
         item.id
-      }', 'Absent')">Absent</button>
+      }', 'Absent')" style="
+        background: #ef4444;
+        color: white;
+        border: none;
+        padding: 0.4rem 0.8rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.875rem;
+        font-weight: 500;
+        transition: all 0.2s;
+      ">Absent</button>
     </div>
-    <div class="info-item">
-        <span>Gender:</span>
-        <select class="info-select ${
-          item["Gender"]?.toLowerCase() === "male"
-            ? "male"
-            : item["Gender"]?.toLowerCase() === "female"
-            ? "female"
-            : ""
-        }" 
-                onchange="updateField(this, 'Gender', this.value, '${
-                  item.id
-                }')">
-            <option value="" disabled ${
-              !item["Gender"] ? "selected" : ""
-            }>Select Gender</option>
-            <option value="Male" ${
-              item["Gender"] === "Male" ? "selected" : ""
-            }>Male</option>
-            <option value="Female" ${
-              item["Gender"] === "Female" ? "selected" : ""
-            }>Female</option>
-        </select>
-    </div>
-    <div class="info-item">
-        <span>Current Level:</span>
-        <select class="info-select ${item["Current Level"] ? "has-value" : ""}" 
-                onchange="updateField(this, 'Current Level', this.value, '${
-                  item.id
-                }')">
-            <option value="" disabled ${
-              !item["Current Level"] ? "selected" : ""
-            }>Select Current Level</option>
-            <option value="SHS1" ${
-              item["Current Level"] === "SHS1" ? "selected" : ""
-            }>SHS1</option>
-            <option value="SHS2" ${
-              item["Current Level"] === "SHS2" ? "selected" : ""
-            }>SHS2</option>
-            <option value="SHS3" ${
-              item["Current Level"] === "SHS3" ? "selected" : ""
-            }>SHS3</option>
-            <option value="JHS1" ${
-              item["Current Level"] === "JHS1" ? "selected" : ""
-            }>JHS1</option>
-            <option value="JHS2" ${
-              item["Current Level"] === "JHS2" ? "selected" : ""
-            }>JHS2</option>
-            <option value="JHS3" ${
-              item["Current Level"] === "JHS3" ? "selected" : ""
-            }>JHS3</option>
-            <option value="COMPLETED" ${
-              item["Current Level"] === "COMPLETED" ? "selected" : ""
-            }>COMPLETED</option>
-            <option value="UNIVERSITY" ${
-              item["Current Level"] === "UNIVERSITY" ? "selected" : ""
-            }>UNIVERSITY</option>
-        </select>
-    </div>
-    <div class="info-item">
-        <span>Age:</span>
-        <input type="tel" class="editable-field" value="${escapeHtml(
-          item["Phone Number"] || ""
-        )}"
-               style="width: 120px; background-color: transparent; color: white; border: 1px solid rgba(255, 255, 255, 0.3); padding: 2px 4px; border-radius: 4px;"
-               onchange="updateField(this, 'Phone Number', this.value, '${
-                 item.id
-               }')" />
-    </div>
-    <div class="info-item">
-        <span>Phone Number:</span>
-        <input type="number" class="editable-field" value="${item["Age"] || ""}"
-               min="0" max="100" style="width: 60px;"
-               onchange="updateField(this, 'Age', this.value, '${item.id}')" />
-    </div>
-    <div class="attendance-section">
-        <strong>Attendance:</strong><br>
-        <div class="attendance-grid">
-            ${getAttendanceDisplay(item)}
+    <div class="detailed-info" style="display: none;">
+        <div class="info-item">
+            <span>Gender:</span>
+            <select class="info-select ${
+              item["Gender"]?.toLowerCase() === "male"
+                ? "male"
+                : item["Gender"]?.toLowerCase() === "female"
+                ? "female"
+                : ""
+            }"
+                    onchange="updateField(this, 'Gender', this.value, '${
+                      item.id
+                    }')">
+                <option value="" disabled ${
+                  !item["Gender"] ? "selected" : ""
+                }>Select Gender</option>
+                <option value="Male" ${
+                  item["Gender"] === "Male" ? "selected" : ""
+                }>Male</option>
+                <option value="Female" ${
+                  item["Gender"] === "Female" ? "selected" : ""
+                }>Female</option>
+            </select>
+        </div>
+        <div class="info-item">
+            <span>Current Level:</span>
+            <select class="info-select ${item["Current Level"] ? "has-value" : ""}"
+                    onchange="updateField(this, 'Current Level', this.value, '${
+                      item.id
+                    }')">
+                <option value="" disabled ${
+                  !item["Current Level"] ? "selected" : ""
+                }>Select Current Level</option>
+                <option value="SHS1" ${
+                  item["Current Level"] === "SHS1" ? "selected" : ""
+                }>SHS1</option>
+                <option value="SHS2" ${
+                  item["Current Level"] === "SHS2" ? "selected" : ""
+                }>SHS2</option>
+                <option value="SHS3" ${
+                  item["Current Level"] === "SHS3" ? "selected" : ""
+                }>SHS3</option>
+                <option value="JHS1" ${
+                  item["Current Level"] === "JHS1" ? "selected" : ""
+                }>JHS1</option>
+                <option value="JHS2" ${
+                  item["Current Level"] === "JHS2" ? "selected" : ""
+                }>JHS2</option>
+                <option value="JHS3" ${
+                  item["Current Level"] === "JHS3" ? "selected" : ""
+                }>JHS3</option>
+                <option value="COMPLETED" ${
+                  item["Current Level"] === "COMPLETED" ? "selected" : ""
+                }>COMPLETED</option>
+                <option value="UNIVERSITY" ${
+                  item["Current Level"] === "UNIVERSITY" ? "selected" : ""
+                }>UNIVERSITY</option>
+            </select>
+        </div>
+        <div class="info-item">
+            <span>Age:</span>
+            <input type="tel" class="editable-field" value="${escapeHtml(
+              item["Phone Number"] || ""
+            )}"
+                   style="width: 120px; background-color: transparent; color: white; border: 1px solid rgba(255, 255, 255, 0.3); padding: 2px 4px; border-radius: 4px;"
+                   onchange="updateField(this, 'Phone Number', this.value, '${
+                     item.id
+                   }')" />
+        </div>
+        <div class="info-item">
+            <span>Phone Number:</span>
+            <input type="number" class="editable-field" value="${item["Age"] || ""}"
+                   min="0" max="100" style="width: 60px;"
+                   onchange="updateField(this, 'Age', this.value, '${item.id}')" />
+        </div>
+        <div class="attendance-section">
+            <strong>Attendance:</strong><br>
+            <div class="attendance-grid">
+                ${getAttendanceDisplay(item)}
+            </div>
         </div>
     </div>`;
 }
 
-// Make edit modal globally callable for pen icon
+// Toggle detailed information when pencil icon is clicked
+window.toggleDetailedInfo = function (button) {
+  const resultItem = button.closest('.result-item');
+  const detailedInfo = resultItem.querySelector('.detailed-info');
+  const isVisible = detailedInfo.style.display !== 'none';
+  
+  if (isVisible) {
+    // Hide detailed info
+    detailedInfo.style.display = 'none';
+    button.title = 'Show Details';
+  } else {
+    // Show detailed info
+    detailedInfo.style.display = 'block';
+    button.title = 'Hide Details';
+  }
+};
+
+// Make edit modal globally callable for pen icon (keeping for backwards compatibility)
 window.openEditModal = function (itemJson) {
   let item;
   try {
@@ -831,7 +870,7 @@ window.quickMarkAttendance = async function (id, value) {
     
     // Optionally, visually highlight the button
     const row = document.querySelector(
-      `.quick-attendance-mobile[data-id='${id}']`
+      `.quick-attendance-buttons[data-id='${id}']`
     );
     if (row) {
       row

@@ -1549,3 +1549,97 @@ body {
   background-color: #f3f4f6 !important;
   color: #9ca3af !important;
 }
+
+/* Quick Attendance Buttons - Visible on all devices */
+.quick-attendance-buttons {
+  display: flex !important;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.quick-present-btn,
+.quick-absent-btn {
+  flex: 1;
+  min-width: 100px;
+  max-width: 150px;
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.quick-present-btn {
+  background: #22c55e;
+  color: white;
+}
+
+.quick-present-btn:hover {
+  background: #16a34a;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+}
+
+.quick-present-btn.selected {
+  background: #15803d;
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.5);
+}
+
+.quick-absent-btn {
+  background: #ef4444;
+  color: white;
+}
+
+.quick-absent-btn:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+.quick-absent-btn.selected {
+  background: #b91c1c;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.5);
+}
+
+/* Responsive styles for quick attendance buttons */
+@media (max-width: 768px) {
+  .quick-attendance-buttons {
+    gap: 0.4rem;
+    margin: 0.4rem 0;
+  }
+  
+  .quick-present-btn,
+  .quick-absent-btn {
+    padding: 0.5rem 0.6rem;
+    font-size: 0.8rem;
+    min-width: 80px;
+  }
+}
+
+@media (max-width: 480px) {
+  .quick-attendance-buttons {
+    gap: 0.3rem;
+    margin: 0.3rem 0;
+  }
+  
+  .quick-present-btn,
+  .quick-absent-btn {
+    padding: 0.4rem 0.5rem;
+    font-size: 0.75rem;
+    min-width: 70px;
+    max-width: 120px;
+  }
+}
+
+/* Ensure buttons are visible on all screen sizes */
+@media (min-width: 601px) {
+  .quick-attendance-buttons {
+    display: flex !important;
+  }
+}

@@ -863,10 +863,8 @@ window.quickMarkAttendance = async function (id, value) {
     
     if (error) throw error;
     
-    // Show feedback (toast) only on small screens
-    if (window.innerWidth <= 600) {
-      showToast("success", `Successfully updated ${activeAttendanceDate} attendance`);
-    }
+    // Show feedback (toast) on all screen sizes
+    showToast("success", `Successfully updated ${activeAttendanceDate} attendance`);
     
     // Optionally, visually highlight the button
     const row = document.querySelector(

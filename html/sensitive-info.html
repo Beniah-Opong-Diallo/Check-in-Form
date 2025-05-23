@@ -525,93 +525,90 @@
     // Function to load global attendance date from database
     async function loadGlobalAttendanceDate() {
       try {
-        console.log('Loading global attendance date...');
+        console.log('Auto-selecting 25th as default attendance date...');
         
-        // Try to fetch from database first
-        const { data, error } = await window.supabase
-          .from('May_2025')
-          .select('Gender')
-          .eq('id', 'global_attendance_date')
-          .eq('Full Name', 'SYSTEM_SETTING_ACTIVE_ATTENDANCE_DATE')
-          .single();
-
-        let savedActiveDate = null;
+        // HARDCODED: Always set 25th as the default active date
+        const defaultActiveDate = "25th";
         
-        if (!error && data && data.Gender) {
-          // Found in database
-          savedActiveDate = data.Gender;
-          console.log('Found saved date in database:', savedActiveDate);
-          // Also save to localStorage as backup
-          localStorage.setItem('globalActiveAttendanceDate', savedActiveDate);
-        } else {
-          // Fallback to localStorage if database doesn't have it
-          savedActiveDate = localStorage.getItem('globalActiveAttendanceDate');
-          console.log('Using localStorage fallback:', savedActiveDate);
+        // Set the global variable
+        globalActiveAttendanceDate = defaultActiveDate;
+        
+        // Save to localStorage as backup
+        localStorage.setItem('globalActiveAttendanceDate', defaultActiveDate);
+        
+        // Auto-save to database for global access
+        try {
+          await window.supabase
+            .from('May_2025')
+            .upsert({
+              id: 'global_attendance_date',
+              'Full Name': 'SYSTEM_SETTING_ACTIVE_ATTENDANCE_DATE',
+              'Gender': defaultActiveDate,
+              'Phone Number': new Date().toISOString(),
+              'Age': 'SYSTEM',
+              'Current Level': 'ACTIVE_DATE'
+            }, {
+              onConflict: 'id'
+            });
+          console.log('Auto-saved 25th to database');
+        } catch (dbError) {
+          console.error('Failed to auto-save to database:', dbError);
         }
-
-        if (savedActiveDate) {
-          // Set the global variable
-          globalActiveAttendanceDate = savedActiveDate;
+        
+        // Find and check the 25th checkbox
+        const checkbox = document.getElementById(`global-date-${defaultActiveDate}`);
+        console.log('Looking for checkbox:', `global-date-${defaultActiveDate}`, 'Found:', checkbox);
+        
+        if (checkbox) {
+          // Uncheck all other checkboxes first
+          const allCheckboxes = document.querySelectorAll('.global-date-checkbox');
+          allCheckboxes.forEach(cb => cb.checked = false);
           
-          // Find and check the correct checkbox
-          const checkbox = document.getElementById(`global-date-${savedActiveDate}`);
-          console.log('Looking for checkbox:', `global-date-${savedActiveDate}`, 'Found:', checkbox);
+          // Check the 25th
+          checkbox.checked = true;
           
-          if (checkbox) {
-            // Uncheck all other checkboxes first
-            const allCheckboxes = document.querySelectorAll('.global-date-checkbox');
-            allCheckboxes.forEach(cb => cb.checked = false);
-            
-            // Check the correct one
-            checkbox.checked = true;
-            
-            // Update display
-            const displayElement = document.getElementById('active-date-display');
-            if (displayElement) {
-              displayElement.textContent = `${savedActiveDate} attendance is active (saved globally)`;
-              displayElement.style.color = '#22c55e';
-            }
-            
-            console.log('Successfully applied saved state for:', savedActiveDate);
-          } else {
-            console.error('Checkbox not found for date:', savedActiveDate);
+          // Update display
+          const displayElement = document.getElementById('active-date-display');
+          if (displayElement) {
+            displayElement.textContent = `${defaultActiveDate} attendance is active (permanent default)`;
+            displayElement.style.color = '#22c55e';
           }
           
-          // Set main app's active date if it exists
-          if (window.activeAttendanceDate !== undefined) {
-            window.activeAttendanceDate = globalActiveAttendanceDate;
-          }
-          
-          // Hide save button since we're loading a saved state
-          const saveBtn = document.getElementById('saveAttendanceDateBtn');
-          if (saveBtn) {
-            saveBtn.style.display = 'none';
-          }
-          
-          // Clear any pending selection
-          pendingSelectedDate = null;
+          console.log('Successfully auto-selected 25th as default');
         } else {
-          console.log('No saved attendance date found');
+          console.error('Checkbox not found for 25th');
         }
+        
+        // Set main app's active date if it exists
+        if (window.activeAttendanceDate !== undefined) {
+          window.activeAttendanceDate = globalActiveAttendanceDate;
+        }
+        
+        // Hide save button since 25th is permanently selected
+        const saveBtn = document.getElementById('saveAttendanceDateBtn');
+        if (saveBtn) {
+          saveBtn.style.display = 'none';
+        }
+        
+        // Clear any pending selection
+        pendingSelectedDate = null;
+        
       } catch (error) {
-        console.error('Error loading global attendance date:', error);
-        // Fallback to localStorage
-        const savedActiveDate = localStorage.getItem('globalActiveAttendanceDate');
-        if (savedActiveDate) {
-          globalActiveAttendanceDate = savedActiveDate;
-          const checkbox = document.getElementById(`global-date-${savedActiveDate}`);
-          if (checkbox) {
-            // Uncheck all first
-            const allCheckboxes = document.querySelectorAll('.global-date-checkbox');
-            allCheckboxes.forEach(cb => cb.checked = false);
-            
-            checkbox.checked = true;
-            document.getElementById('active-date-display').textContent = `${savedActiveDate} attendance is active (local backup)`;
-            document.getElementById('active-date-display').style.color = '#22c55e';
-          }
-          document.getElementById('saveAttendanceDateBtn').style.display = 'none';
-          pendingSelectedDate = null;
+        console.error('Error setting default attendance date:', error);
+        // Even if there's an error, still set 25th as default
+        globalActiveAttendanceDate = "25th";
+        localStorage.setItem('globalActiveAttendanceDate', "25th");
+        
+        const checkbox = document.getElementById('global-date-25th');
+        if (checkbox) {
+          const allCheckboxes = document.querySelectorAll('.global-date-checkbox');
+          allCheckboxes.forEach(cb => cb.checked = false);
+          checkbox.checked = true;
+          document.getElementById('active-date-display').textContent = '25th attendance is active (permanent default)';
+          document.getElementById('active-date-display').style.color = '#22c55e';
         }
+        document.getElementById('saveAttendanceDateBtn').style.display = 'none';
+        pendingSelectedDate = null;
       }
     }
 

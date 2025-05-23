@@ -782,33 +782,21 @@ window.quickMarkAttendance = async function (id, value) {
   const item = (window.currentItems || []).find((i) => i.id == id);
   if (!item) return;
   
-  // First try to get from global variable, then localStorage, then database
-  let activeAttendanceDate = window.globalActiveAttendanceDate || localStorage.getItem('globalActiveAttendanceDate');
+  // HARDCODED: Always use 25th as the default
+  let activeAttendanceDate = "25th";
   
-  // If we don't have a date, try loading from database
-  if (!activeAttendanceDate) {
-    try {
-      const { data, error } = await supabase
-        .from(CURRENT_TABLE)
-        .select('Gender')
-        .eq('id', 'global_attendance_date')
-        .eq('Full Name', 'SYSTEM_SETTING_ACTIVE_ATTENDANCE_DATE')
-        .single();
-      
-      if (!error && data && data.Gender) {
-        activeAttendanceDate = data.Gender;
-        window.globalActiveAttendanceDate = activeAttendanceDate;
-        localStorage.setItem('globalActiveAttendanceDate', activeAttendanceDate);
-      }
-    } catch (error) {
-      console.error('Error loading attendance date:', error);
-    }
+  // Still try to get from other sources for backwards compatibility, but default to 25th
+  if (!window.globalActiveAttendanceDate && !localStorage.getItem('globalActiveAttendanceDate')) {
+    // Set the defaults
+    window.globalActiveAttendanceDate = activeAttendanceDate;
+    localStorage.setItem('globalActiveAttendanceDate', activeAttendanceDate);
+    console.log('Quick attendance: Auto-set 25th as default');
+  } else {
+    // Use existing saved date, but if it's empty, use 25th
+    activeAttendanceDate = window.globalActiveAttendanceDate || localStorage.getItem('globalActiveAttendanceDate') || "25th";
   }
   
-  if (!activeAttendanceDate) {
-    showToast("error", "Please select an attendance date first in Sensitive Information page");
-    return;
-  }
+  console.log('Quick attendance using date:', activeAttendanceDate);
   
   // Map active date to field name
   const dateFieldMap = {
@@ -820,6 +808,7 @@ window.quickMarkAttendance = async function (id, value) {
   
   const fieldName = dateFieldMap[activeAttendanceDate];
   if (!fieldName) {
+    console.error('Invalid attendance date:', activeAttendanceDate);
     showToast("error", "Invalid attendance date selected");
     return;
   }
@@ -1046,37 +1035,43 @@ document.addEventListener("DOMContentLoaded", async () => {
 // Function to load global attendance date from database
 async function loadGlobalAttendanceDate() {
   try {
-    // Try to fetch from database first
-    const { data, error } = await supabase
-      .from(CURRENT_TABLE)
-      .select('Gender')
-      .eq('id', 'global_attendance_date')
-      .eq('Full Name', 'SYSTEM_SETTING_ACTIVE_ATTENDANCE_DATE')
-      .single();
-
-    let savedActiveDate = null;
+    console.log('Setting default attendance date to 25th...');
     
-    if (!error && data && data.Gender) {
-      // Found in database
-      savedActiveDate = data.Gender;
-      // Also save to localStorage as backup
-      localStorage.setItem('globalActiveAttendanceDate', savedActiveDate);
-    } else {
-      // Fallback to localStorage if database doesn't have it
-      savedActiveDate = localStorage.getItem('globalActiveAttendanceDate');
+    // HARDCODED: Always set 25th as the default active date
+    const defaultActiveDate = "25th";
+    
+    // Set the global active attendance date for quick attendance
+    window.globalActiveAttendanceDate = defaultActiveDate;
+    
+    // Save to localStorage as backup
+    localStorage.setItem('globalActiveAttendanceDate', defaultActiveDate);
+    
+    // Auto-save to database for global access
+    try {
+      await supabase
+        .from(CURRENT_TABLE)
+        .upsert({
+          id: 'global_attendance_date',
+          'Full Name': 'SYSTEM_SETTING_ACTIVE_ATTENDANCE_DATE',
+          'Gender': defaultActiveDate,
+          'Phone Number': new Date().toISOString(),
+          'Age': 'SYSTEM',
+          'Current Level': 'ACTIVE_DATE'
+        }, {
+          onConflict: 'id'
+        });
+      console.log('Auto-saved 25th to database from main app');
+    } catch (dbError) {
+      console.error('Failed to auto-save to database from main app:', dbError);
     }
-
-    if (savedActiveDate) {
-      // Set the global active attendance date for quick attendance
-      window.globalActiveAttendanceDate = savedActiveDate;
-    }
+    
+    console.log('25th set as permanent default attendance date');
+    
   } catch (error) {
-    console.error('Error loading global attendance date:', error);
-    // Fallback to localStorage
-    const savedActiveDate = localStorage.getItem('globalActiveAttendanceDate');
-    if (savedActiveDate) {
-      window.globalActiveAttendanceDate = savedActiveDate;
-    }
+    console.error('Error setting default attendance date:', error);
+    // Even if there's an error, still set 25th as default
+    window.globalActiveAttendanceDate = "25th";
+    localStorage.setItem('globalActiveAttendanceDate', "25th");
   }
 }
 

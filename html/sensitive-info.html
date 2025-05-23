@@ -223,24 +223,36 @@
     <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
       <label style="display: flex; align-items: center; gap: 0.5rem; color: #fff; cursor: pointer;">
         <input type="checkbox" id="global-date-4th" class="global-date-checkbox" data-date="4th"
-               style="transform: scale(1.2);" onchange="setGlobalAttendanceDate('4th', this)">
+               style="transform: scale(1.2);" onchange="handleDateSelection('4th', this)">
         <span>4th</span>
       </label>
       <label style="display: flex; align-items: center; gap: 0.5rem; color: #fff; cursor: pointer;">
         <input type="checkbox" id="global-date-11th" class="global-date-checkbox" data-date="11th"
-               style="transform: scale(1.2);" onchange="setGlobalAttendanceDate('11th', this)">
+               style="transform: scale(1.2);" onchange="handleDateSelection('11th', this)">
         <span>11th</span>
       </label>
       <label style="display: flex; align-items: center; gap: 0.5rem; color: #fff; cursor: pointer;">
         <input type="checkbox" id="global-date-18th" class="global-date-checkbox" data-date="18th"
-               style="transform: scale(1.2);" onchange="setGlobalAttendanceDate('18th', this)">
+               style="transform: scale(1.2);" onchange="handleDateSelection('18th', this)">
         <span>18th</span>
       </label>
       <label style="display: flex; align-items: center; gap: 0.5rem; color: #fff; cursor: pointer;">
         <input type="checkbox" id="global-date-25th" class="global-date-checkbox" data-date="25th"
-               style="transform: scale(1.2);" onchange="setGlobalAttendanceDate('25th', this)">
+               style="transform: scale(1.2);" onchange="handleDateSelection('25th', this)">
         <span>25th</span>
       </label>
+    </div>
+    <div style="text-align: center; margin-top: 1rem;">
+      <button id="saveAttendanceDateBtn"
+              style="background: #22c55e; color: #fff; border: none; border-radius: 8px; padding: 0.6rem 1.5rem; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.3s ease; display: none;"
+              onclick="saveActiveAttendanceDate()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 0.5rem;">
+          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+          <polyline points="17,21 17,13 7,13 7,21"></polyline>
+          <polyline points="7,3 7,8 15,8"></polyline>
+        </svg>
+        Save Selection
+      </button>
     </div>
     <div id="active-date-display" style="text-align: center; margin-top: 0.5rem; color: #fff; font-weight: bold;">
       No attendance date selected
@@ -406,9 +418,10 @@
 
     // Global attendance date management for sensitive page
     let globalActiveAttendanceDate = null;
+    let pendingSelectedDate = null;
 
-    // Function to set global attendance date
-    window.setGlobalAttendanceDate = function(dateKey, checkbox) {
+    // Function to handle date selection (before saving)
+    window.handleDateSelection = function(dateKey, checkbox) {
       // First, uncheck all other checkboxes
       const allCheckboxes = document.querySelectorAll('.global-date-checkbox');
       allCheckboxes.forEach(cb => {
@@ -417,26 +430,54 @@
         }
       });
 
-      // Set the active date
+      const saveBtn = document.getElementById('saveAttendanceDateBtn');
+      
       if (checkbox.checked) {
-        globalActiveAttendanceDate = dateKey;
-        // Store the active date in localStorage for persistence
-        localStorage.setItem('globalActiveAttendanceDate', dateKey);
-        document.getElementById('active-date-display').textContent = `${dateKey} attendance is active`;
-        document.getElementById('active-date-display').style.color = '#22c55e';
+        pendingSelectedDate = dateKey;
+        saveBtn.style.display = 'inline-block';
+        document.getElementById('active-date-display').textContent = `${dateKey} selected (click Save to confirm)`;
+        document.getElementById('active-date-display').style.color = '#fbbf24'; // Yellow for pending
       } else {
-        globalActiveAttendanceDate = null;
-        localStorage.removeItem('globalActiveAttendanceDate');
-        document.getElementById('active-date-display').textContent = 'No attendance date selected';
-        document.getElementById('active-date-display').style.color = '#fff';
+        pendingSelectedDate = null;
+        saveBtn.style.display = 'none';
+        // Show current saved state
+        if (globalActiveAttendanceDate) {
+          document.getElementById('active-date-display').textContent = `${globalActiveAttendanceDate} attendance is active (saved)`;
+          document.getElementById('active-date-display').style.color = '#22c55e';
+        } else {
+          document.getElementById('active-date-display').textContent = 'No attendance date selected';
+          document.getElementById('active-date-display').style.color = '#fff';
+        }
+      }
+    };
+
+    // Function to save the selected attendance date
+    window.saveActiveAttendanceDate = function() {
+      if (!pendingSelectedDate) {
+        showToast("error", "No date selected to save");
+        return;
       }
 
+      // Save the selected date
+      globalActiveAttendanceDate = pendingSelectedDate;
+      localStorage.setItem('globalActiveAttendanceDate', globalActiveAttendanceDate);
+      
+      // Update display
+      document.getElementById('active-date-display').textContent = `${globalActiveAttendanceDate} attendance is active (saved)`;
+      document.getElementById('active-date-display').style.color = '#22c55e';
+      
+      // Hide save button
+      document.getElementById('saveAttendanceDateBtn').style.display = 'none';
+      
       // Update main app's active date if it exists
       if (window.activeAttendanceDate !== undefined) {
         window.activeAttendanceDate = globalActiveAttendanceDate;
       }
       
-      showToast("success", checkbox.checked ? `${dateKey} attendance is now active` : "No date selected - attendance disabled");
+      // Clear pending selection
+      pendingSelectedDate = null;
+      
+      showToast("success", `${globalActiveAttendanceDate} attendance date saved successfully!`);
     };
 
     // Load active date from localStorage on page load
@@ -447,13 +488,15 @@
         const checkbox = document.getElementById(`global-date-${savedActiveDate}`);
         if (checkbox) {
           checkbox.checked = true;
-          document.getElementById('active-date-display').textContent = `${savedActiveDate} attendance is active`;
+          document.getElementById('active-date-display').textContent = `${savedActiveDate} attendance is active (saved)`;
           document.getElementById('active-date-display').style.color = '#22c55e';
         }
         // Set main app's active date if it exists
         if (window.activeAttendanceDate !== undefined) {
           window.activeAttendanceDate = globalActiveAttendanceDate;
         }
+        // Hide save button since we're loading a saved state
+        document.getElementById('saveAttendanceDateBtn').style.display = 'none';
       }
     });
 

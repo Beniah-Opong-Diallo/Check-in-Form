@@ -217,6 +217,36 @@
       </select>
     </div>
   </div>
+  <!-- Attendance Date Selection Panel -->
+  <div class="attendance-date-panel" style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+    <h3 style="color: #fff; margin-bottom: 0.5rem; text-align: center;">Select Active Attendance Date</h3>
+    <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+      <label style="display: flex; align-items: center; gap: 0.5rem; color: #fff; cursor: pointer;">
+        <input type="checkbox" id="global-date-4th" class="global-date-checkbox" data-date="4th"
+               style="transform: scale(1.2);" onchange="setGlobalAttendanceDate('4th', this)">
+        <span>4th</span>
+      </label>
+      <label style="display: flex; align-items: center; gap: 0.5rem; color: #fff; cursor: pointer;">
+        <input type="checkbox" id="global-date-11th" class="global-date-checkbox" data-date="11th"
+               style="transform: scale(1.2);" onchange="setGlobalAttendanceDate('11th', this)">
+        <span>11th</span>
+      </label>
+      <label style="display: flex; align-items: center; gap: 0.5rem; color: #fff; cursor: pointer;">
+        <input type="checkbox" id="global-date-18th" class="global-date-checkbox" data-date="18th"
+               style="transform: scale(1.2);" onchange="setGlobalAttendanceDate('18th', this)">
+        <span>18th</span>
+      </label>
+      <label style="display: flex; align-items: center; gap: 0.5rem; color: #fff; cursor: pointer;">
+        <input type="checkbox" id="global-date-25th" class="global-date-checkbox" data-date="25th"
+               style="transform: scale(1.2);" onchange="setGlobalAttendanceDate('25th', this)">
+        <span>25th</span>
+      </label>
+    </div>
+    <div id="active-date-display" style="text-align: center; margin-top: 0.5rem; color: #fff; font-weight: bold;">
+      No attendance date selected
+    </div>
+  </div>
+
   <!-- Data Table Section -->
   <div class="sensitive-table-container">
     <table class="sensitive-table" id="sensitiveTable">
@@ -229,15 +259,15 @@
           <th>Phone Number</th>
           <th>Age</th>
           <th>Level</th>
-          <th>Attendance 2nd</th>
-          <th>Attendance 9th</th>
-          <th>Attendance 16th</th>
-          <th>Attendance 23rd</th>
+          <th>Attendance 4th</th>
+          <th>Attendance 11th</th>
+          <th>Attendance 18th</th>
+          <th>Attendance 25th</th>
         </tr>
       </thead>
       <tbody id="sensitiveTableBody">
         <tr>
-          <td colspan="9" style="text-align:center;color:#888;">Loading data...</td>
+          <td colspan="11" style="text-align:center;color:#888;">Loading data...</td>
         </tr>
       </tbody>
     </table>
@@ -374,10 +404,63 @@
       }
     });
 
+    // Global attendance date management for sensitive page
+    let globalActiveAttendanceDate = null;
+
+    // Function to set global attendance date
+    window.setGlobalAttendanceDate = function(dateKey, checkbox) {
+      // First, uncheck all other checkboxes
+      const allCheckboxes = document.querySelectorAll('.global-date-checkbox');
+      allCheckboxes.forEach(cb => {
+        if (cb !== checkbox) {
+          cb.checked = false;
+        }
+      });
+
+      // Set the active date
+      if (checkbox.checked) {
+        globalActiveAttendanceDate = dateKey;
+        // Store the active date in localStorage for persistence
+        localStorage.setItem('globalActiveAttendanceDate', dateKey);
+        document.getElementById('active-date-display').textContent = `${dateKey} attendance is active`;
+        document.getElementById('active-date-display').style.color = '#22c55e';
+      } else {
+        globalActiveAttendanceDate = null;
+        localStorage.removeItem('globalActiveAttendanceDate');
+        document.getElementById('active-date-display').textContent = 'No attendance date selected';
+        document.getElementById('active-date-display').style.color = '#fff';
+      }
+
+      // Update main app's active date if it exists
+      if (window.activeAttendanceDate !== undefined) {
+        window.activeAttendanceDate = globalActiveAttendanceDate;
+      }
+      
+      showToast("success", checkbox.checked ? `${dateKey} attendance is now active` : "No date selected - attendance disabled");
+    };
+
+    // Load active date from localStorage on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      const savedActiveDate = localStorage.getItem('globalActiveAttendanceDate');
+      if (savedActiveDate) {
+        globalActiveAttendanceDate = savedActiveDate;
+        const checkbox = document.getElementById(`global-date-${savedActiveDate}`);
+        if (checkbox) {
+          checkbox.checked = true;
+          document.getElementById('active-date-display').textContent = `${savedActiveDate} attendance is active`;
+          document.getElementById('active-date-display').style.color = '#22c55e';
+        }
+        // Set main app's active date if it exists
+        if (window.activeAttendanceDate !== undefined) {
+          window.activeAttendanceDate = globalActiveAttendanceDate;
+        }
+      }
+    });
+
     // --- Filtered Table Logic ---
     async function updateSensitiveTable(category) {
       const tableBody = document.getElementById('sensitiveTableBody');
-      tableBody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#888;">Loading data...</td></tr>';
+      tableBody.innerHTML = '<tr><td colspan="11" style="text-align:center;color:#888;">Loading data...</td></tr>';
       try {
         let query = window.supabase.from('May_2025').select('*').order('Full Name');
         if (category && category !== 'all') {
@@ -392,7 +475,7 @@
         const { data, error } = await query;
         if (error) throw error;
         if (!data || data.length === 0) {
-          tableBody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#888;">No records found.</td></tr>';
+          tableBody.innerHTML = '<tr><td colspan="11" style="text-align:center;color:#888;">No records found.</td></tr>';
           updateStats([]);
           window.currentTableData = [];
           return;
@@ -409,7 +492,7 @@
         // Detailed error message for diagnosis
         tableBody.innerHTML = `
           <tr>
-            <td colspan="9" style="padding:15px;text-align:center;color:#e53e3e;">
+            <td colspan="11" style="padding:15px;text-align:center;color:#e53e3e;">
               <div style="margin-bottom:8px;font-weight:bold">❌ Error loading data</div>
               <div style="font-size:0.9rem;padding:8px;background:#fff1f1;border-radius:4px;white-space:pre-wrap;text-align:left;max-width:100%;overflow:auto;">
                 ${err.message || 'Unknown error occurred'}
@@ -442,7 +525,7 @@
       }
 
       if (!data || data.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:#888;">No records found.</td></tr>';
+        tableBody.innerHTML = '<tr><td colspan="11" style="text-align:center;color:#888;">No records found.</td></tr>';
         return;
       }
 
@@ -495,7 +578,7 @@
       }
 
       if (data.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:#888;">No duplicate records found.</td></tr>';
+        tableBody.innerHTML = '<tr><td colspan="11" style="text-align:center;color:#888;">No duplicate records found.</td></tr>';
         return;
       }
 
@@ -811,7 +894,7 @@
     // Fetch and display sensitive data
     async function fetchSensitiveData() {
       // Show loading indicator
-      document.getElementById('sensitiveTableBody').innerHTML = '<tr><td colspan="9" class="loading-row">Loading data...</td></tr>';
+      document.getElementById('sensitiveTableBody').innerHTML = '<tr><td colspan="11" class="loading-row">Loading data...</td></tr>';
 
       try {
         // Get filter value
@@ -830,7 +913,7 @@
         if (error) throw error;
 
         if (!data || data.length === 0) {
-          document.getElementById('sensitiveTableBody').innerHTML = '<tr><td colspan="9" class="empty-row">No records found</td></tr>';
+          document.getElementById('sensitiveTableBody').innerHTML = '<tr><td colspan="11" class="empty-row">No records found</td></tr>';
           updateStats([]);
           return;
         }
@@ -845,7 +928,7 @@
         updateStats(data);
       } catch (err) {
         console.error('Error fetching data:', err);
-        document.getElementById('sensitiveTableBody').innerHTML = '<tr><td colspan="9" class="error-row">Error loading data</td></tr>';
+        document.getElementById('sensitiveTableBody').innerHTML = '<tr><td colspan="11" class="error-row">Error loading data</td></tr>';
       }
     }
   </script>

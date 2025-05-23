@@ -723,14 +723,18 @@ function escapeHtml(unsafe) {
     .replace(/'/g, "&#039;");
 }
 
-// Update the getAttendanceDisplay function to include both Present and Absent options in the dropdown
+// Global variable to track which date is currently active for attendance
+let activeAttendanceDate = null;
+
+// Update the getAttendanceDisplay function to include checkboxes and conditional present/absent
 function getAttendanceDisplay(item) {
   const attendanceFields = [
-    { field: "Attendance 4nd", display: "4th" },
-    { field: "Attendance 11th", display: "11th" },
-    { field: "Attendance 18th", display: "18th" },
-    { field: "Attendance 25rd", display: "25th" },
+    { field: "Attendance 4nd", display: "4th", dateKey: "4th" },
+    { field: "Attendance 11th", display: "11th", dateKey: "11th" },
+    { field: "Attendance 18th", display: "18th", dateKey: "18th" },
+    { field: "Attendance 25rd", display: "25th", dateKey: "25th" },
   ];
+  
   return attendanceFields
     .map((field) => {
       let value = item[field.field];
@@ -744,6 +748,11 @@ function getAttendanceDisplay(item) {
         if (value === 0) value = "Absent";
       }
 
+      // Check if this date is currently active
+      const isActive = activeAttendanceDate === field.dateKey;
+      const isDisabled = !isActive ? 'disabled' : '';
+      const disabledStyle = !isActive ? 'opacity: 0.5; pointer-events: none;' : '';
+
       const selectClass =
         value?.toString().toLowerCase() === "present"
           ? "attendance-select present"
@@ -752,10 +761,22 @@ function getAttendanceDisplay(item) {
           : "attendance-select";
 
       return `<div class="attendance-item">
-        <span>${field.display}:</span>
-        <select class="${selectClass}" onchange="updateAttendance(this, '${
-        field.field
-      }', this.value, '${item.id}')">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+          <input type="checkbox"
+                 id="date-checkbox-${field.dateKey}-${item.id}"
+                 class="date-checkbox"
+                 data-date="${field.dateKey}"
+                 data-item-id="${item.id}"
+                 ${isActive ? 'checked' : ''}
+                 onchange="toggleAttendanceDate('${field.dateKey}', '${item.id}', this)">
+          <label for="date-checkbox-${field.dateKey}-${item.id}" style="font-weight: bold;">
+            ${field.display}:
+          </label>
+        </div>
+        <select class="${selectClass}"
+                ${isDisabled}
+                style="${disabledStyle}"
+                onchange="updateAttendance(this, '${field.field}', this.value, '${item.id}')">
           <option value="">Select</option>
           <option value="Present" ${
             value === "Present" ? "selected" : ""
@@ -769,18 +790,93 @@ function getAttendanceDisplay(item) {
     .join("");
 }
 
+// Function to toggle attendance date availability
+window.toggleAttendanceDate = function(dateKey, itemId, checkbox) {
+  // First, uncheck all other checkboxes for this item
+  const allCheckboxes = document.querySelectorAll(`input[data-item-id="${itemId}"][data-date]`);
+  allCheckboxes.forEach(cb => {
+    if (cb !== checkbox) {
+      cb.checked = false;
+    }
+  });
+
+  // Set the active date
+  if (checkbox.checked) {
+    activeAttendanceDate = dateKey;
+    // Store the active date in localStorage for persistence
+    localStorage.setItem('activeAttendanceDate', dateKey);
+  } else {
+    activeAttendanceDate = null;
+    localStorage.removeItem('activeAttendanceDate');
+  }
+
+  // Update all attendance displays
+  refreshAttendanceDisplays();
+  
+  // Show toast notification
+  if (checkbox.checked) {
+    showToast("success", `${dateKey} attendance is now active`);
+  } else {
+    showToast("success", "No date selected - attendance disabled");
+  }
+};
+
+// Function to refresh all attendance displays
+function refreshAttendanceDisplays() {
+  const items = window.currentItems || [];
+  items.forEach(item => {
+    const resultItem = document.querySelector(`[data-id="${item.id}"]`);
+    if (resultItem) {
+      const attendanceSection = resultItem.querySelector('.attendance-grid');
+      if (attendanceSection) {
+        attendanceSection.innerHTML = getAttendanceDisplay(item);
+      }
+    }
+  });
+}
+
+// Load active date from localStorage on page load
+document.addEventListener('DOMContentLoaded', function() {
+  const savedActiveDate = localStorage.getItem('activeAttendanceDate');
+  if (savedActiveDate) {
+    activeAttendanceDate = savedActiveDate;
+  }
+});
+
 window.quickMarkAttendance = async function (id, value) {
   const item = (window.currentItems || []).find((i) => i.id == id);
   if (!item) return;
+  
+  // Check if any date is active
+  if (!activeAttendanceDate) {
+    showToast("error", "Please select a date first by checking the appropriate checkbox");
+    return;
+  }
+  
+  // Map active date to field name
+  const dateFieldMap = {
+    "4th": "Attendance 4nd",
+    "11th": "Attendance 11th",
+    "18th": "Attendance 18th",
+    "25th": "Attendance 25rd"
+  };
+  
+  const fieldName = dateFieldMap[activeAttendanceDate];
+  if (!fieldName) {
+    showToast("error", "Invalid attendance date selected");
+    return;
+  }
+  
   await updateAttendance(
     document.createElement("select"),
-    "Attendance 18th", // Changed to use the 18th date attendance column
+    fieldName,
     value,
     id
   );
+  
   // Show feedback (toast) only on small screens
   if (window.innerWidth <= 600) {
-    showToast("success", "Successfully updated");
+    showToast("success", `Successfully updated ${activeAttendanceDate}`);
   }
   // Optionally, visually highlight the button
   const row = document.querySelector(
@@ -798,6 +894,16 @@ window.quickMarkAttendance = async function (id, value) {
 // Update the attendance update function
 async function updateAttendance(select, field, value, itemId) {
   try {
+    // Check if any date is active (unless it's called from quick attendance which handles this check)
+    if (!activeAttendanceDate && select.tagName === 'SELECT') {
+      showToast("error", "Please select a date first by checking the appropriate checkbox");
+      // Reset the select to its previous value
+      if (select.selectedIndex !== undefined) {
+        select.selectedIndex = 0; // Reset to "Select" option
+      }
+      return;
+    }
+
     // Now all attendance fields are TEXT type, store "Present" or "Absent" as strings
     const updateData = { [field]: value };
 
@@ -809,13 +915,15 @@ async function updateAttendance(select, field, value, itemId) {
     if (error) throw error;
 
     // Update select element class based on the selected value
-    select.className = `attendance-select ${
-      value?.toLowerCase() === "present"
-        ? "present"
-        : value?.toLowerCase() === "absent"
-        ? "absent"
-        : ""
-    }`;
+    if (select.className !== undefined) {
+      select.className = `attendance-select ${
+        value?.toLowerCase() === "present"
+          ? "present"
+          : value?.toLowerCase() === "absent"
+          ? "absent"
+          : ""
+      }`;
+    }
 
     // Use toast notification only
     showToast("success", "Updated successfully");
@@ -961,6 +1069,12 @@ async function fetchAndDisplayStats() {
 
 // Load initial data when page loads
 document.addEventListener("DOMContentLoaded", () => {
+  // Load active date from localStorage on page load
+  const savedActiveDate = localStorage.getItem('activeAttendanceDate') || localStorage.getItem('globalActiveAttendanceDate');
+  if (savedActiveDate) {
+    activeAttendanceDate = savedActiveDate;
+  }
+  
   initializeThemeSwitcher();
   loadInitialData();
 });

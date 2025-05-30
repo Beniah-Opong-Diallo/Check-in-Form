@@ -94,6 +94,864 @@
       flex-direction: column;
       gap: 1rem;
     }
+
+    /* Modern Dashboard Styles */
+    .modern-dashboard {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1e3a2e 0%, #0f1419 100%);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .dashboard-header {
+      background: white;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 1.5rem 2rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .back-btn-modern {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: #f1f5f9;
+      color: #475569;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .back-btn-modern:hover {
+      background: #e2e8f0;
+      color: #334155;
+    }
+
+    .header-title h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 0;
+    }
+
+    .header-title p {
+      color: #64748b;
+      margin: 0.25rem 0 0 0;
+      font-size: 0.95rem;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .action-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.95rem;
+    }
+
+    .action-btn.primary {
+      background: #357d39;
+      color: white;
+    }
+
+    .action-btn.primary:hover {
+      background: #2d6930;
+    }
+
+    .action-btn.secondary {
+      background: #f1f5f9;
+      color: #475569;
+      border: 1px solid #e2e8f0;
+    }
+
+    .action-btn.secondary:hover {
+      background: #e2e8f0;
+    }
+
+    .main-controls {
+      padding: 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .control-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e2e8f0;
+    }
+
+    .control-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .control-header h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #1e293b;
+      margin: 0;
+    }
+
+    .control-header svg {
+      color: #357d39;
+    }
+
+    .search-container.modern {
+      position: relative;
+      max-width: none;
+      margin: 0;
+    }
+
+    .search-input.modern {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      padding-right: 3rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+      background: #f8fafc;
+    }
+
+    .search-input.modern:focus {
+      outline: none;
+      border-color: #357d39;
+      background: white;
+    }
+
+    .filter-select.modern {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      border: 2px solid #4a5568;
+      border-radius: 8px;
+      font-size: 1rem;
+      background: #2d3748;
+      color: #e2e8f0;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .filter-select.modern:focus {
+      outline: none;
+      border-color: #68d391;
+      background: #2d3748;
+      box-shadow: 0 0 0 3px rgba(104, 211, 145, 0.1);
+    }
+
+    .filter-select.modern:hover {
+      border-color: #68d391;
+      background: #4a5568;
+    }
+
+    .filter-select.modern option {
+      background: #2d3748;
+      color: #e2e8f0;
+      padding: 0.5rem;
+    }
+
+    .dashboard-cards {
+      padding: 0 2rem 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 2rem;
+    }
+
+    .dashboard-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e2e8f0;
+      overflow: hidden;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem;
+      border-bottom: 1px solid #e2e8f0;
+      background: #f8fafc;
+    }
+
+    .card-title {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    .card-title svg {
+      color: #357d39;
+    }
+
+    .card-toggle {
+      background: none;
+      border: none;
+      color: #64748b;
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .card-toggle:hover {
+      background: #e2e8f0;
+      color: #475569;
+    }
+
+    .card-content {
+      padding: 1.5rem;
+    }
+
+    .stats-grid-modern {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: 1rem;
+      background: #f8fafc;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #357d39;
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+      font-size: 0.875rem;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    .level-stats-container h4 {
+      color: #1e293b;
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 0 0 1rem 0;
+    }
+
+    .level-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .level-stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0.75rem;
+      background: #f1f5f9;
+      border-radius: 6px;
+      text-align: center;
+    }
+
+    .level-name {
+      font-size: 0.75rem;
+      color: #64748b;
+      font-weight: 500;
+      margin-bottom: 0.25rem;
+    }
+
+    .level-count {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #1e293b;
+    }
+
+    .card-actions {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .btn-primary, .btn-secondary, .btn-success {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    .btn-primary {
+      background: #357d39;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #2d6930;
+    }
+
+    .btn-secondary {
+      background: #f1f5f9;
+      color: #475569;
+      border: 1px solid #e2e8f0;
+    }
+
+    .btn-secondary:hover {
+      background: #e2e8f0;
+    }
+
+    .btn-success {
+      background: #22c55e;
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: #16a34a;
+    }
+
+    .full-width {
+      width: 100%;
+    }
+
+    .attendance-grid.modern {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .advanced-section {
+      padding: 0 2rem 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .attendance-date-controls {
+      text-align: center;
+    }
+
+    .control-description {
+      color: #64748b;
+      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+    }
+
+    .date-options {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .date-option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem;
+      background: #2d3748;
+      border: 2px solid #4a5568;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      min-width: 90px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .date-option:hover {
+      border-color: #68d391;
+      background: #4a5568;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .date-option input {
+      transform: scale(1.4);
+      accent-color: #68d391;
+    }
+
+    .date-option input:checked + .date-label {
+      color: #68d391;
+    }
+
+    .date-label {
+      font-weight: 600;
+      color: #e2e8f0;
+      font-size: 1rem;
+      transition: color 0.2s;
+    }
+
+    .date-actions {
+      margin: 1.5rem 0;
+    }
+
+    .status-display {
+      padding: 1rem;
+      background: #2d3748;
+      border: 1px solid #4a5568;
+      border-radius: 8px;
+      color: #e2e8f0;
+      font-weight: 500;
+      font-size: 0.95rem;
+      text-align: center;
+    }
+
+    .control-description {
+      color: #a0aec0;
+      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+    }
+
+    .data-section {
+      padding: 0 2rem 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .data-section .dashboard-card {
+      min-width: 100%;
+    }
+
+    .table-actions {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .table-container.modern {
+      overflow: auto;
+      max-height: 600px;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      background: white;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .modern-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    .modern-table th {
+      background: #f8fafc;
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+      color: #374151;
+      border-bottom: 1px solid #e2e8f0;
+      font-size: 0.875rem;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .modern-table td {
+      padding: 0.875rem 1rem;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 0.875rem;
+      color: #374151;
+    }
+
+    .modern-table tr:hover {
+      background: #f8fafc;
+    }
+
+    .checkbox-col {
+      width: 50px;
+      text-align: center;
+    }
+
+    .loading-state {
+      text-align: center;
+      padding: 3rem 1rem;
+    }
+
+    .loading-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      color: #64748b;
+    }
+
+    .loading-spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid #e2e8f0;
+      border-top: 3px solid #357d39;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .header-content {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+      }
+
+      .header-actions {
+        justify-content: center;
+      }
+
+      .controls-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .dashboard-cards {
+        grid-template-columns: 1fr;
+        padding: 0 1rem 2rem;
+      }
+
+      .main-controls, .advanced-section, .data-section {
+        padding: 1rem;
+      }
+
+      .stats-grid-modern {
+        grid-template-columns: 1fr;
+      }
+
+      .date-options {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* Card Toggle Animation */
+    .card-content.collapsed {
+      display: none;
+    }
+
+    .card-toggle.rotated svg {
+      transform: rotate(180deg);
+    }
+
+    /* Modern Attendance Cards */
+    .attendance-card-modern {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 1.25rem;
+      transition: all 0.2s ease;
+    }
+
+    .attendance-card-modern:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .attendance-card-header {
+      text-align: center;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .attendance-card-header h4 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #357d39;
+      margin: 0 0 0.25rem 0;
+    }
+
+    .total-count {
+      font-size: 0.875rem;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    .attendance-metrics {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .metric {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      border-radius: 8px;
+    }
+
+    .metric.present {
+      background: rgba(34, 197, 94, 0.08);
+    }
+
+    .metric.absent {
+      background: rgba(239, 68, 68, 0.08);
+    }
+
+    .metric-icon {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .metric-icon.present {
+      background: #22c55e;
+    }
+
+    .metric-icon.absent {
+      background: #ef4444;
+    }
+
+    .metric-info {
+      flex: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .metric-label {
+      font-weight: 500;
+      color: #374151;
+      font-size: 0.875rem;
+    }
+
+    .metric-values {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.125rem;
+    }
+
+    .metric-count {
+      font-weight: 700;
+      font-size: 1.125rem;
+    }
+
+    .metric.present .metric-count {
+      color: #22c55e;
+    }
+
+    .metric.absent .metric-count {
+      color: #ef4444;
+    }
+
+    .metric-percentage {
+      font-size: 0.75rem;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    .attendance-progress {
+      margin-top: 1rem;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      font-size: 0.875rem;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #22c55e, #16a34a);
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+
+    /* Table Compact Mode */
+    .modern-table.compact th,
+    .modern-table.compact td {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8rem;
+    }
+
+    .modern-table.compact .checkbox-col {
+      width: 40px;
+    }
+
+    /* Modern Table Enhancements */
+    .duplicate-row {
+      background-color: rgba(254, 202, 202, 0.1) !important;
+    }
+
+    .duplicate-row:hover {
+      background-color: rgba(254, 202, 202, 0.2) !important;
+    }
+
+    .name-cell {
+      position: relative;
+    }
+
+    .cell-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .name-text {
+      font-weight: 500;
+      color: #374151;
+    }
+
+    .cell-actions {
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .data-row:hover .cell-actions {
+      opacity: 1;
+    }
+
+    .action-btn-small {
+      background: none;
+      border: none;
+      padding: 0.25rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .action-btn-small.delete {
+      color: #ef4444;
+    }
+
+    .action-btn-small.delete:hover {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+
+    .gender-badge {
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: capitalize;
+    }
+
+    .gender-badge.male {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+
+    .gender-badge.female {
+      background: #fce7f3;
+      color: #be185d;
+    }
+
+    .level-badge {
+      padding: 0.25rem 0.5rem;
+      background: #f1f5f9;
+      color: #475569;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      border: 1px solid #e2e8f0;
+    }
+
+    .attendance-status {
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-align: center;
+      display: inline-block;
+      min-width: 60px;
+    }
+
+    .attendance-status.present {
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+
+    .attendance-status.absent {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+
+    .attendance-status.empty {
+      background: #f8fafc;
+      color: #64748b;
+      border: 1px solid #e2e8f0;
+    }
+
+    /* Loading and Empty States */
+    .loading-state .loading-content {
+      color: #64748b;
+      font-size: 0.95rem;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: #64748b;
+    }
+
+    .error-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: #ef4444;
+    }
   </style>
 </head>
 
@@ -137,153 +995,266 @@
   </div>
 
   <!-- Main content (hidden until authenticated) -->
-  <div id="sensitive-content" class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-    <a href="../index.html" class="back-btn">← Back</a>
-    <h1 class="text-3xl font-bold sensitive-title">Sensitive Information</h1>
-
-    <!-- Create Monthly Table Button -->
-    <div style="text-align:right;margin-bottom:1.5rem;">
-      <button id="openMonthlyExportBtn" class="sensitive-modal-btn"
-        style="background:#357d39;color:#fff;padding:0.7em 2em;border:none;border-radius:8px;font-size:1.08rem;font-weight:600;cursor:pointer;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:0.5em;">
-          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-          <path d="M16 3v4a1 1 0 0 0 1 1h4" />
-        </svg>
-        Create Monthly Table
-      </button>
-    </div>
-
-    <!-- Search Bar -->
-    <div class="search-container">
-
-    </div>
-    <input type="text" id="name-search" class="search-input" placeholder="Search by name...">
-    <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="2">
-      <circle cx="11" cy="11" r="8"></circle>
-      <path d="M21 21l-4.35-4.35"></path>
-    </svg>
-  </div>
-
-  <div class="stats-container">
-    <div class="stats-outer-container">
-      <div class="stats-grid">
-        <!-- Overall Total -->
-        <div class="stat-card">
-          <div class="stat-header" onclick="toggleStatContent(this)">
-            <h3>Overall Total</h3>
-            <span class="toggle-arrow">▼</span>
+  <div id="sensitive-content" class="modern-dashboard">
+    <!-- Modern Header -->
+    <header class="dashboard-header">
+      <div class="header-content">
+        <div class="header-left">
+          <a href="../index.html" class="back-btn-modern">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Back
+          </a>
+          <div class="header-title">
+            <h1>Sensitive Information Dashboard</h1>
+            <p>Manage attendance and member data</p>
           </div>
-          <div class="stat-content"
-            style="max-height:0;overflow:hidden;transition:max-height 0.4s cubic-bezier(0.4,0,0.2,1);">
-            <div class="stat-details">
-              <p>Total People: <span id="totalPeople">0</span></p>
-              <p>Boys: <span id="totalBoys">0</span></p>
-              <p>Girls: <span id="totalGirls">0</span></p>
+        </div>
+        <div class="header-actions">
+          <button id="toggleAdvancedBtn" class="action-btn secondary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M12 1v6m0 6v6m11-7h-6m-6 0H1"/>
+            </svg>
+            Advanced Tools
+          </button>
+          <button id="openMonthlyExportBtn" class="action-btn primary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+              <path d="M16 3v4a1 1 0 0 0 1 1h4"/>
+            </svg>
+            Monthly Table
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Controls -->
+    <section class="main-controls">
+      <div class="controls-grid">
+        <!-- Search Section -->
+        <div class="control-card">
+          <div class="control-header">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/>
+              <path d="M21 21l-4.35-4.35"/>
+            </svg>
+            <h3>Search Members</h3>
+          </div>
+          <div class="search-container modern">
+            <input type="text" id="name-search" class="search-input modern" placeholder="Search by name...">
+            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/>
+              <path d="M21 21l-4.35-4.35"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="control-card">
+          <div class="control-header">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+            </svg>
+            <h3>Filter Data</h3>
+          </div>
+          <select id="categoryFilter" class="filter-select modern" onchange="filterByCategory(this.value)">
+            <option value="all">All Entries</option>
+            <option value="SHS">SHS Students</option>
+            <option value="JHS">JHS Students</option>
+            <option value="COMPLETED">Completed</option>
+            <option value="UNIVERSITY">University</option>
+            <option value="duplicates">Show Duplicates</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dashboard Cards -->
+    <section class="dashboard-cards">
+      <!-- Quick Stats Card -->
+      <div class="dashboard-card">
+        <div class="card-header">
+          <div class="card-title">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="8.5" cy="7" r="4"/>
+              <path d="M20 8v6M23 11h-6"/>
+            </svg>
+            Quick Statistics
+          </div>
+          <button class="card-toggle rotated" onclick="toggleCard(this)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </button>
+        </div>
+        <div class="card-content collapsed">
+          <div class="stats-grid-modern">
+            <div class="stat-item">
+              <div class="stat-value" id="totalPeople">0</div>
+              <div class="stat-label">Total People</div>
             </div>
-            <div class="stat-details" id="levelStats">
+            <div class="stat-item">
+              <div class="stat-value" id="totalBoys">0</div>
+              <div class="stat-label">Boys</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="totalGirls">0</div>
+              <div class="stat-label">Girls</div>
+            </div>
+          </div>
+          <div class="level-stats-container">
+            <h4>Level Distribution</h4>
+            <div id="levelStats" class="level-stats-grid">
               <!-- Levels will be dynamically added here -->
             </div>
-            <!-- Integrated Download Button -->
-            <div
-              style="text-align:center;margin-top:1.5rem;padding:0.75rem;background:rgba(69,160,73,0.1);border-radius:8px;">
-              <button id="downloadButton" class="download-button"
-                style="width:100%;max-width:600px;padding:0.9rem;font-size:1.1rem;display:flex;align-items:center;justify-content:center;gap:0.6rem;margin:0 auto;"
-                onclick="downloadCSVFiltered()">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                  stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                  <polyline points="7 10 12 15 17 10"></polyline>
-                  <line x1="12" y1="15" x2="12" y2="3"></line>
+          </div>
+          <div class="card-actions">
+            <button id="downloadButton" class="btn-primary full-width" onclick="downloadCSVFiltered()">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              Download Current Data
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Attendance Summary Card -->
+      <div class="dashboard-card">
+        <div class="card-header">
+          <div class="card-title">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+            Attendance Overview
+          </div>
+          <button class="card-toggle rotated" onclick="toggleCard(this)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </button>
+        </div>
+        <div class="card-content collapsed">
+          <div class="attendance-grid modern">
+            <!-- Attendance cards will be dynamically populated here -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Advanced Tools Section (Hidden by default) -->
+    <section id="advanced-tools" class="advanced-section" style="display: none;">
+      <div class="dashboard-card">
+        <div class="card-header">
+          <div class="card-title">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+            </svg>
+            Attendance Date Management
+          </div>
+        </div>
+        <div class="card-content">
+          <div class="attendance-date-controls">
+            <p class="control-description">Select the active attendance date for the system</p>
+            <div class="date-options">
+              <label class="date-option">
+                <input type="checkbox" id="global-date-4th" class="global-date-checkbox" data-date="4th" onchange="handleDateSelection('4th', this)">
+                <span class="date-label">4th</span>
+              </label>
+              <label class="date-option">
+                <input type="checkbox" id="global-date-11th" class="global-date-checkbox" data-date="11th" onchange="handleDateSelection('11th', this)">
+                <span class="date-label">11th</span>
+              </label>
+              <label class="date-option">
+                <input type="checkbox" id="global-date-18th" class="global-date-checkbox" data-date="18th" onchange="handleDateSelection('18th', this)">
+                <span class="date-label">18th</span>
+              </label>
+              <label class="date-option">
+                <input type="checkbox" id="global-date-25th" class="global-date-checkbox" data-date="25th" onchange="handleDateSelection('25th', this)">
+                <span class="date-label">25th</span>
+              </label>
+            </div>
+            <div class="date-actions">
+              <button id="saveAttendanceDateBtn" class="btn-success" style="display: none;" onclick="saveActiveAttendanceDate()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
                 </svg>
-                Download CSV (Current Results)
+                Save Selection
               </button>
+            </div>
+            <div id="active-date-display" class="status-display">
+              No attendance date selected
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
-  <div class="category-filter">
-    <div class="filter-container gradient-box">
-      <select id="categoryFilter" class="category-select" onchange="filterByCategory(this.value)">
-        <option value="all">All Entries</option>
-        <option value="SHS">SHS Students</option>
-        <option value="JHS">JHS Students</option>
-        <option value="COMPLETED">Completed</option>
-        <option value="UNIVERSITY">University</option>
-        <option value="duplicates">Show Duplicates</option>
-      </select>
-    </div>
-  </div>
-  <!-- Attendance Date Selection Panel -->
-  <div class="attendance-date-panel" style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
-    <h3 style="color: #fff; margin-bottom: 0.5rem; text-align: center;">Select Active Attendance Date</h3>
-    <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
-      <label style="display: flex; align-items: center; gap: 0.5rem; color: #fff; cursor: pointer;">
-        <input type="checkbox" id="global-date-4th" class="global-date-checkbox" data-date="4th"
-               style="transform: scale(1.2);" onchange="handleDateSelection('4th', this)">
-        <span>4th</span>
-      </label>
-      <label style="display: flex; align-items: center; gap: 0.5rem; color: #fff; cursor: pointer;">
-        <input type="checkbox" id="global-date-11th" class="global-date-checkbox" data-date="11th"
-               style="transform: scale(1.2);" onchange="handleDateSelection('11th', this)">
-        <span>11th</span>
-      </label>
-      <label style="display: flex; align-items: center; gap: 0.5rem; color: #fff; cursor: pointer;">
-        <input type="checkbox" id="global-date-18th" class="global-date-checkbox" data-date="18th"
-               style="transform: scale(1.2);" onchange="handleDateSelection('18th', this)">
-        <span>18th</span>
-      </label>
-      <label style="display: flex; align-items: center; gap: 0.5rem; color: #fff; cursor: pointer;">
-        <input type="checkbox" id="global-date-25th" class="global-date-checkbox" data-date="25th"
-               style="transform: scale(1.2);" onchange="handleDateSelection('25th', this)">
-        <span>25th</span>
-      </label>
-    </div>
-    <div style="text-align: center; margin-top: 1rem;">
-      <button id="saveAttendanceDateBtn"
-              style="background: #22c55e; color: #fff; border: none; border-radius: 8px; padding: 0.6rem 1.5rem; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.3s ease; display: none;"
-              onclick="saveActiveAttendanceDate()">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 0.5rem;">
-          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-          <polyline points="17,21 17,13 7,13 7,21"></polyline>
-          <polyline points="7,3 7,8 15,8"></polyline>
-        </svg>
-        Save Selection
-      </button>
-    </div>
-    <div id="active-date-display" style="text-align: center; margin-top: 0.5rem; color: #fff; font-weight: bold;">
-      No attendance date selected
-    </div>
-  </div>
+    </section>
 
-  <!-- Data Table Section -->
-  <div class="sensitive-table-container">
-    <table class="sensitive-table" id="sensitiveTable">
-      <thead>
-        <tr>
-          <th style="width: 40px;"><input type="checkbox" id="selectAllCheckbox"
-              style="transform: scale(1.2); cursor: pointer;" title="Select/Deselect All"></th>
-          <th>Full Name</th>
-          <th>Gender</th>
-          <th>Phone Number</th>
-          <th>Age</th>
-          <th>Level</th>
-          <th>Attendance 4th</th>
-          <th>Attendance 11th</th>
-          <th>Attendance 18th</th>
-          <th>Attendance 25th</th>
-        </tr>
-      </thead>
-      <tbody id="sensitiveTableBody">
-        <tr>
-          <td colspan="11" style="text-align:center;color:#888;">Loading data...</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+    <!-- Data Table Section -->
+    <section class="data-section">
+      <div class="dashboard-card">
+        <div class="card-header">
+          <div class="card-title">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 6h18M3 12h18M3 18h18"/>
+            </svg>
+            Member Data
+          </div>
+          <div class="table-actions">
+            <button class="btn-secondary" onclick="toggleTableView()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                <line x1="9" y1="9" x2="15" y2="15"/>
+                <line x1="15" y1="9" x2="9" y2="15"/>
+              </svg>
+              Compact View
+            </button>
+          </div>
+        </div>
+        <div class="card-content">
+          <div class="table-container modern">
+            <table class="modern-table" id="sensitiveTable">
+              <thead>
+                <tr>
+                  <th class="checkbox-col">
+                    <input type="checkbox" id="selectAllCheckbox" title="Select/Deselect All">
+                  </th>
+                  <th>Full Name</th>
+                  <th>Gender</th>
+                  <th>Phone</th>
+                  <th>Age</th>
+                  <th>Level</th>
+                  <th>4th</th>
+                  <th>11th</th>
+                  <th>18th</th>
+                  <th>25th</th>
+                </tr>
+              </thead>
+              <tbody id="sensitiveTableBody">
+                <tr>
+                  <td colspan="11" class="loading-state">
+                    <div class="loading-content">
+                      <div class="loading-spinner"></div>
+                      <span>Loading data...</span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
   <div class="fixed-buttons"></div>
 
   <!-- Add toast notifications -->
@@ -398,6 +1369,7 @@
 
         renderTable(filteredData);
         updateStats(filteredData);
+        updateAttendanceSummary(filteredData);
       });
 
       // Open Monthly Export Modal
@@ -414,7 +1386,57 @@
           }
         };
       }
+
+      // Modern interface event handlers
+      const toggleAdvancedBtn = document.getElementById('toggleAdvancedBtn');
+      const advancedTools = document.getElementById('advanced-tools');
+      
+      if (toggleAdvancedBtn && advancedTools) {
+        toggleAdvancedBtn.addEventListener('click', function() {
+          const isVisible = advancedTools.style.display !== 'none';
+          advancedTools.style.display = isVisible ? 'none' : 'block';
+          
+          // Update button content
+          this.innerHTML = isVisible ? `
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M12 1v6m0 6v6m11-7h-6m-6 0H1"/>
+            </svg>
+            Show Advanced Tools
+          ` : `
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+            Hide Advanced Tools
+          `;
+        });
+      }
     });
+
+    // Modern UI Functions
+    function toggleCard(button) {
+      const cardContent = button.closest('.dashboard-card').querySelector('.card-content');
+      const isCollapsed = cardContent.classList.contains('collapsed');
+      
+      if (isCollapsed) {
+        cardContent.classList.remove('collapsed');
+        button.classList.remove('rotated');
+      } else {
+        cardContent.classList.add('collapsed');
+        button.classList.add('rotated');
+      }
+    }
+
+    function toggleTableView() {
+      const table = document.getElementById('sensitiveTable');
+      const isCompact = table.classList.contains('compact');
+      
+      if (isCompact) {
+        table.classList.remove('compact');
+      } else {
+        table.classList.add('compact');
+      }
+    }
 
     // Global attendance date management for sensitive page
     let globalActiveAttendanceDate = null;
@@ -615,7 +1637,16 @@
     // --- Filtered Table Logic ---
     async function updateSensitiveTable(category) {
       const tableBody = document.getElementById('sensitiveTableBody');
-      tableBody.innerHTML = '<tr><td colspan="11" style="text-align:center;color:#888;">Loading data...</td></tr>';
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="11" class="loading-state">
+            <div class="loading-content">
+              <div class="loading-spinner"></div>
+              <span>Loading data...</span>
+            </div>
+          </td>
+        </tr>
+      `;
       try {
         let query = window.supabase.from('May_2025').select('*').order('Full Name');
         if (category && category !== 'all') {
@@ -630,8 +1661,24 @@
         const { data, error } = await query;
         if (error) throw error;
         if (!data || data.length === 0) {
-          tableBody.innerHTML = '<tr><td colspan="11" style="text-align:center;color:#888;">No records found.</td></tr>';
+          tableBody.innerHTML = `
+            <tr>
+              <td colspan="11" class="empty-state">
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color: #94a3b8;">
+                    <circle cx="11" cy="11" r="8"/>
+                    <path d="M21 21l-4.35-4.35"/>
+                  </svg>
+                  <div>
+                    <div style="font-weight: 600; margin-bottom: 0.25rem;">No records found</div>
+                    <div style="font-size: 0.875rem;">No data matches the current filter criteria</div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          `;
           updateStats([]);
+          updateAttendanceSummary([]);
           window.currentTableData = [];
           return;
         }
@@ -647,20 +1694,32 @@
         // Detailed error message for diagnosis
         tableBody.innerHTML = `
           <tr>
-            <td colspan="11" style="padding:15px;text-align:center;color:#e53e3e;">
-              <div style="margin-bottom:8px;font-weight:bold">❌ Error loading data</div>
-              <div style="font-size:0.9rem;padding:8px;background:#fff1f1;border-radius:4px;white-space:pre-wrap;text-align:left;max-width:100%;overflow:auto;">
-                ${err.message || 'Unknown error occurred'}
-              </div>
-              <div style="margin-top:10px;">
-                <button onclick="retryDataLoad()" style="padding:6px 12px;background:#3182ce;color:white;border:none;border-radius:4px;cursor:pointer;">
-                  🔄 Retry
-                </button>
+            <td colspan="11" class="error-state">
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color: #ef4444;">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="15" y1="9" x2="9" y2="15"/>
+                  <line x1="9" y1="9" x2="15" y2="15"/>
+                </svg>
+                <div style="text-align: center;">
+                  <div style="font-weight: 600; margin-bottom: 0.5rem;">Error loading data</div>
+                  <div style="font-size: 0.875rem; color: #64748b; margin-bottom: 1rem; max-width: 400px;">
+                    ${err.message || 'An unexpected error occurred while loading the data'}
+                  </div>
+                  <button onclick="retryDataLoad()" class="btn-primary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M23 4v6h-6M1 20v-6h6"/>
+                      <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/>
+                    </svg>
+                    Retry Loading
+                  </button>
+                </div>
               </div>
             </td>
           </tr>
         `;
         updateStats([]);
+        updateAttendanceSummary([]);
         window.currentTableData = [];
       }
     }
@@ -680,7 +1739,24 @@
       }
 
       if (!data || data.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="11" style="text-align:center;color:#888;">No records found.</td></tr>';
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="11" class="empty-state">
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color: #94a3b8;">
+                  <circle cx="11" cy="11" r="8"/>
+                  <path d="M21 21l-4.35-4.35"/>
+                </svg>
+                <div>
+                  <div style="font-weight: 600; margin-bottom: 0.25rem;">No records found</div>
+                  <div style="font-size: 0.875rem;">Try adjusting your search or filter criteria</div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        `;
+        // Update attendance summary with empty data
+        updateAttendanceSummary([]);
         return;
       }
 
@@ -733,33 +1809,73 @@
       }
 
       if (data.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="11" style="text-align:center;color:#888;">No duplicate records found.</td></tr>';
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="11" class="empty-state">
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color: #94a3b8;">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                  <circle cx="8.5" cy="7" r="4"/>
+                  <path d="M20 8v6M23 11h-6"/>
+                </svg>
+                <div>
+                  <div style="font-weight: 600; margin-bottom: 0.25rem;">No duplicate records found</div>
+                  <div style="font-size: 0.875rem;">All member records appear to be unique</div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        `;
+        // Update attendance summary with empty data
+        updateAttendanceSummary([]);
         return;
       }
 
       tableBody.innerHTML = data.map(item => {
         const isDuplicate = isDuplicateMode && duplicateNames.includes(item["Full Name"] || '');
-        const rowStyle = isDuplicate ? 'background-color: rgba(254, 202, 202, 0.2);' : '';
+        const rowClass = isDuplicate ? 'duplicate-row' : '';
+
+        // Helper function to get attendance status with styling
+        const getAttendanceCell = (attendance) => {
+          const status = (attendance || '').trim().toLowerCase();
+          if (status === 'present' || status === 'p') {
+            return `<span class="attendance-status present">Present</span>`;
+          } else if (status === 'absent' || status === 'a') {
+            return `<span class="attendance-status absent">Absent</span>`;
+          }
+          return `<span class="attendance-status empty">-</span>`;
+        };
 
         return `
-        <tr style="${rowStyle}" class="data-row" data-id="${item.id}">
-          <td style="text-align:center;">
-            <input type="checkbox" class="record-checkbox" data-id="${item.id}" style="transform: scale(1.2); cursor: pointer;" onchange="updateSelectedState()">
+        <tr class="data-row ${rowClass}" data-id="${item.id}">
+          <td class="checkbox-col">
+            <input type="checkbox" class="record-checkbox" data-id="${item.id}" onchange="updateSelectedState()">
           </td>
-          <td>${item["Full Name"] || ''}</td>
-          <td>${item["Gender"] || ''}</td>
+          <td class="name-cell">
+            <div class="cell-content">
+              <span class="name-text">${item["Full Name"] || ''}</span>
+              <div class="cell-actions">
+                <button class="action-btn-small delete" title="Delete Entry" onclick="showDeleteConfirm('${item.id}', this)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6"/>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </td>
+          <td>
+            <span class="gender-badge ${(item["Gender"] || '').toLowerCase()}">${item["Gender"] || ''}</span>
+          </td>
           <td>${item["Phone Number"] || ''}</td>
           <td>${item["Age"] || ''}</td>
-          <td>${item["Current Level"] || ''}</td>
-          <td>${item["Attendance 4nd"] || ''}</td>
-          <td>${item["Attendance 11th"] || ''}</td>
-          <td>${item["Attendance 18th"] || ''}</td>
-          <td style="display:flex;align-items:center;gap:0.5em;justify-content:space-between;">
-            <span>${item["Attendance 25rd"] || ''}</span>
-            <button class="delete-btn" title="Delete" onclick="showDeleteConfirm('${item.id}', this)" style="background:#ef4444;color:#fff;border:none;border-radius:6px;padding:0.25em 0.6em;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
-            </button>
+          <td>
+            <span class="level-badge">${item["Current Level"] || ''}</span>
           </td>
+          <td>${getAttendanceCell(item["Attendance 4nd"])}</td>
+          <td>${getAttendanceCell(item["Attendance 11th"])}</td>
+          <td>${getAttendanceCell(item["Attendance 18th"])}</td>
+          <td>${getAttendanceCell(item["Attendance 25rd"])}</td>
         </tr>
       `}).join('');
 
@@ -894,8 +2010,92 @@
       document.getElementById('totalBoys').textContent = boys;
       document.getElementById('totalGirls').textContent = girls;
       document.getElementById('levelStats').innerHTML = levelOrder.map(lvl =>
-        `<div class="level-stat"><span class="level-name">${lvl}</span><span class="level-count">${levelCounts[lvl]}</span></div>`
+        `<div class="level-stat">
+          <span class="level-count">${levelCounts[lvl]}</span>
+          <span class="level-name">${lvl}</span>
+        </div>`
       ).join('');
+
+      // Update attendance summary after stats
+      updateAttendanceSummary(data);
+    }
+
+    // Function to calculate and display attendance totals for each date
+    function updateAttendanceSummary(data) {
+      const attendanceDates = ['4th', '11th', '18th', '25th'];
+      const attendanceColumns = ['Attendance 4nd', 'Attendance 11th', 'Attendance 18th', 'Attendance 25rd'];
+      const attendanceGrid = document.querySelector('.attendance-grid.modern');
+      
+      if (!attendanceGrid) return;
+
+      let summaryHTML = '';
+
+      attendanceDates.forEach((date, index) => {
+        const columnName = attendanceColumns[index];
+        let presentCount = 0;
+        let absentCount = 0;
+        let totalCount = 0;
+
+        data.forEach(person => {
+          const attendance = (person[columnName] || '').trim().toLowerCase();
+          totalCount++;
+          
+          if (attendance === 'present' || attendance === 'p') {
+            presentCount++;
+          } else if (attendance === 'absent' || attendance === 'a') {
+            absentCount++;
+          }
+          // Note: Empty or other values are not counted as present or absent
+        });
+
+        const presentPercentage = totalCount > 0 ? Math.round((presentCount / totalCount) * 100) : 0;
+        const absentPercentage = totalCount > 0 ? Math.round((absentCount / totalCount) * 100) : 0;
+
+        summaryHTML += `
+          <div class="attendance-card-modern">
+            <div class="attendance-card-header">
+              <h4>${date}</h4>
+              <span class="total-count">${totalCount} people</span>
+            </div>
+            
+            <div class="attendance-metrics">
+              <div class="metric present">
+                <div class="metric-icon present"></div>
+                <div class="metric-info">
+                  <span class="metric-label">Present</span>
+                  <div class="metric-values">
+                    <span class="metric-count">${presentCount}</span>
+                    <span class="metric-percentage">${presentPercentage}%</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="metric absent">
+                <div class="metric-icon absent"></div>
+                <div class="metric-info">
+                  <span class="metric-label">Absent</span>
+                  <div class="metric-values">
+                    <span class="metric-count">${absentCount}</span>
+                    <span class="metric-percentage">${absentPercentage}%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="attendance-progress">
+              <div class="progress-label">
+                <span>Attendance Rate</span>
+                <span>${presentPercentage}%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: ${presentPercentage}%;"></div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+
+      attendanceGrid.innerHTML = summaryHTML;
     }
 
     // Download only currently displayed table data

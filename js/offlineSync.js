@@ -70,7 +70,7 @@ class OfflineSync {
       try {
         // Replace with your actual Supabase insert logic
         const { error } = await window.supabase
-          .from("May_2025")
+          .from("June_2025")
           .insert([item.data]);
         if (error) throw error;
       } catch (err) {

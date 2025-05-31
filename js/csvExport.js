@@ -10,24 +10,25 @@ async function downloadCSV() {
 
     // Fetch all data from Supabase
     const { data, error } = await supabase
-      .from("May_2025")
+      .from("June_2025")
       .select("*")
-      .order("full_name");
+      .order("Full Name");
 
     if (error) throw error;
     if (!data || data.length === 0) throw new Error("No data available");
 
     // Define CSV headers and their corresponding data keys
     const headerConfig = [
-      { header: "Full Name", key: "full_name" },
-      { header: "Gender", key: "gender" },
-      { header: "Phone Number", key: "phone_number" },
-      { header: "Age", key: "age" },
-      { header: "Current Level", key: "current_level" },
-      { header: "Attendance 4nd", key: "attendance_4nd" },
-      { header: "Attendance 11th", key: "attendance_11th" },
-      { header: "Attendance 18th", key: "attendance_18th" },
-      { header: "Attendance 25rd", key: "attendance_25rd" },
+      { header: "Full Name", key: "Full Name" },
+      { header: "Gender", key: "Gender" },
+      { header: "Phone Number", key: "Phone Number" },
+      { header: "Age", key: "Age" },
+      { header: "Current Level", key: "Current Level" },
+      { header: "Attendance 1st", key: "Attendance 1st" },
+      { header: "Attendance 8th", key: "Attendance 8th" },
+      { header: "Attendance 15th", key: "Attendance 15th" },
+      { header: "Attendance 22nd", key: "Attendance 22nd" },
+      { header: "Attendance 29th", key: "Attendance 29th" },
     ];
 
     // Create CSV content

@@ -108,9 +108,9 @@ document
         return;
       }
 
-      // Get structure from the current table (May_2025)
+      // Get structure from the current table (June_2025)
       const { data: templateData, error: templateError } = await supabase
-        .from("May_2025")
+        .from("June_2025")
         .select("*")
         .limit(1);
 

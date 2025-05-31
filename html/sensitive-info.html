@@ -952,6 +952,209 @@
       padding: 3rem 1rem;
       color: #ef4444;
     }
+
+    /* Date Selection Styles */
+    .date-selection-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .date-selection-option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem;
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+
+    .date-selection-option:hover {
+      border-color: #357d39;
+      background: #f0f9ff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .date-selection-option input[type="checkbox"] {
+      transform: scale(1.3);
+      accent-color: #357d39;
+    }
+
+    .date-selection-option input[type="checkbox"]:checked + .date-selection-label {
+      color: #357d39;
+      font-weight: 600;
+    }
+
+    .date-selection-option.selected {
+      border-color: #357d39;
+      background: #f0f9f4;
+    }
+
+    .date-selection-label {
+      font-weight: 500;
+      color: #374151;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+    }
+
+    .date-selection-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+
+    /* Modern Modal Styles */
+    .modern-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      backdrop-filter: blur(4px);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .modern-modal.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-content-modern {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      padding: 2rem;
+      max-width: 90vw;
+      min-width: 400px;
+      max-height: 90vh;
+      overflow-y: auto;
+      transform: scale(0.95);
+      transition: transform 0.3s ease;
+    }
+
+    .modern-modal.show .modal-content-modern {
+      transform: scale(1);
+    }
+
+    .modal-header-modern {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .modal-icon-modern {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .modal-icon-modern.warning {
+      background: #fef3c7;
+      color: #d97706;
+    }
+
+    .modal-icon-modern.success {
+      background: #dcfce7;
+      color: #16a34a;
+    }
+
+    .modal-title-modern {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #1f2937;
+      margin: 0;
+    }
+
+    .modal-description-modern {
+      color: #6b7280;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin-bottom: 2rem;
+    }
+
+    .modal-actions-modern {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+    }
+
+    .modal-btn-modern {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    .modal-btn-modern.primary {
+      background: #357d39;
+      color: white;
+    }
+
+    .modal-btn-modern.primary:hover {
+      background: #2d6930;
+    }
+
+    .modal-btn-modern.danger {
+      background: #ef4444;
+      color: white;
+    }
+
+    .modal-btn-modern.danger:hover {
+      background: #dc2626;
+    }
+
+    .modal-btn-modern.secondary {
+      background: #f3f4f6;
+      color: #374151;
+      border: 1px solid #d1d5db;
+    }
+
+    .modal-btn-modern.secondary:hover {
+      background: #e5e7eb;
+    }
+
+    @media (max-width: 480px) {
+      .modal-content-modern {
+        min-width: 320px;
+        margin: 1rem;
+      }
+      
+      .modal-actions-modern {
+        flex-direction: column;
+      }
+      
+      .date-selection-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
   </style>
 </head>
 
@@ -1168,20 +1371,24 @@
             <p class="control-description">Select the active attendance date for the system</p>
             <div class="date-options">
               <label class="date-option">
-                <input type="checkbox" id="global-date-4th" class="global-date-checkbox" data-date="4th" onchange="handleDateSelection('4th', this)">
-                <span class="date-label">4th</span>
+                <input type="checkbox" id="global-date-1st" class="global-date-checkbox" data-date="1st" onchange="handleDateSelection('1st', this)">
+                <span class="date-label">1st</span>
               </label>
               <label class="date-option">
-                <input type="checkbox" id="global-date-11th" class="global-date-checkbox" data-date="11th" onchange="handleDateSelection('11th', this)">
-                <span class="date-label">11th</span>
+                <input type="checkbox" id="global-date-8th" class="global-date-checkbox" data-date="8th" onchange="handleDateSelection('8th', this)">
+                <span class="date-label">8th</span>
               </label>
               <label class="date-option">
-                <input type="checkbox" id="global-date-18th" class="global-date-checkbox" data-date="18th" onchange="handleDateSelection('18th', this)">
-                <span class="date-label">18th</span>
+                <input type="checkbox" id="global-date-15th" class="global-date-checkbox" data-date="15th" onchange="handleDateSelection('15th', this)">
+                <span class="date-label">15th</span>
               </label>
               <label class="date-option">
-                <input type="checkbox" id="global-date-25th" class="global-date-checkbox" data-date="25th" onchange="handleDateSelection('25th', this)">
-                <span class="date-label">25th</span>
+                <input type="checkbox" id="global-date-22nd" class="global-date-checkbox" data-date="22nd" onchange="handleDateSelection('22nd', this)">
+                <span class="date-label">22nd</span>
+              </label>
+              <label class="date-option">
+                <input type="checkbox" id="global-date-29th" class="global-date-checkbox" data-date="29th" onchange="handleDateSelection('29th', this)">
+                <span class="date-label">29th</span>
               </label>
             </div>
             <div class="date-actions">
@@ -1194,6 +1401,140 @@
             </div>
             <div id="active-date-display" class="status-display">
               No attendance date selected
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Attendance Management Section -->
+    <section class="advanced-section">
+      <div class="dashboard-card">
+        <div class="card-header">
+          <div class="card-title">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+            Attendance Management Tools
+          </div>
+        </div>
+        <div class="card-content">
+          <!-- Date Selection -->
+          <div class="control-card">
+            <div class="control-header">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+              <h3>Select Attendance Dates</h3>
+            </div>
+            <p class="control-description">Choose which attendance dates to modify</p>
+            
+            <div class="date-selection-grid">
+              <label class="date-selection-option">
+                <input type="checkbox" id="select-date-1st" class="date-selection-checkbox" data-date="1st" data-column="Attendance 1st">
+                <span class="date-selection-label">1st</span>
+              </label>
+              <label class="date-selection-option">
+                <input type="checkbox" id="select-date-8th" class="date-selection-checkbox" data-date="8th" data-column="Attendance 8th">
+                <span class="date-selection-label">8th</span>
+              </label>
+              <label class="date-selection-option">
+                <input type="checkbox" id="select-date-15th" class="date-selection-checkbox" data-date="15th" data-column="Attendance 15th">
+                <span class="date-selection-label">15th</span>
+              </label>
+              <label class="date-selection-option">
+                <input type="checkbox" id="select-date-22nd" class="date-selection-checkbox" data-date="22nd" data-column="Attendance 22nd">
+                <span class="date-selection-label">22nd</span>
+              </label>
+              <label class="date-selection-option">
+                <input type="checkbox" id="select-date-29th" class="date-selection-checkbox" data-date="29th" data-column="Attendance 29th">
+                <span class="date-selection-label">29th</span>
+              </label>
+            </div>
+            
+            <div class="date-selection-actions">
+              <button id="selectAllDatesBtn" class="btn-secondary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 11l3 3L22 4"/>
+                  <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                </svg>
+                Select All
+              </button>
+              <button id="clearAllDatesBtn" class="btn-secondary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18 6L6 18M6 6l12 12"/>
+                </svg>
+                Clear All
+              </button>
+            </div>
+          </div>
+
+          <div class="controls-grid">
+            <!-- Clear Attendance -->
+            <div class="control-card">
+              <div class="control-header">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 6h18"/>
+                  <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                  <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                </svg>
+                <h3>Clear Attendance</h3>
+              </div>
+              <p class="control-description">Reset selected attendance dates to empty</p>
+              <button id="clearSelectedAttendanceBtn" class="btn-secondary full-width">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 6h18"/>
+                  <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                  <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                </svg>
+                Clear Selected Dates
+              </button>
+            </div>
+
+            <!-- Mark Empty as Absent -->
+            <div class="control-card">
+              <div class="control-header">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="15" y1="9" x2="9" y2="15"/>
+                  <line x1="9" y1="9" x2="15" y2="15"/>
+                </svg>
+                <h3>Mark Empty as Absent</h3>
+              </div>
+              <p class="control-description">Mark empty fields as "Absent" for selected dates only</p>
+              <button id="markEmptyAsAbsentBtn" class="btn-primary full-width">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="15" y1="9" x2="9" y2="15"/>
+                  <line x1="9" y1="9" x2="15" y2="15"/>
+                </svg>
+                Mark Empty as Absent
+              </button>
+            </div>
+
+            <!-- Undo Last Action -->
+            <div class="control-card">
+              <div class="control-header">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 7v6h6"/>
+                  <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/>
+                </svg>
+                <h3>Undo Last Action</h3>
+              </div>
+              <p class="control-description">Restore data to previous state before last operation</p>
+              <button id="undoLastActionBtn" class="btn-secondary full-width" disabled>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 7v6h6"/>
+                  <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/>
+                </svg>
+                Undo Last Action
+              </button>
             </div>
           </div>
         </div>
@@ -1234,10 +1575,11 @@
                   <th>Phone</th>
                   <th>Age</th>
                   <th>Level</th>
-                  <th>4th</th>
-                  <th>11th</th>
-                  <th>18th</th>
-                  <th>25th</th>
+                  <th>1st</th>
+                  <th>8th</th>
+                  <th>15th</th>
+                  <th>22nd</th>
+                  <th>29th</th>
                 </tr>
               </thead>
               <tbody id="sensitiveTableBody">
@@ -1488,7 +1830,7 @@
 
         // Save to database for global access across all devices
         const { data, error } = await window.supabase
-          .from('May_2025')
+          .from('June_2025')
           .upsert({
             id: 'global_attendance_date',
             'Full Name': 'SYSTEM_SETTING_ACTIVE_ATTENDANCE_DATE',
@@ -1547,10 +1889,10 @@
     // Function to load global attendance date from database
     async function loadGlobalAttendanceDate() {
       try {
-        console.log('Auto-selecting 25th as default attendance date...');
+        console.log('Auto-selecting 1st as default attendance date...');
         
-        // HARDCODED: Always set 25th as the default active date
-        const defaultActiveDate = "25th";
+        // HARDCODED: Always set 1st as the default active date for June_2025
+        const defaultActiveDate = "1st";
         
         // Set the global variable
         globalActiveAttendanceDate = defaultActiveDate;
@@ -1561,7 +1903,7 @@
         // Auto-save to database for global access
         try {
           await window.supabase
-            .from('May_2025')
+            .from('June_2025')
             .upsert({
               id: 'global_attendance_date',
               'Full Name': 'SYSTEM_SETTING_ACTIVE_ATTENDANCE_DATE',
@@ -1572,12 +1914,12 @@
             }, {
               onConflict: 'id'
             });
-          console.log('Auto-saved 25th to database');
+          console.log('Auto-saved 1st to database');
         } catch (dbError) {
           console.error('Failed to auto-save to database:', dbError);
         }
         
-        // Find and check the 25th checkbox
+        // Find and check the 1st checkbox
         const checkbox = document.getElementById(`global-date-${defaultActiveDate}`);
         console.log('Looking for checkbox:', `global-date-${defaultActiveDate}`, 'Found:', checkbox);
         
@@ -1586,7 +1928,7 @@
           const allCheckboxes = document.querySelectorAll('.global-date-checkbox');
           allCheckboxes.forEach(cb => cb.checked = false);
           
-          // Check the 25th
+          // Check the 1st
           checkbox.checked = true;
           
           // Update display
@@ -1596,9 +1938,9 @@
             displayElement.style.color = '#22c55e';
           }
           
-          console.log('Successfully auto-selected 25th as default');
+          console.log('Successfully auto-selected 1st as default');
         } else {
-          console.error('Checkbox not found for 25th');
+          console.error('Checkbox not found for 1st');
         }
         
         // Set main app's active date if it exists
@@ -1606,7 +1948,7 @@
           window.activeAttendanceDate = globalActiveAttendanceDate;
         }
         
-        // Hide save button since 25th is permanently selected
+        // Hide save button since 1st is permanently selected
         const saveBtn = document.getElementById('saveAttendanceDateBtn');
         if (saveBtn) {
           saveBtn.style.display = 'none';
@@ -1617,16 +1959,16 @@
         
       } catch (error) {
         console.error('Error setting default attendance date:', error);
-        // Even if there's an error, still set 25th as default
-        globalActiveAttendanceDate = "25th";
-        localStorage.setItem('globalActiveAttendanceDate', "25th");
+        // Even if there's an error, still set 1st as default
+        globalActiveAttendanceDate = "1st";
+        localStorage.setItem('globalActiveAttendanceDate', "1st");
         
-        const checkbox = document.getElementById('global-date-25th');
+        const checkbox = document.getElementById('global-date-1st');
         if (checkbox) {
           const allCheckboxes = document.querySelectorAll('.global-date-checkbox');
           allCheckboxes.forEach(cb => cb.checked = false);
           checkbox.checked = true;
-          document.getElementById('active-date-display').textContent = '25th attendance is active (permanent default)';
+          document.getElementById('active-date-display').textContent = '1st attendance is active (permanent default)';
           document.getElementById('active-date-display').style.color = '#22c55e';
         }
         document.getElementById('saveAttendanceDateBtn').style.display = 'none';
@@ -1648,7 +1990,7 @@
         </tr>
       `;
       try {
-        let query = window.supabase.from('May_2025').select('*').order('Full Name');
+        let query = window.supabase.from('June_2025').select('*').order('Full Name');
         if (category && category !== 'all') {
           if (category === 'SHS') {
             query = query.or('Current Level.eq.SHS1,Current Level.eq.SHS2,Current Level.eq.SHS3');
@@ -1872,10 +2214,11 @@
           <td>
             <span class="level-badge">${item["Current Level"] || ''}</span>
           </td>
-          <td>${getAttendanceCell(item["Attendance 4nd"])}</td>
-          <td>${getAttendanceCell(item["Attendance 11th"])}</td>
-          <td>${getAttendanceCell(item["Attendance 18th"])}</td>
-          <td>${getAttendanceCell(item["Attendance 25rd"])}</td>
+          <td>${getAttendanceCell(item["Attendance 1st"])}</td>
+          <td>${getAttendanceCell(item["Attendance 8th"])}</td>
+          <td>${getAttendanceCell(item["Attendance 15th"])}</td>
+          <td>${getAttendanceCell(item["Attendance 22nd"])}</td>
+          <td>${getAttendanceCell(item["Attendance 29th"])}</td>
         </tr>
       `}).join('');
 
@@ -1965,7 +2308,7 @@
           deleteBtn.textContent = 'Deleting...';
         }
         // Delete all selected records in parallel
-        const { error } = await window.supabase.from('May_2025').delete().in('id', ids);
+        const { error } = await window.supabase.from('June_2025').delete().in('id', ids);
         if (error) throw error;
 
         // Remove deleted rows from the table and from currentTableData
@@ -2022,8 +2365,8 @@
 
     // Function to calculate and display attendance totals for each date
     function updateAttendanceSummary(data) {
-      const attendanceDates = ['4th', '11th', '18th', '25th'];
-      const attendanceColumns = ['Attendance 4nd', 'Attendance 11th', 'Attendance 18th', 'Attendance 25rd'];
+      const attendanceDates = ['1st', '8th', '15th', '22nd', '29th'];
+      const attendanceColumns = ['Attendance 1st', 'Attendance 8th', 'Attendance 15th', 'Attendance 22nd', 'Attendance 29th'];
       const attendanceGrid = document.querySelector('.attendance-grid.modern');
       
       if (!attendanceGrid) return;
@@ -2106,10 +2449,10 @@
         return;
       }
 
-      // Use the correct column names from May_2025 table
+      // Use the correct column names from June_2025 table
       const headers = [
         'Full Name', 'Gender', 'Phone Number', 'Age', 'Current Level',
-        'Attendance 4nd', 'Attendance 11th', 'Attendance 18th', 'Attendance 25rd'
+        'Attendance 1st', 'Attendance 8th', 'Attendance 15th', 'Attendance 22nd', 'Attendance 29th'
       ];
 
       let csvContent = headers.join(',') + '\n';
@@ -2119,10 +2462,11 @@
         item["Phone Number"] || '', // swapped
         item["Age"] || '', // swapped
         item["Current Level"] || '',
-        item["Attendance 4nd"] || '',
-        item["Attendance 11th"] || '',
-        item["Attendance 18th"] || '',
-        item["Attendance 25rd"] || ''
+        item["Attendance 1st"] || '',
+        item["Attendance 8th"] || '',
+        item["Attendance 15th"] || '',
+        item["Attendance 22nd"] || '',
+        item["Attendance 29th"] || ''
       ].map(cell => cell.toString().replace(/"/g, '""')).map(cell => cell.includes(',') ? '"' + cell + '"' : cell).join(',')).join('\n');
 
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -2195,7 +2539,7 @@
         btn.disabled = true;
         btn.style.opacity = '0.6';
         window.supabase
-          .from('May_2025')
+          .from('June_2025')
           .delete()
           .eq('id', id)
           .then(({ error }) => {
@@ -2256,7 +2600,7 @@
         const filterValue = document.getElementById('name-search')?.value?.toLowerCase() || '';
 
         // Prepare query
-        let query = window.supabase.from('May_2025').select('*').order('Full Name');
+        let query = window.supabase.from('June_2025').select('*').order('Full Name');
 
         // Apply name filter if any
         if (filterValue) {
@@ -2286,7 +2630,455 @@
         document.getElementById('sensitiveTableBody').innerHTML = '<tr><td colspan="11" class="error-row">Error loading data</td></tr>';
       }
     }
+
+    // Global variables for undo functionality
+    let undoData = null;
+    let lastOperation = null;
+
+    // Modern Modal Functions
+    function showModernModal(config) {
+      // Remove any existing modal
+      const existingModal = document.querySelector('.modern-modal');
+      if (existingModal) existingModal.remove();
+
+      const modal = document.createElement('div');
+      modal.className = 'modern-modal';
+      modal.innerHTML = `
+        <div class="modal-content-modern">
+          <div class="modal-header-modern">
+            <div class="modal-icon-modern ${config.type}">
+              ${config.icon}
+            </div>
+            <h3 class="modal-title-modern">${config.title}</h3>
+          </div>
+          <p class="modal-description-modern">${config.description}</p>
+          <div class="modal-actions-modern">
+            ${config.actions.map(action => `
+              <button class="modal-btn-modern ${action.type}" onclick="${action.onClick}">
+                ${action.icon || ''}
+                ${action.text}
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(modal);
+      setTimeout(() => modal.classList.add('show'), 10);
+      
+      return modal;
+    }
+
+    function closeModal() {
+      const modal = document.querySelector('.modern-modal');
+      if (modal) {
+        modal.classList.remove('show');
+        setTimeout(() => modal.remove(), 300);
+      }
+    }
+
+    // Get selected attendance dates
+    function getSelectedDates() {
+      const checkboxes = document.querySelectorAll('.date-selection-checkbox:checked');
+      return Array.from(checkboxes).map(cb => ({
+        date: cb.dataset.date,
+        column: cb.dataset.column
+      }));
+    }
+
+    // Date selection functions
+    function selectAllDates() {
+      const checkboxes = document.querySelectorAll('.date-selection-checkbox');
+      checkboxes.forEach(cb => {
+        cb.checked = true;
+        cb.closest('.date-selection-option').classList.add('selected');
+      });
+    }
+
+    function clearAllDates() {
+      const checkboxes = document.querySelectorAll('.date-selection-checkbox');
+      checkboxes.forEach(cb => {
+        cb.checked = false;
+        cb.closest('.date-selection-option').classList.remove('selected');
+      });
+    }
+
+    // Store current data for undo
+    async function storeUndoData(operation) {
+      try {
+        const { data, error } = await window.supabase
+          .from('June_2025')
+          .select('*');
+        
+        if (error) throw error;
+        
+        undoData = JSON.parse(JSON.stringify(data)); // Deep copy
+        lastOperation = operation;
+        
+        const undoBtn = document.getElementById('undoLastActionBtn');
+        if (undoBtn) {
+          undoBtn.disabled = false;
+          undoBtn.innerHTML = `
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 7v6h6"/>
+              <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/>
+            </svg>
+            Undo ${operation}
+          `;
+        }
+      } catch (error) {
+        console.error('Error storing undo data:', error);
+      }
+    }
+
+    // Clear Selected Attendance Function
+    async function clearSelectedAttendance() {
+      const selectedDates = getSelectedDates();
+      
+      if (selectedDates.length === 0) {
+        showToast("error", "Please select at least one attendance date");
+        return;
+      }
+
+      showModernModal({
+        type: 'warning',
+        icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+               </svg>`,
+        title: 'Clear Attendance',
+        description: `Are you sure you want to clear attendance records for ${selectedDates.map(d => d.date).join(', ')}? This will remove all Present and Absent entries for the selected dates.`,
+        actions: [
+          {
+            text: 'Cancel',
+            type: 'secondary',
+            onClick: 'closeModal()'
+          },
+          {
+            text: 'Clear Attendance',
+            type: 'danger',
+            icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                     <path d="M3 6h18"/>
+                     <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                   </svg>`,
+            onClick: 'performClearAttendance()'
+          }
+        ]
+      });
+    }
+
+    async function performClearAttendance() {
+      closeModal();
+      const selectedDates = getSelectedDates();
+      
+      try {
+        // Store undo data
+        await storeUndoData('Clear Attendance');
+        
+        const clearBtn = document.getElementById('clearSelectedAttendanceBtn');
+        clearBtn.disabled = true;
+        clearBtn.innerHTML = `
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <div style="width: 16px; height: 16px; border: 2px solid #6b7280; border-top: 2px solid transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+            Clearing...
+          </div>
+        `;
+
+        // Build update object for selected columns only
+        const updates = {};
+        selectedDates.forEach(({column}) => {
+          updates[column] = null;
+        });
+
+        const { error } = await window.supabase
+          .from('June_2025')
+          .update(updates)
+          .neq('Full Name', '');
+
+        if (error) throw error;
+
+        // Refresh the table
+        updateSensitiveTable(document.getElementById('categoryFilter').value);
+        
+        showToast("success", `Cleared attendance for ${selectedDates.map(d => d.date).join(', ')} successfully!`);
+
+      } catch (error) {
+        console.error('Error clearing attendance:', error);
+        showToast("error", "Failed to clear attendance records");
+      } finally {
+        const clearBtn = document.getElementById('clearSelectedAttendanceBtn');
+        clearBtn.disabled = false;
+        clearBtn.innerHTML = `
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 6h18"/>
+            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+          </svg>
+          Clear Selected Dates
+        `;
+      }
+    }
+
+    // Mark Empty as Absent Function
+    async function markEmptyAsAbsent() {
+      const selectedDates = getSelectedDates();
+      
+      if (selectedDates.length === 0) {
+        showToast("error", "Please select at least one attendance date");
+        return;
+      }
+
+      showModernModal({
+        type: 'warning',
+        icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="15" y1="9" x2="9" y2="15"/>
+                <line x1="9" y1="9" x2="15" y2="15"/>
+               </svg>`,
+        title: 'Mark Empty as Absent',
+        description: `Mark all empty attendance fields as "Absent" for ${selectedDates.map(d => d.date).join(', ')}? This will not change existing "Present" entries.`,
+        actions: [
+          {
+            text: 'Cancel',
+            type: 'secondary',
+            onClick: 'closeModal()'
+          },
+          {
+            text: 'Mark as Absent',
+            type: 'primary',
+            icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                     <circle cx="12" cy="12" r="10"/>
+                     <line x1="15" y1="9" x2="9" y2="15"/>
+                   </svg>`,
+            onClick: 'performMarkEmptyAsAbsent()'
+          }
+        ]
+      });
+    }
+
+    async function performMarkEmptyAsAbsent() {
+      closeModal();
+      const selectedDates = getSelectedDates();
+      
+      try {
+        // Store undo data
+        await storeUndoData('Mark Empty as Absent');
+        
+        const markBtn = document.getElementById('markEmptyAsAbsentBtn');
+        markBtn.disabled = true;
+        markBtn.innerHTML = `
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <div style="width: 16px; height: 16px; border: 2px solid #fff; border-top: 2px solid transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+            Processing...
+          </div>
+        `;
+
+        // Get all current data
+        const { data: allRecords, error: fetchError } = await window.supabase
+          .from('June_2025')
+          .select('*');
+
+        if (fetchError) throw fetchError;
+
+        const selectedColumns = selectedDates.map(d => d.column);
+        console.log('Selected columns for marking absent:', selectedColumns);
+        console.log('Total records to process:', allRecords.length);
+
+        // Process each record to mark empty fields as absent for selected dates only
+        let recordsWithUpdates = 0;
+        const updatePromises = allRecords.map(async (record) => {
+          const updates = {};
+          let hasUpdates = false;
+
+          selectedColumns.forEach(field => {
+            const value = record[field];
+            if (!value || value.trim() === '') {
+              updates[field] = 'Absent';
+              hasUpdates = true;
+            }
+          });
+
+          if (hasUpdates) {
+            recordsWithUpdates++;
+            console.log(`Updating record ${record.id} with:`, updates);
+            return window.supabase
+              .from('June_2025')
+              .update(updates)
+              .eq('id', record.id);
+          }
+          return null;
+        });
+
+        console.log(`Records with updates: ${recordsWithUpdates}`);
+        const results = await Promise.all(updatePromises.filter(p => p !== null));
+        
+        const errors = results.filter(result => result?.error);
+        if (errors.length > 0) {
+          console.error('Update errors:', errors);
+          throw new Error(`Failed to update ${errors.length} records`);
+        }
+
+        // Refresh the table
+        updateSensitiveTable(document.getElementById('categoryFilter').value);
+        
+        const updatedCount = results.length;
+        console.log(`Successfully updated ${updatedCount} records`);
+        showToast("success", `Successfully marked empty fields as absent for ${updatedCount} records on ${selectedDates.map(d => d.date).join(', ')}!`);
+
+      } catch (error) {
+        console.error('Error marking empty as absent:', error);
+        showToast("error", "Failed to mark empty fields as absent");
+      } finally {
+        const markBtn = document.getElementById('markEmptyAsAbsentBtn');
+        markBtn.disabled = false;
+        markBtn.innerHTML = `
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="15" y1="9" x2="9" y2="15"/>
+            <line x1="9" y1="9" x2="15" y2="15"/>
+          </svg>
+          Mark Empty as Absent
+        `;
+      }
+    }
+
+    // Undo Last Action Function
+    async function undoLastAction() {
+      if (!undoData || !lastOperation) {
+        showToast("error", "No action to undo");
+        return;
+      }
+
+      showModernModal({
+        type: 'warning',
+        icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 7v6h6"/>
+                <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/>
+               </svg>`,
+        title: 'Undo Last Action',
+        description: `Are you sure you want to undo the last "${lastOperation}" operation? This will restore all attendance data to its previous state.`,
+        actions: [
+          {
+            text: 'Cancel',
+            type: 'secondary',
+            onClick: 'closeModal()'
+          },
+          {
+            text: 'Undo Action',
+            type: 'primary',
+            icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                     <path d="M3 7v6h6"/>
+                     <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/>
+                   </svg>`,
+            onClick: 'performUndo()'
+          }
+        ]
+      });
+    }
+
+    async function performUndo() {
+      closeModal();
+      
+      try {
+        const undoBtn = document.getElementById('undoLastActionBtn');
+        undoBtn.disabled = true;
+        undoBtn.innerHTML = `
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <div style="width: 16px; height: 16px; border: 2px solid #6b7280; border-top: 2px solid transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+            Undoing...
+          </div>
+        `;
+
+        console.log('Starting undo operation for:', lastOperation);
+        console.log('Undo data records:', undoData.length);
+
+        // Restore each record
+        const updatePromises = undoData.map(record => {
+          const { id, ...updateData } = record;
+          console.log(`Restoring record ${id} with data:`, updateData);
+          return window.supabase
+            .from('June_2025')
+            .update(updateData)
+            .eq('id', id);
+        });
+
+        const results = await Promise.all(updatePromises);
+        const errors = results.filter(result => result?.error);
+        
+        if (errors.length > 0) {
+          console.error('Undo errors:', errors);
+          throw new Error(`Failed to restore ${errors.length} records`);
+        }
+
+        // Refresh the table
+        updateSensitiveTable(document.getElementById('categoryFilter').value);
+        
+        console.log('Undo operation completed successfully');
+        showToast("success", `Successfully undid "${lastOperation}" operation!`);
+        
+        // Clear undo data
+        undoData = null;
+        lastOperation = null;
+
+      } catch (error) {
+        console.error('Error performing undo:', error);
+        showToast("error", "Failed to undo last action");
+      } finally {
+        const undoBtn = document.getElementById('undoLastActionBtn');
+        undoBtn.disabled = true;
+        undoBtn.innerHTML = `
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 7v6h6"/>
+            <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/>
+          </svg>
+          Undo Last Action
+        `;
+      }
+    }
+
+    // Add event listeners when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      // Date selection functionality
+      const selectAllBtn = document.getElementById('selectAllDatesBtn');
+      const clearAllBtn = document.getElementById('clearAllDatesBtn');
+      const clearSelectedBtn = document.getElementById('clearSelectedAttendanceBtn');
+      const markBtn = document.getElementById('markEmptyAsAbsentBtn');
+      const undoBtn = document.getElementById('undoLastActionBtn');
+      
+      if (selectAllBtn) selectAllBtn.addEventListener('click', selectAllDates);
+      if (clearAllBtn) clearAllBtn.addEventListener('click', clearAllDates);
+      if (clearSelectedBtn) clearSelectedBtn.addEventListener('click', clearSelectedAttendance);
+      if (markBtn) markBtn.addEventListener('click', markEmptyAsAbsent);
+      if (undoBtn) undoBtn.addEventListener('click', undoLastAction);
+
+      // Add change listeners to date checkboxes
+      document.querySelectorAll('.date-selection-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+          const option = this.closest('.date-selection-option');
+          if (this.checked) {
+            option.classList.add('selected');
+          } else {
+            option.classList.remove('selected');
+          }
+        });
+      });
+
+      // Close modal when clicking outside
+      document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('modern-modal')) {
+          closeModal();
+        }
+      });
+    });
   </script>
+
+  <style>
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
 </body>
 
 </html>

@@ -23,16 +23,19 @@ async function createMonthlyTable(month, year) {
     const { error: createError } = await supabase.rpc("execute_sql", {
       sql: `
         CREATE TABLE IF NOT EXISTS "${tableName}" (
-          id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-          name text,
-          gender text,
-          phone text,
-          age int,
-          level text,
-          attendance6th text,
-          attendance12th text,
-          attendance16th text,
-          attendance23rd text
+          uuid character varying DEFAULT gen_random_uuid() NOT NULL PRIMARY KEY,
+          "Full Name" text NOT NULL,
+          "Gender" text,
+          "Phone Number" text,
+          "Age" integer,
+          "Current Level" text,
+          "Attendance 1st" text,
+          "Attendance 8th" text,
+          "Attendance 15th" text,
+          "Attendance 22nd" text,
+          "Attendance 29th" text,
+          inserted_at timestamp with time zone DEFAULT now(),
+          updated_at timestamp with time zone DEFAULT now()
         );
       `,
     });
@@ -44,9 +47,9 @@ async function createMonthlyTable(month, year) {
       }
     }
 
-    // Fetch all person data
+    // Fetch all person data from June_2025
     const { data: people, error: fetchError } = await supabase
-      .from("people")
+      .from("June_2025")
       .select("*");
     if (fetchError) {
       throw new Error("Error fetching data: " + fetchError.message);

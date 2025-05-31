@@ -813,6 +813,34 @@
       transition: width 0.3s ease;
     }
 
+    /* Teen Average Card Specific Styles */
+    .teen-average-card {
+      border: 2px solid #6366f1 !important;
+      background: linear-gradient(135deg, #fafaff, #f8faff) !important;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .teen-average-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #6366f1, #4f46e5);
+    }
+
+    .teen-average-card .attendance-card-header h4 {
+      color: #6366f1 !important;
+      font-weight: 700;
+    }
+
+    .teen-average-card .total-count {
+      color: #6366f1 !important;
+      font-weight: 600;
+    }
+
     /* Table Compact Mode */
     .modern-table.compact th,
     .modern-table.compact td {
@@ -1374,7 +1402,7 @@
             </svg>
             Quick Statistics
           </div>
-          <button class="card-toggle rotated" onclick="toggleCard(this)">
+          <button class="card-toggle" onclick="toggleCard(this)">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M6 9l6 6 6-6"/>
             </svg>
@@ -1426,11 +1454,17 @@
             </svg>
             Attendance Overview
           </div>
-          <button class="card-toggle rotated" onclick="toggleCard(this)">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M6 9l6 6 6-6"/>
-            </svg>
-          </button>
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: #64748b;">
+              <input type="checkbox" id="teenAverageToggle" checked style="accent-color: #6366f1;" onchange="toggleTeenAverage()">
+              Show Teen Average
+            </label>
+            <button class="card-toggle" onclick="toggleCard(this)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+              </svg>
+            </button>
+          </div>
         </div>
         <div class="card-content collapsed">
           <div class="attendance-grid modern">
@@ -1507,8 +1541,13 @@
             </svg>
             Attendance Management Tools
           </div>
+          <button class="card-toggle" onclick="toggleCard(this)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </button>
         </div>
-        <div class="card-content">
+        <div class="card-content collapsed">
           <!-- Date Selection -->
           <div class="control-card">
             <div class="control-header">
@@ -2497,6 +2536,71 @@
 
       let summaryHTML = '';
 
+      // Check if teen average toggle is enabled
+      const teenToggle = document.getElementById('teenAverageToggle');
+      const showTeenAverage = teenToggle ? teenToggle.checked : true;
+
+      if (showTeenAverage) {
+        // Filter for teens (SHS and JHS students)
+        const teens = data.filter(person => {
+          const level = (person["Current Level"] || '').toUpperCase();
+          return ['SHS1', 'SHS2', 'SHS3', 'JHS1', 'JHS2', 'JHS3'].includes(level);
+        });
+
+        // Calculate average teen attendance across all Sundays
+        let totalTeenAttendances = 0;
+        let totalPossibleAttendances = 0;
+
+        teens.forEach(teen => {
+          attendanceColumns.forEach(column => {
+            const attendance = (teen[column] || '').trim().toLowerCase();
+            if (attendance === 'present' || attendance === 'p') {
+              totalTeenAttendances++;
+            }
+            // Count all non-empty attendance records (present or absent) as possible attendances
+            if (attendance === 'present' || attendance === 'p' || attendance === 'absent' || attendance === 'a') {
+              totalPossibleAttendances++;
+            }
+          });
+        });
+
+        const averageTeenAttendance = totalPossibleAttendances > 0 ?
+          Math.round((totalTeenAttendances / totalPossibleAttendances) * 100) : 0;
+
+        // Add the Teen Average Card first
+        summaryHTML += `
+          <div class="attendance-card-modern teen-average-card">
+            <div class="attendance-card-header">
+              <h4>📊 Teen Average</h4>
+              <span class="total-count">${teens.length} teens tracked</span>
+            </div>
+            
+            <div class="attendance-metrics">
+              <div class="metric teen-average" style="background: rgba(99, 102, 241, 0.08);">
+                <div class="metric-icon" style="background: #6366f1; width: 12px; height: 12px; border-radius: 50%;"></div>
+                <div class="metric-info">
+                  <span class="metric-label">Average Church Attendance</span>
+                  <div class="metric-values">
+                    <span class="metric-count" style="color: #6366f1;">${averageTeenAttendance}%</span>
+                    <span class="metric-percentage">${totalTeenAttendances}/${totalPossibleAttendances} records</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="attendance-progress">
+              <div class="progress-label">
+                <span>Teen Attendance Rate</span>
+                <span>${averageTeenAttendance}%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: ${averageTeenAttendance}%; background: linear-gradient(90deg, #6366f1, #4f46e5);"></div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
       attendanceDates.forEach((date, index) => {
         const columnName = attendanceColumns[index];
         let presentCount = 0;
@@ -3161,6 +3265,20 @@
       }
     }
 
+    // Function to toggle teen average display
+    function toggleTeenAverage() {
+      // Refresh the attendance summary to show/hide teen average
+      if (window.currentTableData) {
+        updateAttendanceSummary(window.currentTableData);
+      }
+      
+      // Save the preference to localStorage
+      const toggle = document.getElementById('teenAverageToggle');
+      if (toggle) {
+        localStorage.setItem('teenAverageEnabled', toggle.checked);
+      }
+    }
+
     // Add event listeners when DOM is loaded
     document.addEventListener('DOMContentLoaded', function() {
       // Date selection functionality
@@ -3194,6 +3312,14 @@
           closeModal();
         }
       });
+
+      // Restore teen average toggle state from localStorage
+      const savedPreference = localStorage.getItem('teenAverageEnabled');
+      const toggle = document.getElementById('teenAverageToggle');
+      
+      if (toggle && savedPreference !== null) {
+        toggle.checked = savedPreference === 'true';
+      }
     });
   </script>
 

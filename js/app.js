@@ -105,6 +105,45 @@ const filterItems = debounce(async function () {
       return;
     }
 
+    // Check if user typed "present" or "absent" - default to first attendee
+    if (searchTerm === "present" || searchTerm === "absent") {
+      // Get the first attendee from current data
+      let firstAttendee = null;
+      
+      // Try to get from current displayed items first
+      if (window.currentItems && window.currentItems.length > 0) {
+        firstAttendee = window.currentItems[0];
+      } else {
+        // If no current items, fetch the first attendee from database
+        const { data: firstData, error: firstError } = await supabase
+          .from(CURRENT_TABLE)
+          .select("*")
+          .order("Full Name", { ascending: true })
+          .limit(1);
+        
+        if (!firstError && firstData && firstData.length > 0) {
+          firstAttendee = firstData[0];
+        }
+      }
+      
+      if (firstAttendee) {
+        // Auto-mark attendance for first attendee
+        const attendanceValue = searchTerm === "present" ? "Present" : "Absent";
+        await window.quickMarkAttendance(firstAttendee.id, attendanceValue);
+        
+        // Clear search input and show success message
+        elements.searchInput.value = "";
+        showToast("success", `Marked ${firstAttendee["Full Name"]} as ${attendanceValue}`);
+        
+        // Refresh display to show updated attendance
+        await loadInitialData();
+        return;
+      } else {
+        showToast("error", "No attendees found");
+        return;
+      }
+    }
+
     // Check cache
     const cachedResults = searchCache.get(searchTerm);
     if (cachedResults) {
@@ -449,16 +488,24 @@ function showToast(type, message) {
 
 // Update the getItemHTML function to make fields directly editable
 function getItemHTML(item) {
+  // Correct any swapped age/phone data before displaying
+  const correctedItem = correctAgePhoneSwap(item);
+  
+  // Automatically fix the data in database if it was swapped
+  if (correctedItem["Age"] !== item["Age"] || correctedItem["Phone Number"] !== item["Phone Number"]) {
+    fixSwappedDataInDatabase(item.id, item);
+  }
+  
   let itemData = "";
   try {
-    itemData = encodeURIComponent(JSON.stringify(item));
+    itemData = encodeURIComponent(JSON.stringify(correctedItem));
   } catch (e) {
     itemData = "";
   }
   return `
     <div class="name-row" style="display: flex; align-items: center; gap: 0.5rem;">
       <h3 class="name-text editable-field" style="flex:1; margin:0; cursor:pointer;">
-        ${escapeHtml(item["Full Name"] || "")}
+        ${escapeHtml(correctedItem["Full Name"] || "")}
       </h3>
       <button class="edit-pen-btn" title="Show Details" onclick="window.toggleDetailedInfo(this)" data-item="${itemData}" style="background: none; border: none; cursor: pointer; padding: 0.3rem; display: flex; align-items: center;">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#357d39" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -501,9 +548,9 @@ function getItemHTML(item) {
         <div class="info-item">
             <span>Gender:</span>
             <select class="info-select ${
-              item["Gender"]?.toLowerCase() === "male"
+              correctedItem["Gender"]?.toLowerCase() === "male"
                 ? "male"
-                : item["Gender"]?.toLowerCase() === "female"
+                : correctedItem["Gender"]?.toLowerCase() === "female"
                 ? "female"
                 : ""
             }"
@@ -511,71 +558,73 @@ function getItemHTML(item) {
                       item.id
                     }')">
                 <option value="" disabled ${
-                  !item["Gender"] ? "selected" : ""
+                  !correctedItem["Gender"] ? "selected" : ""
                 }>Select Gender</option>
                 <option value="Male" ${
-                  item["Gender"] === "Male" ? "selected" : ""
+                  correctedItem["Gender"] === "Male" ? "selected" : ""
                 }>Male</option>
                 <option value="Female" ${
-                  item["Gender"] === "Female" ? "selected" : ""
+                  correctedItem["Gender"] === "Female" ? "selected" : ""
                 }>Female</option>
             </select>
         </div>
         <div class="info-item">
             <span>Current Level:</span>
-            <select class="info-select ${item["Current Level"] ? "has-value" : ""}"
+            <select class="info-select ${correctedItem["Current Level"] ? "has-value" : ""}"
                     onchange="updateField(this, 'Current Level', this.value, '${
                       item.id
                     }')">
                 <option value="" disabled ${
-                  !item["Current Level"] ? "selected" : ""
+                  !correctedItem["Current Level"] ? "selected" : ""
                 }>Select Current Level</option>
                 <option value="SHS1" ${
-                  item["Current Level"] === "SHS1" ? "selected" : ""
+                  correctedItem["Current Level"] === "SHS1" ? "selected" : ""
                 }>SHS1</option>
                 <option value="SHS2" ${
-                  item["Current Level"] === "SHS2" ? "selected" : ""
+                  correctedItem["Current Level"] === "SHS2" ? "selected" : ""
                 }>SHS2</option>
                 <option value="SHS3" ${
-                  item["Current Level"] === "SHS3" ? "selected" : ""
+                  correctedItem["Current Level"] === "SHS3" ? "selected" : ""
                 }>SHS3</option>
                 <option value="JHS1" ${
-                  item["Current Level"] === "JHS1" ? "selected" : ""
+                  correctedItem["Current Level"] === "JHS1" ? "selected" : ""
                 }>JHS1</option>
                 <option value="JHS2" ${
-                  item["Current Level"] === "JHS2" ? "selected" : ""
+                  correctedItem["Current Level"] === "JHS2" ? "selected" : ""
                 }>JHS2</option>
                 <option value="JHS3" ${
-                  item["Current Level"] === "JHS3" ? "selected" : ""
+                  correctedItem["Current Level"] === "JHS3" ? "selected" : ""
                 }>JHS3</option>
                 <option value="COMPLETED" ${
-                  item["Current Level"] === "COMPLETED" ? "selected" : ""
+                  correctedItem["Current Level"] === "COMPLETED" ? "selected" : ""
                 }>COMPLETED</option>
                 <option value="UNIVERSITY" ${
-                  item["Current Level"] === "UNIVERSITY" ? "selected" : ""
+                  correctedItem["Current Level"] === "UNIVERSITY" ? "selected" : ""
                 }>UNIVERSITY</option>
             </select>
         </div>
         <div class="info-item">
-            <span>Age:</span>
-            <input type="number" class="editable-field" value="${item["Age"] || ""}"
-                   min="0" max="100" style="width: 60px;"
-                   onchange="updateField(this, 'Age', this.value, '${item.id}')" />
-        </div>
-        <div class="info-item">
             <span>Phone Number:</span>
             <input type="tel" class="editable-field" value="${escapeHtml(
-              item["Phone Number"] || ""
+              correctedItem["Phone Number"] || ""
             )}"
-                   style="width: 120px; background-color: transparent; color: white; border: 1px solid rgba(255, 255, 255, 0.3); padding: 2px 4px; border-radius: 4px;"
+                   style="width: 150px; background-color: transparent; color: white; border: 1px solid rgba(255, 255, 255, 0.3); padding: 2px 4px; border-radius: 4px;"
+                   placeholder="Enter phone number"
                    onchange="updateField(this, 'Phone Number', this.value, '${
                      item.id
                    }')" />
         </div>
+        <div class="info-item">
+            <span>Age:</span>
+            <input type="number" class="editable-field" value="${correctedItem["Age"] || ""}"
+                   min="0" max="100" style="width: 60px;"
+                   placeholder="Age"
+                   onchange="updateField(this, 'Age', this.value, '${item.id}')" />
+        </div>
         <div class="attendance-section">
             <strong>Attendance:</strong><br>
             <div class="attendance-grid">
-                ${getAttendanceDisplay(item)}
+                ${getAttendanceDisplay(correctedItem)}
             </div>
         </div>
     </div>`;
@@ -769,6 +818,63 @@ function escapeHtml(unsafe) {
     .replace(/'/g, "&#039;");
 }
 
+// Function to correct swapped age and phone number data
+function correctAgePhoneSwap(item) {
+  const correctedItem = { ...item };
+  
+  // Get the current values
+  const ageValue = item["Age"];
+  const phoneValue = item["Phone Number"];
+  
+  // Check if age contains a number with more than 4 digits (likely a phone number)
+  if (ageValue && typeof ageValue === 'string' && ageValue.length > 4 && /^\d+$/.test(ageValue)) {
+    // Age field contains phone number, swap them
+    correctedItem["Phone Number"] = ageValue;
+    correctedItem["Age"] = phoneValue && phoneValue.length <= 3 ? parseInt(phoneValue) : null;
+  } else if (ageValue && typeof ageValue === 'number' && ageValue.toString().length > 4) {
+    // Age field contains numeric phone number, swap them
+    correctedItem["Phone Number"] = ageValue.toString();
+    correctedItem["Age"] = phoneValue && phoneValue.length <= 3 ? parseInt(phoneValue) : null;
+  } else if (phoneValue && phoneValue.length > 4 && /^\d+$/.test(phoneValue)) {
+    // Phone field already contains phone number (correct), check if age field has 2-digit number
+    if (ageValue && ageValue.toString().length <= 3) {
+      // Data is already correct
+      correctedItem["Age"] = typeof ageValue === 'string' ? parseInt(ageValue) : ageValue;
+    }
+  }
+  
+  return correctedItem;
+}
+
+// Function to permanently fix swapped data in database
+async function fixSwappedDataInDatabase(itemId, originalItem) {
+  const correctedItem = correctAgePhoneSwap(originalItem);
+  
+  // Only update if data was actually swapped
+  if (correctedItem["Age"] !== originalItem["Age"] || correctedItem["Phone Number"] !== originalItem["Phone Number"]) {
+    try {
+      const updateData = {
+        "Age": correctedItem["Age"],
+        "Phone Number": correctedItem["Phone Number"]
+      };
+      
+      const { error } = await supabase
+        .from(CURRENT_TABLE)
+        .update(updateData)
+        .eq("id", itemId);
+      
+      if (error) throw error;
+      
+      console.log(`Fixed swapped data for item ${itemId}:`, updateData);
+      return true;
+    } catch (error) {
+      console.error("Error fixing swapped data:", error);
+      return false;
+    }
+  }
+  return false;
+}
+
 
 // Update the getAttendanceDisplay function to include checkboxes and conditional present/absent
 function getAttendanceDisplay(item) {
@@ -944,10 +1050,18 @@ async function updateField(select, field, value, itemId) {
   try {
     let updateData = {};
 
-    if (field === "age") {
+    // Map field names to correct database column names
+    if (field === "Age") {
       // Parse age as integer before sending to database
-      updateData[field] = value ? parseInt(value) : null;
+      updateData["Age"] = value ? parseInt(value) : null;
+    } else if (field === "Phone Number") {
+      updateData["Phone Number"] = value;
+    } else if (field === "Gender") {
+      updateData["Gender"] = value;
+    } else if (field === "Current Level") {
+      updateData["Current Level"] = value;
     } else {
+      // Fallback for other fields
       updateData[field] = value;
     }
 
@@ -958,7 +1072,7 @@ async function updateField(select, field, value, itemId) {
 
     if (error) throw error;
 
-    if (field === "gender") {
+    if (field === "Gender") {
       select.className = `info-select ${
         value.toLowerCase() === "male"
           ? "male"
@@ -966,7 +1080,7 @@ async function updateField(select, field, value, itemId) {
           ? "female"
           : ""
       }`;
-    } else if (field === "current_level") {
+    } else if (field === "Current Level") {
       select.className = `info-select ${value ? "has-value" : ""}`;
     }
 
@@ -1010,10 +1124,10 @@ async function fetchAndDisplayStats() {
     // Update total count
     document.getElementById("totalPeople").textContent = data.length;
 
-    // Update gender counts
+    // Update gender counts - use correct column names
     const genderCounts = data.reduce(
       (acc, item) => {
-        const gender = item.gender?.toLowerCase() || "";
+        const gender = item["Gender"]?.toLowerCase() || "";
         if (gender === "male") acc.boys++;
         if (gender === "female") acc.girls++;
         return acc;
@@ -1042,10 +1156,9 @@ async function fetchAndDisplayStats() {
       return acc;
     }, {});
 
-    // Count students in each level
+    // Count students in each level - use correct column name
     data.forEach((item) => {
-      // Convert COMPLETED to COMP and UNIVERSITY to UNI in the data
-      let level = item.current_level?.toUpperCase() || "UNKNOWN";
+      let level = item["Current Level"]?.toUpperCase() || "UNKNOWN";
       if (level === "COMPLETED") level = "COMPLETED";
       if (level === "UNIVERSITY") level = "UNIVERSITY";
       if (levelCounts.hasOwnProperty(level)) {

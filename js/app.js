@@ -935,19 +935,8 @@ window.quickMarkAttendance = async function (id, value) {
   const item = (window.currentItems || []).find((i) => i.id == id);
   if (!item) return;
   
-  // HARDCODED: Always use 1st as the default for June_2025
-  let activeAttendanceDate = "1st";
-  
-  // Still try to get from other sources for backwards compatibility, but default to 1st
-  if (!window.globalActiveAttendanceDate && !localStorage.getItem('globalActiveAttendanceDate')) {
-    // Set the defaults
-    window.globalActiveAttendanceDate = activeAttendanceDate;
-    localStorage.setItem('globalActiveAttendanceDate', activeAttendanceDate);
-    console.log('Quick attendance: Auto-set 1st as default');
-  } else {
-    // Use existing saved date, but if it's empty, use 1st
-    activeAttendanceDate = window.globalActiveAttendanceDate || localStorage.getItem('globalActiveAttendanceDate') || "1st";
-  }
+  // Use the globally saved attendance date instead of hardcoding "8th"
+  let activeAttendanceDate = window.globalActiveAttendanceDate || localStorage.getItem('globalActiveAttendanceDate') || "8th";
   
   console.log('Quick attendance using date:', activeAttendanceDate);
   
@@ -1194,10 +1183,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 // Function to load global attendance date from database
 async function loadGlobalAttendanceDate() {
   try {
-    console.log('Setting default attendance date to 25th...');
+    console.log('Setting default attendance date to 8th...');
     
-    // HARDCODED: Always set 1st as the default active date for June_2025
-    const defaultActiveDate = "1st";
+    // HARDCODED: Always set 8th as the default active date for June_2025
+    const defaultActiveDate = "8th";
     
     // Set the global active attendance date for quick attendance
     window.globalActiveAttendanceDate = defaultActiveDate;
@@ -1219,18 +1208,18 @@ async function loadGlobalAttendanceDate() {
         }, {
           onConflict: 'id'
         });
-      console.log('Auto-saved 1st to database from main app');
+      console.log('Auto-saved 8th to database from main app');
     } catch (dbError) {
       console.error('Failed to auto-save to database from main app:', dbError);
     }
     
-    console.log('1st set as permanent default attendance date');
+    console.log('8th set as permanent default attendance date');
     
   } catch (error) {
     console.error('Error setting default attendance date:', error);
-    // Even if there's an error, still set 1st as default
-    window.globalActiveAttendanceDate = "1st";
-    localStorage.setItem('globalActiveAttendanceDate', "1st");
+    // Even if there's an error, still set 8th as default
+    window.globalActiveAttendanceDate = "8th";
+    localStorage.setItem('globalActiveAttendanceDate', "8th");
   }
 }
 

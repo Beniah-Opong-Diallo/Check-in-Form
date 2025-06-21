@@ -109,7 +109,7 @@ const filterItems = debounce(async function () {
     if (searchTerm === "present" || searchTerm === "absent") {
       // Get the first attendee from current data
       let firstAttendee = null;
-      
+
       // Try to get from current displayed items first
       if (window.currentItems && window.currentItems.length > 0) {
         firstAttendee = window.currentItems[0];
@@ -120,21 +120,24 @@ const filterItems = debounce(async function () {
           .select("*")
           .order("Full Name", { ascending: true })
           .limit(1);
-        
+
         if (!firstError && firstData && firstData.length > 0) {
           firstAttendee = firstData[0];
         }
       }
-      
+
       if (firstAttendee) {
         // Auto-mark attendance for first attendee
         const attendanceValue = searchTerm === "present" ? "Present" : "Absent";
         await window.quickMarkAttendance(firstAttendee.id, attendanceValue);
-        
+
         // Clear search input and show success message
         elements.searchInput.value = "";
-        showToast("success", `Marked ${firstAttendee["Full Name"]} as ${attendanceValue}`);
-        
+        showToast(
+          "success",
+          `Marked ${firstAttendee["Full Name"]} as ${attendanceValue}`
+        );
+
         // Refresh display to show updated attendance
         await loadInitialData();
         return;
@@ -490,12 +493,15 @@ function showToast(type, message) {
 function getItemHTML(item) {
   // Correct any swapped age/phone data before displaying
   const correctedItem = correctAgePhoneSwap(item);
-  
+
   // Automatically fix the data in database if it was swapped
-  if (correctedItem["Age"] !== item["Age"] || correctedItem["Phone Number"] !== item["Phone Number"]) {
+  if (
+    correctedItem["Age"] !== item["Age"] ||
+    correctedItem["Phone Number"] !== item["Phone Number"]
+  ) {
     fixSwappedDataInDatabase(item.id, item);
   }
-  
+
   let itemData = "";
   try {
     itemData = encodeURIComponent(JSON.stringify(correctedItem));
@@ -570,7 +576,9 @@ function getItemHTML(item) {
         </div>
         <div class="info-item">
             <span>Current Level:</span>
-            <select class="info-select ${correctedItem["Current Level"] ? "has-value" : ""}"
+            <select class="info-select ${
+              correctedItem["Current Level"] ? "has-value" : ""
+            }"
                     onchange="updateField(this, 'Current Level', this.value, '${
                       item.id
                     }')">
@@ -596,10 +604,14 @@ function getItemHTML(item) {
                   correctedItem["Current Level"] === "JHS3" ? "selected" : ""
                 }>JHS3</option>
                 <option value="COMPLETED" ${
-                  correctedItem["Current Level"] === "COMPLETED" ? "selected" : ""
+                  correctedItem["Current Level"] === "COMPLETED"
+                    ? "selected"
+                    : ""
                 }>COMPLETED</option>
                 <option value="UNIVERSITY" ${
-                  correctedItem["Current Level"] === "UNIVERSITY" ? "selected" : ""
+                  correctedItem["Current Level"] === "UNIVERSITY"
+                    ? "selected"
+                    : ""
                 }>UNIVERSITY</option>
             </select>
         </div>
@@ -616,10 +628,14 @@ function getItemHTML(item) {
         </div>
         <div class="info-item">
             <span>Age:</span>
-            <input type="number" class="editable-field" value="${correctedItem["Age"] || ""}"
+            <input type="number" class="editable-field" value="${
+              correctedItem["Age"] || ""
+            }"
                    min="0" max="100" style="width: 60px;"
                    placeholder="Age"
-                   onchange="updateField(this, 'Age', this.value, '${item.id}')" />
+                   onchange="updateField(this, 'Age', this.value, '${
+                     item.id
+                   }')" />
         </div>
         <div class="attendance-section">
             <strong>Attendance:</strong><br>
@@ -632,18 +648,18 @@ function getItemHTML(item) {
 
 // Toggle detailed information when pencil icon is clicked
 window.toggleDetailedInfo = function (button) {
-  const resultItem = button.closest('.result-item');
-  const detailedInfo = resultItem.querySelector('.detailed-info');
-  const isVisible = detailedInfo.style.display !== 'none';
-  
+  const resultItem = button.closest(".result-item");
+  const detailedInfo = resultItem.querySelector(".detailed-info");
+  const isVisible = detailedInfo.style.display !== "none";
+
   if (isVisible) {
     // Hide detailed info
-    detailedInfo.style.display = 'none';
-    button.title = 'Show Details';
+    detailedInfo.style.display = "none";
+    button.title = "Show Details";
   } else {
     // Show detailed info
-    detailedInfo.style.display = 'block';
-    button.title = 'Hide Details';
+    detailedInfo.style.display = "block";
+    button.title = "Hide Details";
   }
 };
 
@@ -726,9 +742,7 @@ async function handleSubmit(e) {
       "Full Name": elements.nameInput.value.trim() || null,
       Gender: elements.genderInput.value || null,
       "Phone Number": elements.phoneInput.value.trim() || null,
-      Age: elements.ageInput.value
-        ? parseInt(elements.ageInput.value)
-        : null,
+      Age: elements.ageInput.value ? parseInt(elements.ageInput.value) : null,
       "Current Level": elements.levelInput.value || null,
       "Attendance 1st": elements.attendance1st
         ? elements.attendance1st.value
@@ -821,50 +835,65 @@ function escapeHtml(unsafe) {
 // Function to correct swapped age and phone number data
 function correctAgePhoneSwap(item) {
   const correctedItem = { ...item };
-  
+
   // Get the current values
   const ageValue = item["Age"];
   const phoneValue = item["Phone Number"];
-  
+
   // Check if age contains a number with more than 4 digits (likely a phone number)
-  if (ageValue && typeof ageValue === 'string' && ageValue.length > 4 && /^\d+$/.test(ageValue)) {
+  if (
+    ageValue &&
+    typeof ageValue === "string" &&
+    ageValue.length > 4 &&
+    /^\d+$/.test(ageValue)
+  ) {
     // Age field contains phone number, swap them
     correctedItem["Phone Number"] = ageValue;
-    correctedItem["Age"] = phoneValue && phoneValue.length <= 3 ? parseInt(phoneValue) : null;
-  } else if (ageValue && typeof ageValue === 'number' && ageValue.toString().length > 4) {
+    correctedItem["Age"] =
+      phoneValue && phoneValue.length <= 3 ? parseInt(phoneValue) : null;
+  } else if (
+    ageValue &&
+    typeof ageValue === "number" &&
+    ageValue.toString().length > 4
+  ) {
     // Age field contains numeric phone number, swap them
     correctedItem["Phone Number"] = ageValue.toString();
-    correctedItem["Age"] = phoneValue && phoneValue.length <= 3 ? parseInt(phoneValue) : null;
+    correctedItem["Age"] =
+      phoneValue && phoneValue.length <= 3 ? parseInt(phoneValue) : null;
   } else if (phoneValue && phoneValue.length > 4 && /^\d+$/.test(phoneValue)) {
     // Phone field already contains phone number (correct), check if age field has 2-digit number
     if (ageValue && ageValue.toString().length <= 3) {
       // Data is already correct
-      correctedItem["Age"] = typeof ageValue === 'string' ? parseInt(ageValue) : ageValue;
+      correctedItem["Age"] =
+        typeof ageValue === "string" ? parseInt(ageValue) : ageValue;
     }
   }
-  
+
   return correctedItem;
 }
 
 // Function to permanently fix swapped data in database
 async function fixSwappedDataInDatabase(itemId, originalItem) {
   const correctedItem = correctAgePhoneSwap(originalItem);
-  
+
   // Only update if data was actually swapped
-  if (correctedItem["Age"] !== originalItem["Age"] || correctedItem["Phone Number"] !== originalItem["Phone Number"]) {
+  if (
+    correctedItem["Age"] !== originalItem["Age"] ||
+    correctedItem["Phone Number"] !== originalItem["Phone Number"]
+  ) {
     try {
       const updateData = {
-        "Age": correctedItem["Age"],
-        "Phone Number": correctedItem["Phone Number"]
+        Age: correctedItem["Age"],
+        "Phone Number": correctedItem["Phone Number"],
       };
-      
+
       const { error } = await supabase
         .from(CURRENT_TABLE)
         .update(updateData)
         .eq("id", itemId);
-      
+
       if (error) throw error;
-      
+
       console.log(`Fixed swapped data for item ${itemId}:`, updateData);
       return true;
     } catch (error) {
@@ -875,7 +904,6 @@ async function fixSwappedDataInDatabase(itemId, originalItem) {
   return false;
 }
 
-
 // Update the getAttendanceDisplay function to include checkboxes and conditional present/absent
 function getAttendanceDisplay(item) {
   const attendanceFields = [
@@ -885,7 +913,7 @@ function getAttendanceDisplay(item) {
     { field: "Attendance 22nd", display: "22nd", dateKey: "22nd" },
     { field: "Attendance 29th", display: "29th", dateKey: "29th" },
   ];
-  
+
   return attendanceFields
     .map((field) => {
       let value = item[field.field];
@@ -898,7 +926,6 @@ function getAttendanceDisplay(item) {
         if (value === 1) value = "Present";
         if (value === 0) value = "Absent";
       }
-
 
       const selectClass =
         value?.toString().toLowerCase() === "present"
@@ -914,7 +941,9 @@ function getAttendanceDisplay(item) {
           </label>
         </div>
         <select class="${selectClass}"
-                onchange="updateAttendance(this, '${field.field}', this.value, '${item.id}')">
+                onchange="updateAttendance(this, '${
+                  field.field
+                }', this.value, '${item.id}')">
           <option value="">Select</option>
           <option value="Present" ${
             value === "Present" ? "selected" : ""
@@ -928,48 +957,53 @@ function getAttendanceDisplay(item) {
     .join("");
 }
 
-
 // Load active date from localStorage on page load
 
 window.quickMarkAttendance = async function (id, value) {
   const item = (window.currentItems || []).find((i) => i.id == id);
   if (!item) return;
-  
+
   // Use the globally saved attendance date instead of hardcoding "8th"
-  let activeAttendanceDate = window.globalActiveAttendanceDate || localStorage.getItem('globalActiveAttendanceDate') || "15th";
-  
-  console.log('Quick attendance using date:', activeAttendanceDate);
-  
+  let activeAttendanceDate =
+    window.globalActiveAttendanceDate ||
+    localStorage.getItem("globalActiveAttendanceDate") ||
+    "15th";
+
+  console.log("Quick attendance using date:", activeAttendanceDate);
+
   // Map active date to field name
   const dateFieldMap = {
     "1st": "Attendance 1st",
     "8th": "Attendance 8th",
     "15th": "Attendance 15th",
     "22nd": "Attendance 22nd",
-    "29th": "Attendance 29th"
+    "29th": "Attendance 29th",
   };
-  
+
   const fieldName = dateFieldMap[activeAttendanceDate];
   if (!fieldName) {
-    console.error('Invalid attendance date:', activeAttendanceDate);
+    console.error("Invalid attendance date:", activeAttendanceDate);
     showToast("error", "Invalid attendance date selected");
     return;
   }
-  
+
   try {
     // Update attendance in database
     const updateData = { [fieldName]: value };
-    
+
     const { error } = await supabase
       .from(CURRENT_TABLE)
       .update(updateData)
       .eq("id", id);
-    
+
     if (error) throw error;
-    
+
     // Show feedback (toast) on all screen sizes
-    showToast("success", `Successfully updated ${activeAttendanceDate} attendance`);
-    
+    showToast(
+      "success",
+      `Successfully updated ${activeAttendanceDate} attendance`
+    );
+
     // Optionally, visually highlight the button
     const row = document.querySelector(
       `.quick-attendance-buttons[data-id='${id}']`
@@ -981,11 +1015,11 @@ window.quickMarkAttendance = async function (id, value) {
       const btn = row.querySelector(`.quick-${value.toLowerCase()}-btn`);
       if (btn) btn.classList.add("selected");
     }
-    
+
     // Update the displayed attendance values
     searchCache.clear();
     await fetchAndDisplayStats();
-    
+
     // Refresh the current display
     const currentSearch = elements.searchInput.value.trim();
     if (currentSearch) {
@@ -993,7 +1027,6 @@ window.quickMarkAttendance = async function (id, value) {
     } else {
       await loadInitialData();
     }
-    
   } catch (error) {
     console.error("Error updating attendance:", error);
     showToast("error", "Failed to update attendance");
@@ -1183,43 +1216,43 @@ document.addEventListener("DOMContentLoaded", async () => {
 // Function to load global attendance date from database
 async function loadGlobalAttendanceDate() {
   try {
-    console.log('Setting default attendance date to 15th...');
-    
-    // HARDCODED: Always set 15th as the default active date for June_2025
-    const defaultActiveDate = "15th";
+    console.log("Setting default attendance date to 22nd...");
+
+    // HARDCODED: Always set 22nd as the default active date for June_2025
+    const defaultActiveDate = "22nd";
     
     // Set the global active attendance date for quick attendance
     window.globalActiveAttendanceDate = defaultActiveDate;
-    
+
     // Save to localStorage as backup
-    localStorage.setItem('globalActiveAttendanceDate', defaultActiveDate);
-    
+    localStorage.setItem("globalActiveAttendanceDate", defaultActiveDate);
+
     // Auto-save to database for persistence across sessions
     try {
-      await supabase
-        .from(CURRENT_TABLE)
-        .upsert({
-          id: 'global_attendance_date',
-          'Full Name': 'SYSTEM_SETTING_ACTIVE_ATTENDANCE_DATE',
-          'Gender': defaultActiveDate,
-          'Phone Number': new Date().toISOString(),
-          'Age': 'SYSTEM',
-          'Current Level': 'ACTIVE_DATE'
-        }, {
-          onConflict: 'id'
-        });
-      console.log('Auto-saved 15th to database from main app');
+      await supabase.from(CURRENT_TABLE).upsert(
+        {
+          id: "global_attendance_date",
+          "Full Name": "SYSTEM_SETTING_ACTIVE_ATTENDANCE_DATE",
+          Gender: defaultActiveDate,
+          "Phone Number": new Date().toISOString(),
+          Age: "SYSTEM",
+          "Current Level": "ACTIVE_DATE",
+        },
+        {
+          onConflict: "id",
+        }
+      );
+      console.log("Auto-saved 22nd to database from main app");
     } catch (dbError) {
-      console.error('Failed to auto-save to database from main app:', dbError);
+      console.error("Failed to auto-save to database from main app:", dbError);
     }
-    
-    console.log('15th set as permanent default attendance date');
-    
+
+    console.log("22nd set as permanent default attendance date");
   } catch (error) {
-    console.error('Error setting default attendance date:', error);
-    // Even if there's an error, still set 15th as default
-    window.globalActiveAttendanceDate = "15th";
-    localStorage.setItem('globalActiveAttendanceDate', "15th");
+    console.error("Error setting default attendance date:", error);
+    // Even if there's an error, still set 22nd as default
+    window.globalActiveAttendanceDate = "22nd";
+    localStorage.setItem("globalActiveAttendanceDate", "22nd");
   }
 }
 

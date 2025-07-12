@@ -1492,24 +1492,20 @@
             <p class="control-description">Select the active attendance date for the system (automatically saved)</p>
             <div class="date-options">
               <label class="date-option">
-                <input type="checkbox" id="global-date-1st" class="global-date-checkbox" data-date="1st" onchange="handleDateSelection('1st', this)">
-                <span class="date-label">1st</span>
+                <input type="checkbox" id="global-date-6th" class="global-date-checkbox" data-date="6th" onchange="handleDateSelection('6th', this)">
+                <span class="date-label">6th</span>
               </label>
               <label class="date-option">
-                <input type="checkbox" id="global-date-8th" class="global-date-checkbox" data-date="8th" onchange="handleDateSelection('8th', this)">
-                <span class="date-label">8th</span>
+                <input type="checkbox" id="global-date-13th" class="global-date-checkbox" data-date="13th" onchange="handleDateSelection('13th', this)">
+                <span class="date-label">13th</span>
               </label>
               <label class="date-option">
-                <input type="checkbox" id="global-date-15th" class="global-date-checkbox" data-date="15th" onchange="handleDateSelection('15th', this)">
-                <span class="date-label">15th</span>
+                <input type="checkbox" id="global-date-20th" class="global-date-checkbox" data-date="20th" onchange="handleDateSelection('20th', this)">
+                <span class="date-label">20th</span>
               </label>
               <label class="date-option">
-                <input type="checkbox" id="global-date-22nd" class="global-date-checkbox" data-date="22nd" onchange="handleDateSelection('22nd', this)">
-                <span class="date-label">22nd</span>
-              </label>
-              <label class="date-option">
-                <input type="checkbox" id="global-date-29th" class="global-date-checkbox" data-date="29th" onchange="handleDateSelection('29th', this)">
-                <span class="date-label">29th</span>
+                <input type="checkbox" id="global-date-27th" class="global-date-checkbox" data-date="27th" onchange="handleDateSelection('27th', this)">
+                <span class="date-label">27th</span>
               </label>
             </div>
             <div class="date-actions">
@@ -1563,24 +1559,20 @@
             
             <div class="date-selection-grid">
               <label class="date-selection-option">
-                <input type="checkbox" id="select-date-1st" class="date-selection-checkbox" data-date="1st" data-column="Attendance 1st">
-                <span class="date-selection-label">1st</span>
+                <input type="checkbox" id="select-date-6th" class="date-selection-checkbox" data-date="6th" data-column="Attendance 6th">
+                <span class="date-selection-label">6th</span>
               </label>
               <label class="date-selection-option">
-                <input type="checkbox" id="select-date-8th" class="date-selection-checkbox" data-date="8th" data-column="Attendance 8th">
-                <span class="date-selection-label">8th</span>
+                <input type="checkbox" id="select-date-13th" class="date-selection-checkbox" data-date="13th" data-column="Attendance 13th">
+                <span class="date-selection-label">13th</span>
               </label>
               <label class="date-selection-option">
-                <input type="checkbox" id="select-date-15th" class="date-selection-checkbox" data-date="15th" data-column="Attendance 15th">
-                <span class="date-selection-label">15th</span>
+                <input type="checkbox" id="select-date-20th" class="date-selection-checkbox" data-date="20th" data-column="Attendance 20th">
+                <span class="date-selection-label">20th</span>
               </label>
               <label class="date-selection-option">
-                <input type="checkbox" id="select-date-22nd" class="date-selection-checkbox" data-date="22nd" data-column="Attendance 22nd">
-                <span class="date-selection-label">22nd</span>
-              </label>
-              <label class="date-selection-option">
-                <input type="checkbox" id="select-date-29th" class="date-selection-checkbox" data-date="29th" data-column="Attendance 29th">
-                <span class="date-selection-label">29th</span>
+                <input type="checkbox" id="select-date-27th" class="date-selection-checkbox" data-date="27th" data-column="Attendance 27th">
+                <span class="date-selection-label">27th</span>
               </label>
             </div>
             
@@ -1677,7 +1669,7 @@
             </svg>
             Member Data
             <span class="current-month-badge">
-              <span class="current-month-indicator">June 2025</span>
+              <span class="current-month-indicator">July 2025</span>
             </span>
           </div>
           <div class="table-actions">
@@ -1719,11 +1711,11 @@
                   <th>Phone</th>
                   <th>Age</th>
                   <th>Level</th>
-                  <th>1st</th>
-                  <th>8th</th>
-                  <th>15th</th>
-                  <th>22nd</th>
-                  <th>29th</th>
+                  <th>6th</th>
+                  <th>13th</th>
+                  <th>20th</th>
+                  <th>27th</th>
+                  <th style="display: none;">29th</th>
                 </tr>
               </thead>
               <tbody id="sensitiveTableBody">
@@ -2124,8 +2116,8 @@
           console.log('Found attendance date in localStorage:', savedAttendanceDate);
         }
         
-        // If still no saved date, default to 1st
-        const activeDate = savedAttendanceDate || "1st";
+        // If still no saved date, default to 6th (first Sunday of July)
+        const activeDate = savedAttendanceDate || "6th";
         console.log('Using attendance date:', activeDate);
         
         // Set the global variable
@@ -2195,16 +2187,16 @@
         
       } catch (error) {
         console.error('Error setting default attendance date:', error);
-        // Even if there's an error, still set 1st as default
-        globalActiveAttendanceDate = "1st";
-        localStorage.setItem('globalActiveAttendanceDate', "1st");
+        // Even if there's an error, still set 6th as default
+        globalActiveAttendanceDate = "6th";
+        localStorage.setItem('globalActiveAttendanceDate', "6th");
         
-        const checkbox = document.getElementById('global-date-1st');
+        const checkbox = document.getElementById('global-date-6th');
         if (checkbox) {
           const allCheckboxes = document.querySelectorAll('.global-date-checkbox');
           allCheckboxes.forEach(cb => cb.checked = false);
           checkbox.checked = true;
-          document.getElementById('active-date-display').textContent = '1st attendance is active (permanent default)';
+          document.getElementById('active-date-display').textContent = '6th attendance is active (permanent default)';
           document.getElementById('active-date-display').style.color = '#22c55e';
         }
         document.getElementById('saveAttendanceDateBtn').style.display = 'none';
@@ -2455,11 +2447,11 @@
           <td>
             <span class="level-badge">${item["Current Level"] || ''}</span>
           </td>
-          <td>${getAttendanceCell(item["Attendance 1st"])}</td>
-          <td>${getAttendanceCell(item["Attendance 8th"])}</td>
-          <td>${getAttendanceCell(item["Attendance 15th"])}</td>
-          <td>${getAttendanceCell(item["Attendance 22nd"])}</td>
-          <td>${getAttendanceCell(item["Attendance 29th"])}</td>
+          <td>${getAttendanceCell(item["Attendance 6th"])}</td>
+          <td>${getAttendanceCell(item["Attendance 13th"])}</td>
+          <td>${getAttendanceCell(item["Attendance 20th"])}</td>
+          <td>${getAttendanceCell(item["Attendance 27th"])}</td>
+          <td style="display: none;">${getAttendanceCell(item["Attendance 29th"])}</td>
         </tr>
       `}).join('');
 
@@ -2549,7 +2541,10 @@
           deleteBtn.textContent = 'Deleting...';
         }
         // Delete all selected records in parallel
-        const { error } = await window.supabase.from('June_2025').delete().in('id', ids);
+        const currentTable = window.monthlyTabsManager ?
+          window.monthlyTabsManager.getCurrentTable() :
+          'July_2025';
+        const { error } = await window.supabase.from(currentTable).delete().in('id', ids);
         if (error) throw error;
 
         // Remove deleted rows from the table and from currentTableData
@@ -2606,8 +2601,13 @@
 
     // Function to calculate and display attendance totals for each date
     function updateAttendanceSummary(data) {
-      const attendanceDates = ['1st', '8th', '15th', '22nd', '29th'];
-      const attendanceColumns = ['Attendance 1st', 'Attendance 8th', 'Attendance 15th', 'Attendance 22nd', 'Attendance 29th'];
+      // Get current month's attendance configuration
+      const config = window.monthlyTabsManager ?
+        window.monthlyTabsManager.getCurrentConfig() :
+        { attendanceDates: ['6th', '13th', '20th', '27th'], attendanceColumns: ['Attendance 6th', 'Attendance 13th', 'Attendance 20th', 'Attendance 27th'] };
+      
+      const attendanceDates = config.attendanceDates;
+      const attendanceColumns = config.attendanceColumns;
       const attendanceGrid = document.querySelector('.attendance-grid.modern');
       
       if (!attendanceGrid) return;
@@ -2755,24 +2755,24 @@
         return;
       }
 
-      // Use the correct column names from June_2025 table
+      // Use the correct column names from current month table
+      const config = window.monthlyTabsManager ?
+        window.monthlyTabsManager.getCurrentConfig() :
+        { attendanceColumns: ['Attendance 6th', 'Attendance 13th', 'Attendance 20th', 'Attendance 27th'] };
+      
       const headers = [
         'Full Name', 'Gender', 'Phone Number', 'Age', 'Current Level',
-        'Attendance 1st', 'Attendance 8th', 'Attendance 15th', 'Attendance 22nd', 'Attendance 29th'
+        ...config.attendanceColumns
       ];
 
       let csvContent = headers.join(',') + '\n';
       csvContent += data.map(item => [
         item["Full Name"] || '',
         item["Gender"] || '',
-        item["Phone Number"] || '', // swapped
-        item["Age"] || '', // swapped
+        item["Phone Number"] || '',
+        item["Age"] || '',
         item["Current Level"] || '',
-        item["Attendance 1st"] || '',
-        item["Attendance 8th"] || '',
-        item["Attendance 15th"] || '',
-        item["Attendance 22nd"] || '',
-        item["Attendance 29th"] || ''
+        ...config.attendanceColumns.map(col => item[col] || '')
       ].map(cell => cell.toString().replace(/"/g, '""')).map(cell => cell.includes(',') ? '"' + cell + '"' : cell).join(',')).join('\n');
 
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -2844,8 +2844,11 @@
         modal.remove();
         btn.disabled = true;
         btn.style.opacity = '0.6';
+        const currentTable = window.monthlyTabsManager ?
+          window.monthlyTabsManager.getCurrentTable() :
+          'July_2025';
         window.supabase
-          .from('June_2025')
+          .from(currentTable)
           .delete()
           .eq('id', id)
           .then(({ error }) => {
@@ -2906,7 +2909,10 @@
         const filterValue = document.getElementById('name-search')?.value?.toLowerCase() || '';
 
         // Prepare query
-        let query = window.supabase.from('June_2025').select('*').order('Full Name');
+        const currentTable = window.monthlyTabsManager ?
+          window.monthlyTabsManager.getCurrentTable() :
+          'July_2025';
+        let query = window.supabase.from(currentTable).select('*').order('Full Name');
 
         // Apply name filter if any
         if (filterValue) {
@@ -3012,8 +3018,11 @@
     // Store current data for undo
     async function storeUndoData(operation) {
       try {
+        const currentTable = window.monthlyTabsManager ?
+          window.monthlyTabsManager.getCurrentTable() :
+          'July_2025';
         const { data, error } = await window.supabase
-          .from('June_2025')
+          .from(currentTable)
           .select('*');
         
         if (error) throw error;
@@ -3097,8 +3106,11 @@
           updates[column] = null;
         });
 
+        const currentTable = window.monthlyTabsManager ?
+          window.monthlyTabsManager.getCurrentTable() :
+          'July_2025';
         const { error } = await window.supabase
-          .from('June_2025')
+          .from(currentTable)
           .update(updates)
           .neq('Full Name', '');
 
@@ -3181,8 +3193,11 @@
         `;
 
         // Get all current data
+        const currentTable = window.monthlyTabsManager ?
+          window.monthlyTabsManager.getCurrentTable() :
+          'July_2025';
         const { data: allRecords, error: fetchError } = await window.supabase
-          .from('June_2025')
+          .from(currentTable)
           .select('*');
 
         if (fetchError) throw fetchError;
@@ -3208,8 +3223,11 @@
           if (hasUpdates) {
             recordsWithUpdates++;
             console.log(`Updating record ${record.id} with:`, updates);
+            const currentTable = window.monthlyTabsManager ?
+              window.monthlyTabsManager.getCurrentTable() :
+              'July_2025';
             return window.supabase
-              .from('June_2025')
+              .from(currentTable)
               .update(updates)
               .eq('id', record.id);
           }
@@ -3303,8 +3321,11 @@
         const updatePromises = undoData.map(record => {
           const { id, ...updateData } = record;
           console.log(`Restoring record ${id} with data:`, updateData);
+          const currentTable = window.monthlyTabsManager ?
+            window.monthlyTabsManager.getCurrentTable() :
+            'July_2025';
           return window.supabase
-            .from('June_2025')
+            .from(currentTable)
             .update(updateData)
             .eq('id', id);
         });

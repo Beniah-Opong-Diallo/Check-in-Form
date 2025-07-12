@@ -47,9 +47,9 @@ async function createMonthlyTable(month, year) {
       }
     }
 
-    // Fetch all person data from June_2025
+    // Fetch all person data from July_2025
     const { data: people, error: fetchError } = await supabase
-      .from("June_2025")
+      .from("July_2025")
       .select("*");
     if (fetchError) {
       throw new Error("Error fetching data: " + fetchError.message);

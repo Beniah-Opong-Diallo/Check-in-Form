@@ -5,9 +5,15 @@
 
 class MonthlyTabsManager {
   constructor() {
-    this.currentMonth = 'June_2025'; // Default month
+    this.currentMonth = 'July_2025'; // Default month
     this.availableTables = {}; // Will store only existing tables
     this.monthsConfig = {
+      'July_2025': {
+        name: 'July 2025',
+        table: 'July_2025',
+        attendanceDates: ['6th', '13th', '20th', '27th'],
+        attendanceColumns: ['Attendance 6th', 'Attendance 13th', 'Attendance 20th', 'Attendance 27th']
+      },
       'June_2025': {
         name: 'June 2025',
         table: 'June_2025',

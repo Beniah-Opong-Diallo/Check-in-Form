@@ -2116,8 +2116,8 @@
           console.log('Found attendance date in localStorage:', savedAttendanceDate);
         }
         
-        // If still no saved date, default to 6th (first Sunday of July)
-        const activeDate = savedAttendanceDate || "6th";
+        // If still no saved date, default to 13th (second Sunday of July)
+        const activeDate = savedAttendanceDate || "13th";
         console.log('Using attendance date:', activeDate);
         
         // Set the global variable
@@ -2187,16 +2187,16 @@
         
       } catch (error) {
         console.error('Error setting default attendance date:', error);
-        // Even if there's an error, still set 6th as default
-        globalActiveAttendanceDate = "6th";
-        localStorage.setItem('globalActiveAttendanceDate', "6th");
+        // Even if there's an error, still set 13th as default
+        globalActiveAttendanceDate = "13th";
+        localStorage.setItem('globalActiveAttendanceDate', "13th");
         
-        const checkbox = document.getElementById('global-date-6th');
+        const checkbox = document.getElementById('global-date-13th');
         if (checkbox) {
           const allCheckboxes = document.querySelectorAll('.global-date-checkbox');
           allCheckboxes.forEach(cb => cb.checked = false);
           checkbox.checked = true;
-          document.getElementById('active-date-display').textContent = '6th attendance is active (permanent default)';
+          document.getElementById('active-date-display').textContent = '13th attendance is active (permanent default)';
           document.getElementById('active-date-display').style.color = '#22c55e';
         }
         document.getElementById('saveAttendanceDateBtn').style.display = 'none';

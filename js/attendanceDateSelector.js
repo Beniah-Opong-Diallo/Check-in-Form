@@ -9,7 +9,7 @@ class AttendanceDateSelector {
             { value: "29th", label: "29th" }
         ];
         
-        this.currentSelectedDate = window.globalActiveAttendanceDate || localStorage.getItem('globalActiveAttendanceDate') || "15th";
+        this.currentSelectedDate = window.globalActiveAttendanceDate || localStorage.getItem('globalActiveAttendanceDate') || "13th";
         this.init();
     }
 

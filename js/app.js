@@ -959,7 +959,7 @@ window.quickMarkAttendance = async function (id, value) {
   let activeAttendanceDate =
     window.globalActiveAttendanceDate ||
     localStorage.getItem("globalActiveAttendanceDate") ||
-    "13th";
+    "20th";
 
   console.log("Quick attendance using date:", activeAttendanceDate);
 
@@ -1209,12 +1209,12 @@ async function loadGlobalAttendanceDate() {
   try {
     console.log("Setting default attendance date for July 2025...");
 
-    // HARDCODED: Always set 13th as the default active date for July_2025
-    const defaultActiveDate = "13th";
-    
+    // HARDCODED: Always set 20th as the default active date for July_2025
+    const defaultActiveDate = "20th";
+
     // Clear any old cached attendance date to force refresh
     localStorage.removeItem("globalActiveAttendanceDate");
-    
+
     // Set the global active attendance date for quick attendance
     window.globalActiveAttendanceDate = defaultActiveDate;
 
@@ -1236,17 +1236,17 @@ async function loadGlobalAttendanceDate() {
           onConflict: "id",
         }
       );
-      console.log("Auto-saved 13th to database from main app for July 2025");
+      console.log("Auto-saved 20th to database from main app for July 2025");
     } catch (dbError) {
       console.error("Failed to auto-save to database from main app:", dbError);
     }
 
-    console.log("13th set as permanent default attendance date for July 2025");
+    console.log("20th set as permanent default attendance date for July 2025");
   } catch (error) {
     console.error("Error setting default attendance date:", error);
-    // Even if there's an error, still set 13th as default
-    window.globalActiveAttendanceDate = "13th";
-    localStorage.setItem("globalActiveAttendanceDate", "13th");
+    // Even if there's an error, still set 20th as default
+    window.globalActiveAttendanceDate = "20th";
+    localStorage.setItem("globalActiveAttendanceDate", "20th");
   }
 }
 

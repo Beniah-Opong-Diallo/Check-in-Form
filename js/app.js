@@ -105,6 +105,12 @@ const filterItems = debounce(async function () {
 
     // Check if user typed "present" or "absent" - default to first attendee
     if (searchTerm === "present" || searchTerm === "absent") {
+      // Check current attendance date before allowing quick marking
+      let activeAttendanceDate =
+        window.globalActiveAttendanceDate ||
+        localStorage.getItem("globalActiveAttendanceDate") ||
+        "27th";
+
       // Get the first attendee from current data
       let firstAttendee = null;
 
@@ -959,9 +965,10 @@ window.quickMarkAttendance = async function (id, value) {
   let activeAttendanceDate =
     window.globalActiveAttendanceDate ||
     localStorage.getItem("globalActiveAttendanceDate") ||
-    "20th";
+    "27th";
 
   console.log("Quick attendance using date:", activeAttendanceDate);
+
 
   // Map active date to field name for July 2025
   const dateFieldMap = {
@@ -1027,6 +1034,7 @@ window.quickMarkAttendance = async function (id, value) {
 // Update the attendance update function
 async function updateAttendance(select, field, value, itemId) {
   try {
+
     // Now all attendance fields are TEXT type, store "Present" or "Absent" as strings
     const updateData = { [field]: value };
 
@@ -1209,8 +1217,8 @@ async function loadGlobalAttendanceDate() {
   try {
     console.log("Setting default attendance date for July 2025...");
 
-    // HARDCODED: Always set 20th as the default active date for July_2025
-    const defaultActiveDate = "20th";
+    // HARDCODED: Always set 27th as the default active date for July_2025
+    const defaultActiveDate = "27th";
 
     // Clear any old cached attendance date to force refresh
     localStorage.removeItem("globalActiveAttendanceDate");
@@ -1241,12 +1249,12 @@ async function loadGlobalAttendanceDate() {
       console.error("Failed to auto-save to database from main app:", dbError);
     }
 
-    console.log("20th set as permanent default attendance date for July 2025");
+    console.log("27th set as permanent default attendance date for July 2025");
   } catch (error) {
     console.error("Error setting default attendance date:", error);
-    // Even if there's an error, still set 20th as default
-    window.globalActiveAttendanceDate = "20th";
-    localStorage.setItem("globalActiveAttendanceDate", "20th");
+    // Even if there's an error, still set 27th as default
+    window.globalActiveAttendanceDate = "27th";
+    localStorage.setItem("globalActiveAttendanceDate", "27th");
   }
 }
 

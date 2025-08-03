@@ -2,16 +2,16 @@
 class AttendanceDateSelector {
   constructor() {
     this.dateOptions = [
-      { value: "6th", label: "6th" },
-      { value: "13th", label: "13th" },
-      { value: "20th", label: "20th" },
-      { value: "27th", label: "27th" },
+      { value: "3rd", label: "3rd" },
+      { value: "10th", label: "10th" },
+      { value: "17th", label: "17th" },
+      { value: "24th", label: "24th" },
     ];
 
     this.currentSelectedDate =
       window.globalActiveAttendanceDate ||
       localStorage.getItem("globalActiveAttendanceDate") ||
-      "27th";
+      "3rd";
     this.init();
   }
 
@@ -316,9 +316,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initialize date selector
   window.attendanceDateSelector = new AttendanceDateSelector();
 
-  // Set initial date to 27th if no date is currently selected
+  // Set initial date to 3rd if no date is currently selected
   if (!window.globalActiveAttendanceDate) {
-    window.attendanceDateSelector.setDate("27th");
+    window.attendanceDateSelector.setDate("3rd");
   }
 });
 
@@ -335,5 +335,5 @@ window.getCurrentAttendanceDate = function () {
   if (window.attendanceDateSelector) {
     return window.attendanceDateSelector.getCurrentDate();
   }
-  return window.globalActiveAttendanceDate || "27th";
+  return window.globalActiveAttendanceDate || "3rd";
 };

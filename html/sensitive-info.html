@@ -1492,20 +1492,20 @@
             <p class="control-description">Select the active attendance date for the system (automatically saved)</p>
             <div class="date-options">
               <label class="date-option">
-                <input type="checkbox" id="global-date-6th" class="global-date-checkbox" data-date="6th" onchange="handleDateSelection('6th', this)">
-                <span class="date-label">6th</span>
+                <input type="checkbox" id="global-date-3rd" class="global-date-checkbox" data-date="3rd" onchange="handleDateSelection('3rd', this)">
+                <span class="date-label">3rd</span>
               </label>
               <label class="date-option">
-                <input type="checkbox" id="global-date-13th" class="global-date-checkbox" data-date="13th" onchange="handleDateSelection('13th', this)">
-                <span class="date-label">13th</span>
+                <input type="checkbox" id="global-date-10th" class="global-date-checkbox" data-date="10th" onchange="handleDateSelection('10th', this)">
+                <span class="date-label">10th</span>
               </label>
               <label class="date-option">
-                <input type="checkbox" id="global-date-20th" class="global-date-checkbox" data-date="20th" onchange="handleDateSelection('20th', this)">
-                <span class="date-label">20th</span>
+                <input type="checkbox" id="global-date-17th" class="global-date-checkbox" data-date="17th" onchange="handleDateSelection('17th', this)">
+                <span class="date-label">17th</span>
               </label>
               <label class="date-option">
-                <input type="checkbox" id="global-date-27th" class="global-date-checkbox" data-date="27th" onchange="handleDateSelection('27th', this)">
-                <span class="date-label">27th</span>
+                <input type="checkbox" id="global-date-24th" class="global-date-checkbox" data-date="24th" onchange="handleDateSelection('24th', this)">
+                <span class="date-label">24th</span>
               </label>
             </div>
             <div class="date-actions">
@@ -1559,20 +1559,20 @@
             
             <div class="date-selection-grid">
               <label class="date-selection-option">
-                <input type="checkbox" id="select-date-6th" class="date-selection-checkbox" data-date="6th" data-column="Attendance 6th">
-                <span class="date-selection-label">6th</span>
+                <input type="checkbox" id="select-date-3rd" class="date-selection-checkbox" data-date="3rd" data-column="Attendance 3rd">
+                <span class="date-selection-label">3rd</span>
               </label>
               <label class="date-selection-option">
-                <input type="checkbox" id="select-date-13th" class="date-selection-checkbox" data-date="13th" data-column="Attendance 13th">
-                <span class="date-selection-label">13th</span>
+                <input type="checkbox" id="select-date-10th" class="date-selection-checkbox" data-date="10th" data-column="Attendance 10th">
+                <span class="date-selection-label">10th</span>
               </label>
               <label class="date-selection-option">
-                <input type="checkbox" id="select-date-20th" class="date-selection-checkbox" data-date="20th" data-column="Attendance 20th">
-                <span class="date-selection-label">20th</span>
+                <input type="checkbox" id="select-date-17th" class="date-selection-checkbox" data-date="17th" data-column="Attendance 17th">
+                <span class="date-selection-label">17th</span>
               </label>
               <label class="date-selection-option">
-                <input type="checkbox" id="select-date-27th" class="date-selection-checkbox" data-date="27th" data-column="Attendance 27th">
-                <span class="date-selection-label">27th</span>
+                <input type="checkbox" id="select-date-24th" class="date-selection-checkbox" data-date="24th" data-column="Attendance 24th">
+                <span class="date-selection-label">24th</span>
               </label>
             </div>
             
@@ -1669,7 +1669,7 @@
             </svg>
             Member Data
             <span class="current-month-badge">
-              <span class="current-month-indicator">July 2025</span>
+              <span class="current-month-indicator">August 2025</span>
             </span>
           </div>
           <div class="table-actions">
@@ -1711,10 +1711,10 @@
                   <th>Phone</th>
                   <th>Age</th>
                   <th>Level</th>
-                  <th>6th</th>
-                  <th>13th</th>
-                  <th>20th</th>
-                  <th>27th</th>
+                  <th>3rd</th>
+                  <th>10th</th>
+                  <th>17th</th>
+                  <th>24th</th>
                   <th style="display: none;">29th</th>
                 </tr>
               </thead>
@@ -2029,7 +2029,7 @@
 
         // Save to database for global access across all devices
         const { data, error } = await window.supabase
-          .from('June_2025')
+          .from('August_2025')
           .upsert({
             id: 'global_attendance_date',
             'Full Name': 'SYSTEM_SETTING_ACTIVE_ATTENDANCE_DATE',
@@ -2089,7 +2089,7 @@
         // Get current table from monthly tabs manager
         const currentTable = window.monthlyTabsManager ?
           window.monthlyTabsManager.getCurrentTable() :
-          'June_2025';
+          'August_2025';
         
         console.log('Loading global attendance date from database...');
         
@@ -2116,8 +2116,8 @@
           console.log('Found attendance date in localStorage:', savedAttendanceDate);
         }
         
-        // If still no saved date, default to 13th (second Sunday of July)
-        const activeDate = savedAttendanceDate || "13th";
+        // If still no saved date, default to 3rd (first Sunday of August)
+        const activeDate = savedAttendanceDate || "3rd";
         console.log('Using attendance date:', activeDate);
         
         // Set the global variable
@@ -2187,16 +2187,16 @@
         
       } catch (error) {
         console.error('Error setting default attendance date:', error);
-        // Even if there's an error, still set 13th as default
-        globalActiveAttendanceDate = "13th";
-        localStorage.setItem('globalActiveAttendanceDate', "13th");
+        // Even if there's an error, still set 3rd as default
+        globalActiveAttendanceDate = "3rd";
+        localStorage.setItem('globalActiveAttendanceDate', "3rd");
         
-        const checkbox = document.getElementById('global-date-13th');
+        const checkbox = document.getElementById('global-date-3rd');
         if (checkbox) {
           const allCheckboxes = document.querySelectorAll('.global-date-checkbox');
           allCheckboxes.forEach(cb => cb.checked = false);
           checkbox.checked = true;
-          document.getElementById('active-date-display').textContent = '13th attendance is active (permanent default)';
+          document.getElementById('active-date-display').textContent = '3rd attendance is active (permanent default)';
           document.getElementById('active-date-display').style.color = '#22c55e';
         }
         document.getElementById('saveAttendanceDateBtn').style.display = 'none';
@@ -2221,7 +2221,7 @@
         // Get current table from monthly tabs manager
         const currentTable = window.monthlyTabsManager ?
           window.monthlyTabsManager.getCurrentTable() :
-          'June_2025';
+          'August_2025';
         
         let query = window.supabase.from(currentTable).select('*').order('Full Name');
         if (category && category !== 'all') {
@@ -2447,10 +2447,10 @@
           <td>
             <span class="level-badge">${item["Current Level"] || ''}</span>
           </td>
-          <td>${getAttendanceCell(item["Attendance 6th"])}</td>
-          <td>${getAttendanceCell(item["Attendance 13th"])}</td>
-          <td>${getAttendanceCell(item["Attendance 20th"])}</td>
-          <td>${getAttendanceCell(item["Attendance 27th"])}</td>
+          <td>${getAttendanceCell(item["Attendance 3rd"])}</td>
+          <td>${getAttendanceCell(item["Attendance 10th"])}</td>
+          <td>${getAttendanceCell(item["Attendance 17th"])}</td>
+          <td>${getAttendanceCell(item["Attendance 24th"])}</td>
           <td style="display: none;">${getAttendanceCell(item["Attendance 29th"])}</td>
         </tr>
       `}).join('');
@@ -2543,7 +2543,7 @@
         // Delete all selected records in parallel
         const currentTable = window.monthlyTabsManager ?
           window.monthlyTabsManager.getCurrentTable() :
-          'July_2025';
+          'August_2025';
         const { error } = await window.supabase.from(currentTable).delete().in('id', ids);
         if (error) throw error;
 
@@ -2604,7 +2604,7 @@
       // Get current month's attendance configuration
       const config = window.monthlyTabsManager ?
         window.monthlyTabsManager.getCurrentConfig() :
-        { attendanceDates: ['6th', '13th', '20th', '27th'], attendanceColumns: ['Attendance 6th', 'Attendance 13th', 'Attendance 20th', 'Attendance 27th'] };
+        { attendanceDates: ['3rd', '10th', '17th', '24th'], attendanceColumns: ['Attendance 3rd', 'Attendance 10th', 'Attendance 17th', 'Attendance 24th'] };
       
       const attendanceDates = config.attendanceDates;
       const attendanceColumns = config.attendanceColumns;
@@ -2758,7 +2758,7 @@
       // Use the correct column names from current month table
       const config = window.monthlyTabsManager ?
         window.monthlyTabsManager.getCurrentConfig() :
-        { attendanceColumns: ['Attendance 6th', 'Attendance 13th', 'Attendance 20th', 'Attendance 27th'] };
+        { attendanceColumns: ['Attendance 3rd', 'Attendance 10th', 'Attendance 17th', 'Attendance 24th'] };
       
       const headers = [
         'Full Name', 'Gender', 'Phone Number', 'Age', 'Current Level',
@@ -2846,7 +2846,7 @@
         btn.style.opacity = '0.6';
         const currentTable = window.monthlyTabsManager ?
           window.monthlyTabsManager.getCurrentTable() :
-          'July_2025';
+          'August_2025';
         window.supabase
           .from(currentTable)
           .delete()
@@ -2911,7 +2911,7 @@
         // Prepare query
         const currentTable = window.monthlyTabsManager ?
           window.monthlyTabsManager.getCurrentTable() :
-          'July_2025';
+          'August_2025';
         let query = window.supabase.from(currentTable).select('*').order('Full Name');
 
         // Apply name filter if any
@@ -3020,7 +3020,7 @@
       try {
         const currentTable = window.monthlyTabsManager ?
           window.monthlyTabsManager.getCurrentTable() :
-          'July_2025';
+          'August_2025';
         const { data, error } = await window.supabase
           .from(currentTable)
           .select('*');
@@ -3108,7 +3108,7 @@
 
         const currentTable = window.monthlyTabsManager ?
           window.monthlyTabsManager.getCurrentTable() :
-          'July_2025';
+          'August_2025';
         const { error } = await window.supabase
           .from(currentTable)
           .update(updates)
@@ -3195,7 +3195,7 @@
         // Get all current data
         const currentTable = window.monthlyTabsManager ?
           window.monthlyTabsManager.getCurrentTable() :
-          'July_2025';
+          'August_2025';
         const { data: allRecords, error: fetchError } = await window.supabase
           .from(currentTable)
           .select('*');
@@ -3225,7 +3225,7 @@
             console.log(`Updating record ${record.id} with:`, updates);
             const currentTable = window.monthlyTabsManager ?
               window.monthlyTabsManager.getCurrentTable() :
-              'July_2025';
+              'August_2025';
             return window.supabase
               .from(currentTable)
               .update(updates)
@@ -3323,7 +3323,7 @@
           console.log(`Restoring record ${id} with data:`, updateData);
           const currentTable = window.monthlyTabsManager ?
             window.monthlyTabsManager.getCurrentTable() :
-            'July_2025';
+            'August_2025';
           return window.supabase
             .from(currentTable)
             .update(updateData)

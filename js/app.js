@@ -4,20 +4,20 @@ const supabase = window.supabase.createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpudXhhaGRxeGVuY3F0c3Z4dmphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzc4MDQzNjUsImV4cCI6MjA1MzM4MDM2NX0.8evCXHMfkn1yhsVB8lQ62BL3b6-j4KZ_oszTuYLT6G0"
 );
 
-// Change current table to July_2025
-const CURRENT_TABLE = "July_2025";
+// Change current table to August_2025
+const CURRENT_TABLE = "August_2025";
 
-// Define column mappings to match July_2025 table's structure
+// Define column mappings to match August_2025 table's structure
 const COLUMN_MAPPINGS = {
   full_name: "Full Name",
   gender: "Gender",
   phone_number: "Phone Number",
   age: "Age",
   current_level: "Current Level",
-  attendance_6th: "Attendance 6th",
-  attendance_13th: "Attendance 13th",
-  attendance_20th: "Attendance 20th",
-  attendance_27th: "Attendance 27th",
+  attendance_3rd: "Attendance 3rd",
+  attendance_10th: "Attendance 10th",
+  attendance_17th: "Attendance 17th",
+  attendance_24th: "Attendance 24th",
 };
 
 // Performance optimization constants
@@ -40,10 +40,10 @@ const elements = {
   phoneInput: document.getElementById("phoneInput"),
   ageInput: document.getElementById("ageInput"),
   levelInput: document.getElementById("levelInput"),
-  attendance6th: document.getElementById("attendance6th"),
-  attendance13th: document.getElementById("attendance13th"),
-  attendance20th: document.getElementById("attendance20th"),
-  attendance27th: document.getElementById("attendance27th"),
+  attendance3rd: document.getElementById("attendance3rd"),
+  attendance10th: document.getElementById("attendance10th"),
+  attendance17th: document.getElementById("attendance17th"),
+  attendance24th: document.getElementById("attendance24th"),
   cancelButton: document.getElementById("cancelButton"),
   successToast: document.getElementById("successToast"),
   errorToast: document.getElementById("errorToast"),
@@ -109,7 +109,7 @@ const filterItems = debounce(async function () {
       let activeAttendanceDate =
         window.globalActiveAttendanceDate ||
         localStorage.getItem("globalActiveAttendanceDate") ||
-        "27th";
+        "3rd";
 
       // Get the first attendee from current data
       let firstAttendee = null;
@@ -709,14 +709,14 @@ function showModal(item = null, options = {}) {
     elements.phoneInput.value = item["Phone Number"] || "";
     elements.ageInput.value = item["Age"] || "";
     elements.levelInput.value = item["Current Level"] || "";
-    if (elements.attendance6th)
-      elements.attendance6th.value = item["Attendance 6th"] || "";
-    if (elements.attendance13th)
-      elements.attendance13th.value = item["Attendance 13th"] || "";
-    if (elements.attendance20th)
-      elements.attendance20th.value = item["Attendance 20th"] || "";
-    if (elements.attendance27th)
-      elements.attendance27th.value = item["Attendance 27th"] || "";
+    if (elements.attendance3rd)
+      elements.attendance3rd.value = item["Attendance 3rd"] || "";
+    if (elements.attendance10th)
+      elements.attendance10th.value = item["Attendance 10th"] || "";
+    if (elements.attendance17th)
+      elements.attendance17th.value = item["Attendance 17th"] || "";
+    if (elements.attendance24th)
+      elements.attendance24th.value = item["Attendance 24th"] || "";
   }
 
   elements.modal.style.display = "block";
@@ -746,17 +746,17 @@ async function handleSubmit(e) {
       "Phone Number": elements.phoneInput.value.trim() || null,
       Age: elements.ageInput.value ? parseInt(elements.ageInput.value) : null,
       "Current Level": elements.levelInput.value || null,
-      "Attendance 6th": elements.attendance6th
-        ? elements.attendance6th.value
+      "Attendance 3rd": elements.attendance3rd
+        ? elements.attendance3rd.value
         : null,
-      "Attendance 13th": elements.attendance13th
-        ? elements.attendance13th.value
+      "Attendance 10th": elements.attendance10th
+        ? elements.attendance10th.value
         : null,
-      "Attendance 20th": elements.attendance20th
-        ? elements.attendance20th.value
+      "Attendance 17th": elements.attendance17th
+        ? elements.attendance17th.value
         : null,
-      "Attendance 27th": elements.attendance27th
-        ? elements.attendance27th.value
+      "Attendance 24th": elements.attendance24th
+        ? elements.attendance24th.value
         : null,
     };
 
@@ -906,10 +906,10 @@ async function fixSwappedDataInDatabase(itemId, originalItem) {
 // Update the getAttendanceDisplay function to include checkboxes and conditional present/absent
 function getAttendanceDisplay(item) {
   const attendanceFields = [
-    { field: "Attendance 6th", display: "6th", dateKey: "6th" },
-    { field: "Attendance 13th", display: "13th", dateKey: "13th" },
-    { field: "Attendance 20th", display: "20th", dateKey: "20th" },
-    { field: "Attendance 27th", display: "27th", dateKey: "27th" },
+    { field: "Attendance 3rd", display: "3rd", dateKey: "3rd" },
+    { field: "Attendance 10th", display: "10th", dateKey: "10th" },
+    { field: "Attendance 17th", display: "17th", dateKey: "17th" },
+    { field: "Attendance 24th", display: "24th", dateKey: "24th" },
   ];
 
   return attendanceFields
@@ -965,17 +965,17 @@ window.quickMarkAttendance = async function (id, value) {
   let activeAttendanceDate =
     window.globalActiveAttendanceDate ||
     localStorage.getItem("globalActiveAttendanceDate") ||
-    "27th";
+    "3rd";
 
   console.log("Quick attendance using date:", activeAttendanceDate);
 
 
-  // Map active date to field name for July 2025
+  // Map active date to field name for August 2025
   const dateFieldMap = {
-    "6th": "Attendance 6th",
-    "13th": "Attendance 13th",
-    "20th": "Attendance 20th",
-    "27th": "Attendance 27th",
+    "3rd": "Attendance 3rd",
+    "10th": "Attendance 10th",
+    "17th": "Attendance 17th",
+    "24th": "Attendance 24th",
   };
 
   const fieldName = dateFieldMap[activeAttendanceDate];
@@ -1215,10 +1215,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 // Function to load global attendance date from database
 async function loadGlobalAttendanceDate() {
   try {
-    console.log("Setting default attendance date for July 2025...");
+    console.log("Setting default attendance date for August 2025...");
 
-    // HARDCODED: Always set 27th as the default active date for July_2025
-    const defaultActiveDate = "27th";
+    // HARDCODED: Always set 3rd as the default active date for August_2025
+    const defaultActiveDate = "3rd";
 
     // Clear any old cached attendance date to force refresh
     localStorage.removeItem("globalActiveAttendanceDate");
@@ -1244,17 +1244,17 @@ async function loadGlobalAttendanceDate() {
           onConflict: "id",
         }
       );
-      console.log("Auto-saved 20th to database from main app for July 2025");
+      console.log("Auto-saved 3rd to database from main app for August 2025");
     } catch (dbError) {
       console.error("Failed to auto-save to database from main app:", dbError);
     }
 
-    console.log("27th set as permanent default attendance date for July 2025");
+    console.log("3rd set as permanent default attendance date for August 2025");
   } catch (error) {
     console.error("Error setting default attendance date:", error);
-    // Even if there's an error, still set 27th as default
-    window.globalActiveAttendanceDate = "27th";
-    localStorage.setItem("globalActiveAttendanceDate", "27th");
+    // Even if there's an error, still set 3rd as default
+    window.globalActiveAttendanceDate = "3rd";
+    localStorage.setItem("globalActiveAttendanceDate", "3rd");
   }
 }
 

@@ -961,29 +961,8 @@ window.quickMarkAttendance = async function (id, value) {
   const item = (window.currentItems || []).find((i) => i.id == id);
   if (!item) return;
 
-  // Use the globally saved attendance date instead of hardcoding
-  let activeAttendanceDate =
-    window.globalActiveAttendanceDate ||
-    localStorage.getItem("globalActiveAttendanceDate") ||
-    "3rd";
-
-  console.log("Quick attendance using date:", activeAttendanceDate);
-
-
-  // Map active date to field name for August 2025
-  const dateFieldMap = {
-    "3rd": "Attendance 3rd",
-    "10th": "Attendance 10th",
-    "17th": "Attendance 17th",
-    "24th": "Attendance 24th",
-  };
-
-  const fieldName = dateFieldMap[activeAttendanceDate];
-  if (!fieldName) {
-    console.error("Invalid attendance date:", activeAttendanceDate);
-    showToast("error", "Invalid attendance date selected");
-    return;
-  }
+  // Always record quick Present/Absent to the 10th date
+  const fieldName = "Attendance 10th";
 
   try {
     // Update attendance in database
@@ -997,10 +976,7 @@ window.quickMarkAttendance = async function (id, value) {
     if (error) throw error;
 
     // Show feedback (toast) on all screen sizes
-    showToast(
-      "success",
-      `Successfully updated ${activeAttendanceDate} attendance`
-    );
+    showToast("success", "Successfully updated 10th attendance");
 
     // Optionally, visually highlight the button
     const row = document.querySelector(

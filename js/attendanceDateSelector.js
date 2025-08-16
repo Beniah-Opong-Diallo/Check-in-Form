@@ -316,9 +316,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initialize date selector
   window.attendanceDateSelector = new AttendanceDateSelector();
 
-  // Set initial date to 3rd if no date is currently selected
+  // Set initial date to 17th if no date is currently selected
   if (!window.globalActiveAttendanceDate) {
-    window.attendanceDateSelector.setDate("3rd");
+    window.attendanceDateSelector.setDate("17th");
   }
 });
 

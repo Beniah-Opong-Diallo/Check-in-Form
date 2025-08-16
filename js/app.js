@@ -109,7 +109,7 @@ const filterItems = debounce(async function () {
       let activeAttendanceDate =
         window.globalActiveAttendanceDate ||
         localStorage.getItem("globalActiveAttendanceDate") ||
-        "3rd";
+        "17th";
 
       // Get the first attendee from current data
       let firstAttendee = null;
@@ -961,8 +961,12 @@ window.quickMarkAttendance = async function (id, value) {
   const item = (window.currentItems || []).find((i) => i.id == id);
   if (!item) return;
 
-  // Always record quick Present/Absent to the 10th date
-  const fieldName = "Attendance 10th";
+  // Determine active attendance date (default to 17th)
+  const activeDate =
+    window.globalActiveAttendanceDate ||
+    localStorage.getItem("globalActiveAttendanceDate") ||
+    "17th";
+  const fieldName = `Attendance ${activeDate}`;
 
   try {
     // Update attendance in database
@@ -975,8 +979,11 @@ window.quickMarkAttendance = async function (id, value) {
 
     if (error) throw error;
 
-    // Show feedback (toast) on all screen sizes
-    showToast("success", "Successfully updated 10th attendance");
+    // Show feedback (toast) including the active date
+    showToast(
+      "success",
+      `Successfully updated ${activeDate} attendance`
+    );
 
     // Optionally, visually highlight the button
     const row = document.querySelector(
@@ -1193,8 +1200,8 @@ async function loadGlobalAttendanceDate() {
   try {
     console.log("Setting default attendance date for August 2025...");
 
-    // HARDCODED: Always set 3rd as the default active date for August_2025
-    const defaultActiveDate = "3rd";
+    // HARDCODED: Always set 17th as the default active date for August_2025
+    const defaultActiveDate = "17th";
 
     // Clear any old cached attendance date to force refresh
     localStorage.removeItem("globalActiveAttendanceDate");
@@ -1220,12 +1227,12 @@ async function loadGlobalAttendanceDate() {
           onConflict: "id",
         }
       );
-      console.log("Auto-saved 3rd to database from main app for August 2025");
+      console.log("Auto-saved 17th to database from main app for August 2025");
     } catch (dbError) {
       console.error("Failed to auto-save to database from main app:", dbError);
     }
 
-    console.log("3rd set as permanent default attendance date for August 2025");
+    console.log("17th set as permanent default attendance date for August 2025");
   } catch (error) {
     console.error("Error setting default attendance date:", error);
     // Even if there's an error, still set 3rd as default

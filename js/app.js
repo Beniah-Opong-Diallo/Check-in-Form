@@ -18,6 +18,7 @@ const COLUMN_MAPPINGS = {
   attendance_10th: "Attendance 10th",
   attendance_17th: "Attendance 17th",
   attendance_24th: "Attendance 24th",
+  attendance_31st: "Attendance 31st",
 };
 
 // Performance optimization constants
@@ -44,6 +45,7 @@ const elements = {
   attendance10th: document.getElementById("attendance10th"),
   attendance17th: document.getElementById("attendance17th"),
   attendance24th: document.getElementById("attendance24th"),
+  attendance31st: document.getElementById("attendance31st"),
   cancelButton: document.getElementById("cancelButton"),
   successToast: document.getElementById("successToast"),
   errorToast: document.getElementById("errorToast"),
@@ -717,6 +719,8 @@ function showModal(item = null, options = {}) {
       elements.attendance17th.value = item["Attendance 17th"] || "";
     if (elements.attendance24th)
       elements.attendance24th.value = item["Attendance 24th"] || "";
+    if (elements.attendance31st)
+      elements.attendance31st.value = item["Attendance 31st"] || "";
   }
 
   elements.modal.style.display = "block";
@@ -739,7 +743,7 @@ async function handleSubmit(e) {
   submitButton.disabled = true;
   let formData = {};
   try {
-    // Prepare form data efficiently using the correct column names in June_2025 table
+    // Prepare form data efficiently using the correct column names in August_2025 table
     formData = {
       "Full Name": elements.nameInput.value.trim() || null,
       Gender: elements.genderInput.value || null,
@@ -757,6 +761,9 @@ async function handleSubmit(e) {
         : null,
       "Attendance 24th": elements.attendance24th
         ? elements.attendance24th.value
+        : null,
+      "Attendance 31st": elements.attendance31st
+        ? elements.attendance31st.value
         : null,
     };
 
@@ -910,6 +917,7 @@ function getAttendanceDisplay(item) {
     { field: "Attendance 10th", display: "10th", dateKey: "10th" },
     { field: "Attendance 17th", display: "17th", dateKey: "17th" },
     { field: "Attendance 24th", display: "24th", dateKey: "24th" },
+    { field: "Attendance 31st", display: "31st", dateKey: "31st" },
   ];
 
   return attendanceFields

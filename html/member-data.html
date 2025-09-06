@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Member Data Management</title>
+  <link rel="icon" type="image/svg+xml" href="../img/secure-info.svg">
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    window.supabase = window.supabase || {};
+    window.supabase = window.supabase.createClient(
+      "https://znuxahdqxencqtsvxvja.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpudXhhaGRxeGVuY3F0c3Z4dmphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzc4MDQzNjUsImV4cCI6MjA1MzM4MDM2NX0.8evCXHMfkn1yhsVB8lQ62BL3b6-j4KZ_oszTuYLT6G0"
+    );
+
+    const SENSITIVE_PASSWORD = "TMHT";
+    let isAuthenticated = false;
+  </script>
+  <style>
+    /* Modern Dashboard Styles */
+    .member-dashboard {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1e3a2e 0%, #0f1419 100%);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .dashboard-header {
+      background: white;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 1.5rem 2rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .back-btn-modern {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: #f1f5f9;
+      color: #475569;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .back-btn-modern:hover {
+      background: #e2e8f0;
+      color: #334155;
+    }
+
+    .header-title h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 0;
+    }
+
+    .header-title p {
+      color: #64748b;
+      margin: 0.25rem 0 0 0;
+      font-size: 0.95rem;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .action-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.95rem;
+    }
+
+    .action-btn.primary {
+      background: #357d39;
+      color: white;
+    }
+
+    .action-btn.primary:hover {
+      background: #2d6930;
+    }
+
+    .action-btn.secondary {
+      background: #f1f5f9;
+      color: #475569;
+      border: 1px solid #e2e8f0;
+    }
+
+    .action-btn.secondary:hover {
+      background: #e2e8f0;
+    }
+
+    .action-btn.danger {
+      background: #ef4444;
+      color: white;
+    }
+
+    .action-btn.danger:hover {
+      background: #dc2626;
+    }
+
+    .action-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .main-content {
+      padding: 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .control-panel {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e2e8f0;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .panel-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #1e293b;
+      margin: 0;
+    }
+
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .control-label {
+      font-weight: 600;
+      color: #374151;
+      font-size: 0.95rem;
+    }
+
+    .search-input, .filter-select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+      background: white;
+      color: #374151;
+    }
+
+    .search-input:focus, .filter-select:focus {
+      outline: none;
+      border-color: #357d39;
+    }
+
+    .selection-info {
+      background: #f0f9ff;
+      border: 2px solid #bae6fd;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      text-align: center;
+    }
+
+    .selection-count {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #0369a1;
+      margin-bottom: 0.5rem;
+    }
+
+    .selection-text {
+      color: #0284c7;
+      font-weight: 500;
+    }
+
+    .bulk-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .date-selector {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 1rem;
+    }
+
+    .date-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .date-option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem;
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+
+    .date-option:hover {
+      border-color: #357d39;
+      background: #f0f9f4;
+      transform: translateY(-2px);
+    }
+
+    .date-option.selected {
+      border-color: #357d39;
+      background: #f0f9f4;
+    }
+
+    .date-option input {
+      transform: scale(1.2);
+      accent-color: #357d39;
+    }
+
+    .date-label {
+      font-weight: 600;
+      color: #374151;
+      font-size: 0.95rem;
+    }
+
+    .present-count {
+      font-size: 0.75rem;
+      color: #22c55e;
+      font-weight: 500;
+      margin-top: 0.25rem;
+    }
+
+    .table-container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e2e8f0;
+      overflow: hidden;
+    }
+
+    .table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem;
+      border-bottom: 1px solid #e2e8f0;
+      background: #f8fafc;
+    }
+
+    .table-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #1e293b;
+      margin: 0;
+    }
+
+    .table-actions {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .table-wrapper {
+      overflow: auto;
+      max-height: 600px;
+    }
+
+    .member-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    .member-table th {
+      background: #f8fafc;
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+      color: #374151;
+      border-bottom: 1px solid #e2e8f0;
+      font-size: 0.875rem;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .member-table td {
+      padding: 0.875rem 1rem;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 0.875rem;
+      color: #374151;
+    }
+
+    .member-table tr:hover {
+      background: #f8fafc;
+    }
+
+    .member-table tr.selected {
+      background: #f0f9ff;
+    }
+
+    .checkbox-col {
+      width: 50px;
+      text-align: center;
+    }
+
+    .name-cell {
+      font-weight: 500;
+    }
+
+    .gender-badge {
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: capitalize;
+    }
+
+    .gender-badge.male {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+
+    .gender-badge.female {
+      background: #fce7f3;
+      color: #be185d;
+    }
+
+    .level-badge {
+      padding: 0.25rem 0.5rem;
+      background: #f1f5f9;
+      color: #475569;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      border: 1px solid #e2e8f0;
+    }
+
+    .loading-state {
+      text-align: center;
+      padding: 3rem 1rem;
+    }
+
+    .loading-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      color: #64748b;
+    }
+
+    .loading-spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid #e2e8f0;
+      border-top: 3px solid #357d39;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: #64748b;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 12px 20px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 9999;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      max-width: 400px;
+    }
+
+    .toast.success {
+      background: #22c55e;
+      color: white;
+    }
+
+    .toast.error {
+      background: #ef4444;
+      color: white;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+
+    /* Password Screen Styles */
+    #password-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #45a049, #245326);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .password-container {
+      background: white;
+      border-radius: 14px;
+      padding: 2rem;
+      width: 90%;
+      max-width: 450px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+
+    .password-header {
+      margin-bottom: 1.5rem;
+    }
+
+    .password-header svg {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 1rem;
+      color: #357d39;
+    }
+
+    .password-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .header-content {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+      }
+
+      .header-actions {
+        justify-content: center;
+      }
+
+      .controls-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .main-content {
+        padding: 1rem;
+      }
+
+      .bulk-actions {
+        grid-template-columns: 1fr;
+      }
+
+      .date-options {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    #member-content {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Password verification screen -->
+  <div id="password-screen">
+    <div class="password-container">
+      <div class="password-header">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          <circle cx="12" cy="16" r="1"></circle>
+        </svg>
+        <h2>Member Data Access</h2>
+        <p>Please enter the password to continue</p>
+      </div>
+      <form id="password-form" class="password-form">
+        <div style="position: relative;">
+          <input type="password" id="member-password" placeholder="Enter password" required
+            style="width: 100%; padding: 0.75rem 1rem; border-radius: 8px; border: 2px solid rgba(69, 160, 73, 0.5); background: white; color: #333;">
+          <button type="button" id="toggle-password" tabindex="-1"
+            style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer;">
+            <span id="eye-icon" style="font-size: 1.2rem;">👁️</span>
+          </button>
+        </div>
+        <div id="password-error" style="color: #ef4444; font-size: 0.9rem; display: none;">
+          Incorrect password. Please try again.
+        </div>
+        <div style="display: flex; gap: 1rem; margin-top: 0.5rem;">
+          <button type="submit"
+            style="flex: 1; padding: 0.75rem; background: #357d39; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+            Access Data
+          </button>
+          <a href="sensitive-info.html"
+            style="flex: 1; padding: 0.75rem; background: #e5e7eb; color: #333; border: none; border-radius: 8px; font-weight: 600; text-decoration: none; text-align: center;">
+            Back
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Main content (hidden until authenticated) -->
+  <div id="member-content" class="member-dashboard">
+    <!-- Header -->
+    <header class="dashboard-header">
+      <div class="header-content">
+        <div class="header-left">
+          <a href="sensitive-info.html" class="back-btn-modern">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Back to Dashboard
+          </a>
+          <div class="header-title">
+            <h1>Member Data Management</h1>
+            <p>Select members and manage their attendance records</p>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button id="exportDataBtn" class="action-btn secondary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7,10 12,15 17,10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Export Data
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Control Panel -->
+      <div class="control-panel">
+        <div class="panel-header">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="M21 21l-4.35-4.35"/>
+          </svg>
+          <h2 class="panel-title">Search & Filter</h2>
+        </div>
+
+        <div class="controls-grid">
+          <div class="control-group">
+            <label class="control-label">Search Members</label>
+            <input type="text" id="searchInput" class="search-input" placeholder="Search by name...">
+          </div>
+          <div class="control-group">
+            <label class="control-label">Filter by Level</label>
+            <select id="levelFilter" class="filter-select">
+              <option value="">All Levels</option>
+              <option value="SHS">SHS Students</option>
+              <option value="JHS">JHS Students</option>
+              <option value="COMPLETED">Completed</option>
+              <option value="UNIVERSITY">University</option>
+            </select>
+          </div>
+          <div class="control-group">
+            <label class="control-label">Filter by Gender</label>
+            <select id="genderFilter" class="filter-select">
+              <option value="">All Genders</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Selection Info -->
+        <div class="selection-info">
+          <div class="selection-count" id="selectedCount">0</div>
+          <div class="selection-text">members selected</div>
+        </div>
+
+        <!-- Bulk Actions -->
+        <div class="bulk-actions">
+          <button id="selectAllBtn" class="action-btn secondary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 11l3 3L22 4"/>
+              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+            </svg>
+            Select All
+          </button>
+          <button id="clearSelectionBtn" class="action-btn secondary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 6L6 18M6 6l12 12"/>
+            </svg>
+            Clear Selection
+          </button>
+        </div>
+
+        <!-- Date Selection -->
+        <div class="date-selector">
+          <label class="control-label">September 2025 - Sunday Attendance Dates</label>
+          <div class="date-options" id="dateOptions">
+            <label class="date-option">
+              <input type="checkbox" value="7th" data-column="Attendance 7th">
+              <span class="date-label">Sep 7th</span>
+              <span class="present-count" id="present-count-7th">0 present</span>
+            </label>
+            <label class="date-option">
+              <input type="checkbox" value="14th" data-column="Attendance 14th">
+              <span class="date-label">Sep 14th</span>
+              <span class="present-count" id="present-count-14th">0 present</span>
+            </label>
+            <label class="date-option">
+              <input type="checkbox" value="21st" data-column="Attendance 21st">
+              <span class="date-label">Sep 21st</span>
+              <span class="present-count" id="present-count-21st">0 present</span>
+            </label>
+            <label class="date-option">
+              <input type="checkbox" value="28th" data-column="Attendance 28th">
+              <span class="date-label">Sep 28th</span>
+              <span class="present-count" id="present-count-28th">0 present</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Attendance Actions -->
+        <div class="bulk-actions">
+          <button id="markPresentBtn" class="action-btn primary" disabled>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 11l3 3L22 4"/>
+            </svg>
+            Mark Present
+          </button>
+          <button id="markAbsentBtn" class="action-btn danger" disabled>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="15" y1="9" x2="9" y2="15"/>
+              <line x1="9" y1="9" x2="15" y2="15"/>
+            </svg>
+            Mark Absent
+          </button>
+          <button id="clearAttendanceBtn" class="action-btn secondary" disabled>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 6h18"/>
+              <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+            </svg>
+            Clear Attendance
+          </button>
+        </div>
+      </div>
+
+      <!-- Member Table -->
+      <div class="table-container">
+        <div class="table-header">
+          <h3 class="table-title">
+            <span id="memberCountDisplay">All Members</span>
+          </h3>
+          <div class="table-actions">
+            <button id="refreshDataBtn" class="action-btn secondary">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M23 4v6h-6M1 20v-6h6"/>
+                <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/>
+              </svg>
+              Refresh
+            </button>
+          </div>
+        </div>
+        <div class="table-wrapper">
+          <table class="member-table">
+            <thead>
+              <tr>
+                <th class="checkbox-col">
+                  <input type="checkbox" id="selectAllCheckbox" title="Select/Deselect All">
+                </th>
+                <th>Full Name</th>
+                <th>Gender</th>
+                <th>Phone Number</th>
+                <th>Age</th>
+                <th>Current Level</th>
+              </tr>
+            </thead>
+            <tbody id="memberTableBody">
+              <tr>
+                <td colspan="6" class="loading-state">
+                  <div class="loading-content">
+                    <div class="loading-spinner"></div>
+                    <span>Loading member data...</span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Toast Notifications -->
+  <div id="successToast" class="toast success">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+    </svg>
+    <span>Operation completed successfully</span>
+  </div>
+  <div id="errorToast" class="toast error">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+    </svg>
+    <span>Operation failed</span>
+  </div>
+
+  <script>
+    // Global variables
+    let allMembers = [];
+    let filteredMembers = [];
+    let selectedMembers = new Set();
+
+    // Password authentication
+    document.addEventListener('DOMContentLoaded', function () {
+      const passwordScreen = document.getElementById('password-screen');
+      const memberContent = document.getElementById('member-content');
+      const passwordForm = document.getElementById('password-form');
+      const passwordInput = document.getElementById('member-password');
+      const passwordError = document.getElementById('password-error');
+      const togglePasswordBtn = document.getElementById('toggle-password');
+      const eyeIcon = document.getElementById('eye-icon');
+
+      // Toggle password visibility
+      togglePasswordBtn.addEventListener('click', function () {
+        if (passwordInput.type === 'password') {
+          passwordInput.type = 'text';
+          eyeIcon.textContent = '🙈';
+        } else {
+          passwordInput.type = 'password';
+          eyeIcon.textContent = '👁️';
+        }
+      });
+
+      // Handle password form submission
+      passwordForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const password = passwordInput.value.trim();
+
+        if (password === SENSITIVE_PASSWORD) {
+          passwordScreen.style.display = 'none';
+          memberContent.style.display = 'block';
+          isAuthenticated = true;
+          initializePage();
+        } else {
+          passwordError.style.display = 'block';
+          passwordInput.value = '';
+          passwordInput.focus();
+        }
+      });
+    });
+
+    // Initialize page after authentication
+    async function initializePage() {
+      await loadMemberData();
+      setupEventListeners();
+    }
+
+    // Load member data from database
+    async function loadMemberData() {
+      try {
+        const { data, error } = await window.supabase
+          .from('September_2025')
+          .select('*')
+          .order('Full Name');
+
+        if (error) throw error;
+
+        allMembers = data || [];
+        filteredMembers = [...allMembers];
+        renderMemberTable();
+        updateMemberCount();
+        updatePresentCounts();
+      } catch (error) {
+        console.error('Error loading member data:', error);
+        showToast('error', 'Failed to load member data');
+      }
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+      // Search functionality
+      document.getElementById('searchInput').addEventListener('input', filterMembers);
+      document.getElementById('levelFilter').addEventListener('change', filterMembers);
+      document.getElementById('genderFilter').addEventListener('change', filterMembers);
+
+      // Selection buttons
+      document.getElementById('selectAllBtn').addEventListener('click', selectAllMembers);
+      document.getElementById('clearSelectionBtn').addEventListener('click', clearSelection);
+      document.getElementById('selectAllCheckbox').addEventListener('change', handleSelectAllCheckbox);
+
+      // Date selection
+      document.querySelectorAll('#dateOptions input[type="checkbox"]').forEach(checkbox => {
+        checkbox.addEventListener('change', updateActionButtons);
+      });
+
+      // Attendance actions
+      document.getElementById('markPresentBtn').addEventListener('click', () => updateAttendance('Present'));
+      document.getElementById('markAbsentBtn').addEventListener('click', () => updateAttendance('Absent'));
+      document.getElementById('clearAttendanceBtn').addEventListener('click', () => updateAttendance(''));
+
+      // Other actions
+      document.getElementById('refreshDataBtn').addEventListener('click', loadMemberData);
+      document.getElementById('exportDataBtn').addEventListener('click', exportData);
+    }
+
+    // Filter members based on search and filters
+    function filterMembers() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const levelFilter = document.getElementById('levelFilter').value;
+      const genderFilter = document.getElementById('genderFilter').value.toLowerCase();
+
+      filteredMembers = allMembers.filter(member => {
+        const nameMatch = (member['Full Name'] || '').toLowerCase().includes(searchTerm);
+        const levelMatch = !levelFilter || 
+          (levelFilter === 'SHS' && ['SHS1', 'SHS2', 'SHS3'].includes(member['Current Level'])) ||
+          (levelFilter === 'JHS' && ['JHS1', 'JHS2', 'JHS3'].includes(member['Current Level'])) ||
+          member['Current Level'] === levelFilter;
+        const genderMatch = !genderFilter || (member['Gender'] || '').toLowerCase() === genderFilter;
+
+        return nameMatch && levelMatch && genderMatch;
+      });
+
+      renderMemberTable();
+      updateMemberCount();
+      updateSelectionInfo();
+    }
+
+    // Update present counts for each date
+    function updatePresentCounts() {
+      const dates = ['7th', '14th', '21st', '28th'];
+      const columns = ['Attendance 7th', 'Attendance 14th', 'Attendance 21st', 'Attendance 28th'];
+      
+      dates.forEach((date, index) => {
+        const column = columns[index];
+        const presentCount = allMembers.filter(member => {
+          const attendance = (member[column] || '').toString().toLowerCase();
+          return attendance === 'present' || attendance === 'p';
+        }).length;
+        
+        const countElement = document.getElementById(`present-count-${date}`);
+        if (countElement) {
+          countElement.textContent = `${presentCount} present`;
+        }
+      });
+    }
+
+    // Render member table
+    function renderMemberTable() {
+      const tableBody = document.getElementById('memberTableBody');
+      
+      if (filteredMembers.length === 0) {
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="6" class="empty-state">
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color: #94a3b8;">
+                  <circle cx="11" cy="11" r="8"/>
+                  <path d="M21 21l-4.35-4.35"/>
+                </svg>
+                <div>
+                  <div style="font-weight: 600; margin-bottom: 0.25rem;">No members found</div>
+                  <div style="font-size: 0.875rem;">Try adjusting your search or filter criteria</div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        `;
+        updatePresentCounts();
+        return;
+      }
+
+      tableBody.innerHTML = filteredMembers.map(member => `
+        <tr class="${selectedMembers.has(member.id) ? 'selected' : ''}" data-id="${member.id}">
+          <td class="checkbox-col">
+            <input type="checkbox"
+                   class="member-checkbox"
+                   data-id="${member.id}"
+                   ${selectedMembers.has(member.id) ? 'checked' : ''}
+                   onchange="handleMemberSelection('${member.id}', this.checked)">
+          </td>
+          <td class="name-cell">${member['Full Name'] || ''}</td>
+          <td>
+            <span class="gender-badge ${(member['Gender'] || '').toLowerCase()}">${member['Gender'] || ''}</span>
+          </td>
+          <td>${member['Phone Number'] || ''}</td>
+          <td>${member['Age'] || ''}</td>
+          <td>
+            <span class="level-badge">${member['Current Level'] || ''}</span>
+          </td>
+        </tr>
+      `).join('');
+      
+      updatePresentCounts();
+    }
+
+    // Handle individual member selection
+    function handleMemberSelection(memberId, isSelected) {
+      if (isSelected) {
+        selectedMembers.add(memberId);
+      } else {
+        selectedMembers.delete(memberId);
+      }
+      
+      // Update row styling
+      const row = document.querySelector(`tr[data-id="${memberId}"]`);
+      if (row) {
+        row.classList.toggle('selected', isSelected);
+      }
+
+      updateSelectionInfo();
+      updateActionButtons();
+      updateSelectAllCheckbox();
+    }
+
+    // Handle select all checkbox
+    function handleSelectAllCheckbox() {
+      const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+      const memberCheckboxes = document.querySelectorAll('.member-checkbox');
+      
+      memberCheckboxes.forEach(checkbox => {
+        checkbox.checked = selectAllCheckbox.checked;
+        handleMemberSelection(checkbox.dataset.id, selectAllCheckbox.checked);
+      });
+    }
+
+    // Select all visible members
+    function selectAllMembers() {
+      filteredMembers.forEach(member => {
+        selectedMembers.add(member.id);
+      });
+      
+      // Update checkboxes
+      document.querySelectorAll('.member-checkbox').forEach(checkbox => {
+        checkbox.checked = true;
+      });
+      
+      // Update row styling
+      document.querySelectorAll('tr[data-id]').forEach(row => {
+        row.classList.add('selected');
+      });
+
+      updateSelectionInfo();
+      updateActionButtons();
+      updateSelectAllCheckbox();
+    }
+
+    // Clear all selections
+    function clearSelection() {
+      selectedMembers.clear();
+      
+      // Update checkboxes
+      document.querySelectorAll('.member-checkbox').forEach(checkbox => {
+        checkbox.checked = false;
+      });
+      
+      // Update row styling
+      document.querySelectorAll('tr[data-id]').forEach(row => {
+        row.classList.remove('selected');
+      });
+
+      updateSelectionInfo();
+      updateActionButtons();
+      updateSelectAllCheckbox();
+    }
+
+    // Update selection info display
+    function updateSelectionInfo() {
+      document.getElementById('selectedCount').textContent = selectedMembers.size;
+    }
+
+    // Update member count display
+    function updateMemberCount() {
+      const display = document.getElementById('memberCountDisplay');
+      display.textContent = `${filteredMembers.length} Members`;
+    }
+
+    // Update select all checkbox state
+    function updateSelectAllCheckbox() {
+      const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+      const visibleMemberIds = filteredMembers.map(m => m.id);
+      const selectedVisibleMembers = visibleMemberIds.filter(id => selectedMembers.has(id));
+      
+      if (selectedVisibleMembers.length === 0) {
+        selectAllCheckbox.checked = false;
+        selectAllCheckbox.indeterminate = false;
+      } else if (selectedVisibleMembers.length === visibleMemberIds.length) {
+        selectAllCheckbox.checked = true;
+        selectAllCheckbox.indeterminate = false;
+      } else {
+        selectAllCheckbox.checked = false;
+        selectAllCheckbox.indeterminate = true;
+      }
+    }
+
+    // Update action buttons state
+    function updateActionButtons() {
+      const hasSelection = selectedMembers.size > 0;
+      const hasDateSelection = document.querySelectorAll('#dateOptions input[type="checkbox"]:checked').length > 0;
+      const canPerformAction = hasSelection && hasDateSelection;
+
+      document.getElementById('markPresentBtn').disabled = !canPerformAction;
+      document.getElementById('markAbsentBtn').disabled = !canPerformAction;
+      document.getElementById('clearAttendanceBtn').disabled = !canPerformAction;
+    }
+
+    // Update attendance for selected members
+    async function updateAttendance(status) {
+      if (selectedMembers.size === 0) {
+        showToast('error', 'Please select at least one member');
+        return;
+      }
+
+      const selectedDates = Array.from(document.querySelectorAll('#dateOptions input[type="checkbox"]:checked'))
+        .map(checkbox => ({
+          date: checkbox.value,
+          column: checkbox.dataset.column
+        }));
+
+      if (selectedDates.length === 0) {
+        showToast('error', 'Please select at least one date');
+        return;
+      }
+
+      const actionText = status === 'Present' ? 'present' : status === 'Absent' ? 'absent' : 'clear';
+      const confirmation = confirm(
+        `Mark ${selectedMembers.size} member(s) as ${actionText} for ${selectedDates.map(d => d.date).join(', ')}?`
+      );
+
+      if (!confirmation) return;
+
+      try {
+        // Show loading state
+        const buttons = [
+          document.getElementById('markPresentBtn'),
+          document.getElementById('markAbsentBtn'),
+          document.getElementById('clearAttendanceBtn')
+        ];
+        buttons.forEach(btn => btn.disabled = true);
+
+        // Update database for each selected member
+        const updatePromises = Array.from(selectedMembers).map(async memberId => {
+          const updateData = {};
+          selectedDates.forEach(({column}) => {
+            updateData[column] = status || null;
+          });
+
+          return await window.supabase
+            .from('September_2025')
+            .update(updateData)
+            .eq('id', memberId);
+        });
+
+        const results = await Promise.all(updatePromises);
+        const errors = results.filter(result => result.error);
+
+        if (errors.length > 0) {
+          throw new Error(`Failed to update ${errors.length} records`);
+        }
+
+        showToast('success', `Successfully updated attendance for ${selectedMembers.size} member(s)`);
+        
+        // Refresh data to get updated counts
+        await loadMemberData();
+        
+        // Clear selections after successful update
+        clearSelection();
+        
+        // Uncheck date selections
+        document.querySelectorAll('#dateOptions input[type="checkbox"]').forEach(checkbox => {
+          checkbox.checked = false;
+          checkbox.closest('.date-option').classList.remove('selected');
+        });
+
+      } catch (error) {
+        console.error('Error updating attendance:', error);
+        showToast('error', 'Failed to update attendance records');
+      } finally {
+        updateActionButtons();
+      }
+    }
+
+    // Export filtered data
+    function exportData() {
+      if (filteredMembers.length === 0) {
+        showToast('error', 'No data to export');
+        return;
+      }
+
+      const headers = ['Full Name', 'Gender', 'Phone Number', 'Age', 'Current Level', 'Attendance 7th', 'Attendance 14th', 'Attendance 21st', 'Attendance 28th'];
+      
+      let csvContent = headers.join(',') + '\n';
+      csvContent += filteredMembers.map(member => [
+        member['Full Name'] || '',
+        member['Gender'] || '',
+        member['Phone Number'] || '',
+        member['Age'] || '',
+        member['Current Level'] || '',
+        member['Attendance 7th'] || '',
+        member['Attendance 14th'] || '',
+        member['Attendance 21st'] || '',
+        member['Attendance 28th'] || ''
+      ].map(cell => {
+        const cellStr = cell.toString().replace(/"/g, '""');
+        return cellStr.includes(',') ? `"${cellStr}"` : cellStr;
+      }).join(',')).join('\n');
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `TMHT_Members_${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      showToast('success', 'Data exported successfully');
+    }
+
+    // Show toast notification
+    function showToast(type, message) {
+      const toast = document.getElementById(type === 'success' ? 'successToast' : 'errorToast');
+      toast.querySelector('span').textContent = message;
+      toast.classList.add('show');
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    // Add event listener for date option styling
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('#dateOptions input[type="checkbox"]').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+          const option = this.closest('.date-option');
+          option.classList.toggle('selected', this.checked);
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>

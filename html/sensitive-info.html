@@ -142,8 +142,8 @@
     }
 
     .header-title h1 {
-      font-size: 1.75rem;
-      font-weight: 700;
+      font-size: 1.5rem;
+      font-weight: 600;
       color: #1e293b;
       margin: 0;
     }
@@ -151,7 +151,7 @@
     .header-title p {
       color: #64748b;
       margin: 0.25rem 0 0 0;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
     }
 
     .header-actions {
@@ -1355,84 +1355,81 @@
             Back
           </a>
           <div class="header-title">
-            <h1>Sensitive Information Dashboard</h1>
-            <p>Manage attendance and member data</p>
+            <h1>📊 TMHT Dashboard</h1>
+            <p>Welcome! Manage your attendance and member information</p>
           </div>
         </div>
         <div class="header-actions">
-          <button id="toggleAdvancedBtn" class="action-btn secondary">
+          <a href="member-data.html" class="action-btn primary">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="3"/>
-              <path d="M12 1v6m0 6v6m11-7h-6m-6 0H1"/>
+              <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="8.5" cy="7" r="4"/>
+              <path d="M20 8v6M23 11h-6"/>
             </svg>
-            Advanced Tools
-          </button>
-          <button id="openMonthlyExportBtn" class="action-btn primary">
+            Manage Members
+          </a>
+          <button id="openMonthlyExportBtn" class="action-btn secondary">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
               <path d="M16 3v4a1 1 0 0 0 1 1h4"/>
             </svg>
-            Monthly Table
+            View Reports
           </button>
         </div>
       </div>
     </header>
 
-    <!-- Main Controls -->
+    <!-- Simple Controls -->
     <section class="main-controls">
-      <div class="controls-grid">
+      <div class="controls-grid" style="max-width: 800px; margin: 0 auto;">
         <!-- Search Section -->
-        <div class="control-card">
+        <div class="control-card" style="background: #f8fafc; border: 2px solid #e2e8f0;">
           <div class="control-header">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #22c55e;">
               <circle cx="11" cy="11" r="8"/>
               <path d="M21 21l-4.35-4.35"/>
             </svg>
-            <h3>Search Members</h3>
+            <h3 style="color: #1f2937;">🔍 Find a Member</h3>
           </div>
           <div class="search-container modern">
-            <input type="text" id="name-search" class="search-input modern" placeholder="Search by name...">
-            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="11" cy="11" r="8"/>
-              <path d="M21 21l-4.35-4.35"/>
-            </svg>
+            <input type="text" id="name-search" class="search-input modern" placeholder="Type a name to search..." style="font-size: 1.1rem; padding: 1rem;">
           </div>
         </div>
 
         <!-- Filter Section -->
-        <div class="control-card">
+        <div class="control-card" style="background: #f8fafc; border: 2px solid #e2e8f0;">
           <div class="control-header">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #22c55e;">
+              <path d="M3 4a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v2.586a1 1 0 0 1-.293.707l-6.414 6.414a1 1 0 0 0-.293.707V17l-4 2v-6.586a1 1 0 0 0-.293-.707L3.293 7.293A1 1 0 0 1 3 6.586V4z"/>
             </svg>
-            <h3>Filter Data</h3>
+            <h3 style="color: #1f2937;">📚 Filter by Level</h3>
           </div>
-          <select id="categoryFilter" class="filter-select modern" onchange="filterByCategory(this.value)">
-            <option value="all">All Entries</option>
-            <option value="SHS">SHS Students</option>
-            <option value="JHS">JHS Students</option>
-            <option value="COMPLETED">Completed</option>
-            <option value="UNIVERSITY">University</option>
-            <option value="duplicates">Show Duplicates</option>
+          <select id="categoryFilter" class="filter-select modern" onchange="filterByCategory(this.value)" style="font-size: 1.1rem; padding: 1rem; color: #374151; background: white; border: 2px solid #e2e8f0;">
+            <option value="all">Show Everyone</option>
+            <option value="SHS">High School Students</option>
+            <option value="JHS">Junior High Students</option>
+            <option value="COMPLETED">Completed Students</option>
+            <option value="UNIVERSITY">University Students</option>
+            <option value="duplicates">Find Duplicates</option>
           </select>
         </div>
       </div>
     </section>
 
-    <!-- Dashboard Cards -->
-    <section class="dashboard-cards">
-      <!-- Quick Stats Card -->
-      <div class="dashboard-card">
-        <div class="card-header">
-          <div class="card-title">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <!-- Simple Dashboard Overview -->
+    <section class="dashboard-cards" style="max-width: 1000px; margin: 0 auto;">
+      <!-- Member Summary Card -->
+      <div class="dashboard-card" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border: 2px solid #bae6fd;">
+        <div class="card-header" style="background: transparent; border-bottom: 1px solid #bae6fd;">
+          <div class="card-title" style="color: #0c4a6e;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #0ea5e9;">
               <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
               <circle cx="8.5" cy="7" r="4"/>
               <path d="M20 8v6M23 11h-6"/>
             </svg>
-            Quick Statistics
+            👥 Member Overview
           </div>
-          <button class="card-toggle" onclick="toggleCard(this)">
+          <button class="card-toggle" onclick="toggleCard(this)" style="background: none; border: none; color: #0ea5e9; cursor: pointer; padding: 0.5rem; border-radius: 6px; transition: all 0.2s;">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M6 9l6 6 6-6"/>
             </svg>
@@ -1440,56 +1437,56 @@
         </div>
         <div class="card-content collapsed">
           <div class="stats-grid-modern">
-            <div class="stat-item">
-              <div class="stat-value" id="totalPeople">0</div>
-              <div class="stat-label">Total People</div>
+            <div class="stat-item" style="background: white; border: 2px solid #bae6fd;">
+              <div class="stat-value" id="totalPeople" style="color: #0c4a6e;">0</div>
+              <div class="stat-label">Total Members</div>
             </div>
-            <div class="stat-item">
-              <div class="stat-value" id="totalBoys">0</div>
+            <div class="stat-item" style="background: white; border: 2px solid #bae6fd;">
+              <div class="stat-value" id="totalBoys" style="color: #1d4ed8;">0</div>
               <div class="stat-label">Boys</div>
             </div>
-            <div class="stat-item">
-              <div class="stat-value" id="totalGirls">0</div>
+            <div class="stat-item" style="background: white; border: 2px solid #bae6fd;">
+              <div class="stat-value" id="totalGirls" style="color: #be185d;">0</div>
               <div class="stat-label">Girls</div>
             </div>
           </div>
           <div class="level-stats-container">
-            <h4>Level Distribution</h4>
+            <h4 style="color: #0c4a6e; margin-bottom: 1rem;">📚 Students by Level</h4>
             <div id="levelStats" class="level-stats-grid">
               <!-- Levels will be dynamically added here -->
             </div>
           </div>
           <div class="card-actions">
-            <button id="downloadButton" class="btn-primary full-width" onclick="downloadCSVFiltered()">
+            <button id="downloadButton" class="btn-primary full-width" onclick="downloadCSVFiltered()" style="background: #0ea5e9; font-size: 1.1rem; padding: 1rem;">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                 <polyline points="7 10 12 15 17 10"/>
                 <line x1="12" y1="15" x2="12" y2="3"/>
               </svg>
-              Download Current Data
+              📊 Download Member Data
             </button>
           </div>
         </div>
       </div>
 
       <!-- Attendance Summary Card -->
-      <div class="dashboard-card">
-        <div class="card-header">
-          <div class="card-title">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <div class="dashboard-card" style="background: linear-gradient(135deg, #f0f9f4 0%, #dcfce7 100%); border: 2px solid #bbf7d0;">
+        <div class="card-header" style="background: transparent; border-bottom: 1px solid #bbf7d0;">
+          <div class="card-title" style="color: #14532d;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #22c55e;">
               <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
               <line x1="16" y1="2" x2="16" y2="6"/>
               <line x1="8" y1="2" x2="8" y2="6"/>
               <line x1="3" y1="10" x2="21" y2="10"/>
             </svg>
-            Attendance Overview
+            📅 Attendance This Month
           </div>
           <div style="display: flex; align-items: center; gap: 1rem;">
-            <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: #64748b;">
-              <input type="checkbox" id="teenAverageToggle" checked style="accent-color: #6366f1;" onchange="toggleTeenAverage()">
+            <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; color: #15803d; font-weight: 500;">
+              <input type="checkbox" id="teenAverageToggle" checked style="accent-color: #22c55e; transform: scale(1.2);" onchange="toggleTeenAverage()">
               Show Teen Average
             </label>
-            <button class="card-toggle" onclick="toggleCard(this)">
+            <button class="card-toggle" onclick="toggleCard(this)" style="background: none; border: none; color: #22c55e; cursor: pointer; padding: 0.5rem; border-radius: 6px; transition: all 0.2s;">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M6 9l6 6 6-6"/>
               </svg>
@@ -1777,71 +1774,74 @@
       </div>
     </section>
 
-    <!-- Data Table Section -->
-    <section class="data-section">
-      <div class="dashboard-card">
-        <div class="card-header">
-          <div class="card-title">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M3 6h18M3 12h18M3 18h18"/>
+    <!-- Simplified Member Table -->
+    <section class="data-section" style="max-width: 1200px; margin: 2rem auto;">
+      <div class="dashboard-card" style="background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%); border: 2px solid #e5e7eb;">
+        <div class="card-header" style="background: linear-gradient(135deg, #374151 0%, #1f2937 100%); color: white; border-bottom: none; border-radius: 12px 12px 0 0;">
+          <div class="card-title" style="color: white;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #10b981;">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
             </svg>
-            Member Data
-            <span class="current-month-badge">
-              <span class="current-month-indicator">August 2025</span>
+            📝 All Members
+            <span class="current-month-badge" style="background: rgba(16, 185, 129, 0.2); color: #10b981; margin-left: 1rem;">
+              <span class="current-month-indicator">September 2025</span>
             </span>
           </div>
-          <div class="table-actions">
-            <button class="btn-secondary" onclick="downloadCSVFiltered()">
+          <div class="table-actions" style="gap: 0.75rem;">
+            <button class="btn-secondary" onclick="downloadCSVFiltered()" style="background: rgba(255, 255, 255, 0.15); color: white; border: 1px solid rgba(255, 255, 255, 0.3); backdrop-filter: blur(4px);">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                 <polyline points="7,10 12,15 17,10"/>
                 <line x1="12" y1="15" x2="12" y2="3"/>
               </svg>
-              Export Data
+              💾 Export
             </button>
-            <button class="btn-secondary" onclick="toggleTableView()">
+            <button class="btn-secondary" onclick="toggleTableView()" style="background: rgba(255, 255, 255, 0.15); color: white; border: 1px solid rgba(255, 255, 255, 0.3); backdrop-filter: blur(4px);">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
                 <line x1="9" y1="9" x2="15" y2="15"/>
                 <line x1="15" y1="9" x2="9" y2="15"/>
               </svg>
-              Compact View
+              📏 Compact
             </button>
           </div>
         </div>
 
         <!-- Monthly Tabs -->
-        <div class="month-tabs-wrapper">
+        <div class="month-tabs-wrapper" style="background: #f8fafc; border-bottom: 2px solid #e5e7eb;">
           <div class="month-tabs-container" role="tablist" aria-label="Monthly data navigation">
             <!-- Tabs will be dynamically generated -->
           </div>
         </div>
-        <div class="card-content">
-          <div class="table-container modern">
-            <table class="modern-table" id="sensitiveTable">
-              <thead>
+        
+        <div class="card-content" style="padding: 0;">
+          <div class="table-container modern" style="border-radius: 0 0 12px 12px; border: none; max-height: 500px;">
+            <table class="modern-table" id="sensitiveTable" style="font-size: 0.9rem;">
+              <thead style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); position: sticky; top: 0; z-index: 10;">
                 <tr>
-                  <th class="checkbox-col">
-                    <input type="checkbox" id="selectAllCheckbox" title="Select/Deselect All">
+                  <th class="checkbox-col" style="background: #f8fafc; border-bottom: 2px solid #e2e8f0; padding: 0.75rem 0.5rem;">
+                    <input type="checkbox" id="selectAllCheckbox" title="Select/Deselect All" style="transform: scale(1.1); accent-color: #10b981;">
                   </th>
-                  <th>Full Name</th>
-                  <th>Gender</th>
-                  <th>Phone</th>
-                  <th>Age</th>
-                  <th>Level</th>
-                  <th>3rd</th>
-                  <th>10th</th>
-                  <th>17th</th>
-                  <th>24th</th>
-                  <th>31st</th>
+                  <th style="color: #374151; font-weight: 600; padding: 0.75rem; border-bottom: 2px solid #e2e8f0;">👤 Name</th>
+                  <th style="color: #374151; font-weight: 600; padding: 0.75rem; border-bottom: 2px solid #e2e8f0;">⚧️ Gender</th>
+                  <th style="color: #374151; font-weight: 600; padding: 0.75rem; border-bottom: 2px solid #e2e8f0;">📞 Phone</th>
+                  <th style="color: #374151; font-weight: 600; padding: 0.75rem; border-bottom: 2px solid #e2e8f0;">🎂 Age</th>
+                  <th style="color: #374151; font-weight: 600; padding: 0.75rem; border-bottom: 2px solid #e2e8f0;">📚 Level</th>
+                  <th style="background: #ecfdf5; color: #065f46; font-weight: 600; text-align: center; padding: 0.75rem 0.5rem; border-bottom: 2px solid #10b981;">📅 7th</th>
+                  <th style="background: #ecfdf5; color: #065f46; font-weight: 600; text-align: center; padding: 0.75rem 0.5rem; border-bottom: 2px solid #10b981;">📅 14th</th>
+                  <th style="background: #ecfdf5; color: #065f46; font-weight: 600; text-align: center; padding: 0.75rem 0.5rem; border-bottom: 2px solid #10b981;">📅 21st</th>
+                  <th style="background: #ecfdf5; color: #065f46; font-weight: 600; text-align: center; padding: 0.75rem 0.5rem; border-bottom: 2px solid #10b981;">📅 28th</th>
                 </tr>
               </thead>
-              <tbody id="sensitiveTableBody">
+              <tbody id="sensitiveTableBody" style="font-size: 0.85rem;">
                 <tr>
-                  <td colspan="11" class="loading-state">
-                    <div class="loading-content">
-                      <div class="loading-spinner"></div>
-                      <span>Loading data...</span>
+                  <td colspan="10" class="loading-state" style="padding: 3rem; text-align: center;">
+                    <div class="loading-content" style="display: flex; flex-direction: column; align-items: center; gap: 1rem; color: #6b7280;">
+                      <div class="loading-spinner" style="width: 32px; height: 32px; border: 3px solid #e5e7eb; border-top: 3px solid #10b981; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                      <span style="font-weight: 500;">Loading members...</span>
                     </div>
                   </td>
                 </tr>

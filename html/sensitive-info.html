@@ -963,6 +963,36 @@
       border: 1px solid #e2e8f0;
     }
 
+    .attendance-dropdown {
+      padding: 0.25rem 0.5rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      background: white;
+      color: #374151;
+      cursor: pointer;
+      min-width: 70px;
+      text-align: center;
+      transition: border-color 0.2s ease;
+    }
+
+    .attendance-dropdown:focus {
+      outline: none;
+      border-color: #357d39;
+      box-shadow: 0 0 0 2px rgba(53, 125, 57, 0.1);
+    }
+
+    .attendance-dropdown:hover {
+      border-color: #357d39;
+    }
+
+    .attendance-dropdown option {
+      padding: 0.25rem;
+      background: white;
+      color: #374151;
+    }
+
     /* Loading and Empty States */
     .loading-state .loading-content {
       color: #64748b;
@@ -1507,6 +1537,10 @@
                 <input type="checkbox" id="global-date-24th" class="global-date-checkbox" data-date="24th" onchange="handleDateSelection('24th', this)">
                 <span class="date-label">24th</span>
               </label>
+              <label class="date-option">
+                <input type="checkbox" id="global-date-31st" class="global-date-checkbox" data-date="31st" onchange="handleDateSelection('31st', this)">
+                <span class="date-label">31st</span>
+              </label>
             </div>
             <div class="date-actions">
               <button id="saveAttendanceDateBtn" class="btn-success" style="display: none;" onclick="saveActiveAttendanceDate()">
@@ -1574,6 +1608,10 @@
                 <input type="checkbox" id="select-date-24th" class="date-selection-checkbox" data-date="24th" data-column="Attendance 24th">
                 <span class="date-selection-label">24th</span>
               </label>
+              <label class="date-selection-option">
+                <input type="checkbox" id="select-date-31st" class="date-selection-checkbox" data-date="31st" data-column="Attendance 31st">
+                <span class="date-selection-label">31st</span>
+              </label>
             </div>
             
             <div class="date-selection-actions">
@@ -1591,6 +1629,86 @@
                 Clear All
               </button>
             </div>
+          </div>
+
+          <!-- Bulk Attendance Update -->
+          <div class="control-card" style="margin-bottom: 1.5rem;">
+            <div class="control-header">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+                <path d="M9 16l2 2 4-4"/>
+              </svg>
+              <h3>Bulk Attendance Update</h3>
+            </div>
+            <p class="control-description">Select multiple members and update their attendance for a specific date</p>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+              <!-- Date Selector -->
+              <div>
+                <label style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: #374151;">Select Date:</label>
+                <select id="bulkUpdateDateSelect" class="filter-select modern" style="width: 100%; color: #374151; background: white; border: 2px solid #e2e8f0;">
+                  <option value="">Choose date...</option>
+                  <option value="Attendance 3rd">3rd</option>
+                  <option value="Attendance 10th">10th</option>
+                  <option value="Attendance 17th">17th</option>
+                  <option value="Attendance 24th">24th</option>
+                  <option value="Attendance 31st">31st</option>
+                </select>
+              </div>
+              
+              <!-- Status Selector -->
+              <div>
+                <label style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: #374151;">Set Status:</label>
+                <select id="bulkUpdateStatusSelect" class="filter-select modern" style="width: 100%; color: #374151; background: white; border: 2px solid #e2e8f0;">
+                  <option value="">Choose status...</option>
+                  <option value="Present">Present</option>
+                  <option value="Absent">Absent</option>
+                  <option value="">Clear (Empty)</option>
+                </select>
+              </div>
+            </div>
+            
+            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+              <button id="selectAllMembersBtn" class="btn-secondary" style="flex: 1;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 11l3 3L22 4"/>
+                  <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                </svg>
+                Select All
+              </button>
+              <button id="clearSelectionBtn" class="btn-secondary" style="flex: 1;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18 6L6 18M6 6l12 12"/>
+                </svg>
+                Clear Selection
+              </button>
+            </div>
+            
+            <div id="selectedCountDisplay" style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; padding: 0.75rem; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 8px;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #64748b;">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="8.5" cy="7" r="4"/>
+                <path d="M20 8v6M23 11h-6"/>
+              </svg>
+              <span style="font-weight: 500; color: #374151;">
+                <span id="selectedCount" style="font-weight: 700; color: #357d39; font-size: 1.1rem;">0</span>
+                <span style="color: #64748b;">members selected</span>
+              </span>
+            </div>
+            
+            <div id="bulkUpdateStatus" class="status-display" style="margin-bottom: 1rem; background: #f8fafc; color: #64748b; border: 1px solid #e2e8f0;">
+              Select members and choose date/status to begin
+            </div>
+            
+            <button id="applyBulkUpdateBtn" class="btn-primary full-width" disabled>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 11l3 3L22 4"/>
+              </svg>
+              Apply Bulk Update
+            </button>
           </div>
 
           <div class="controls-grid">
@@ -1715,7 +1833,7 @@
                   <th>10th</th>
                   <th>17th</th>
                   <th>24th</th>
-                  <th style="display: none;">29th</th>
+                  <th>31st</th>
                 </tr>
               </thead>
               <tbody id="sensitiveTableBody">
@@ -2410,15 +2528,19 @@
         const isDuplicate = isDuplicateMode && duplicateNames.includes(item["Full Name"] || '');
         const rowClass = isDuplicate ? 'duplicate-row' : '';
 
-        // Helper function to get attendance status with styling
-        const getAttendanceCell = (attendance) => {
+        // Helper function to get attendance status with styling and dropdown
+        const getAttendanceCell = (attendance, columnName, recordId) => {
           const status = (attendance || '').trim().toLowerCase();
-          if (status === 'present' || status === 'p') {
-            return `<span class="attendance-status present">Present</span>`;
-          } else if (status === 'absent' || status === 'a') {
-            return `<span class="attendance-status absent">Absent</span>`;
-          }
-          return `<span class="attendance-status empty">-</span>`;
+          const currentValue = status === 'present' || status === 'p' ? 'Present' :
+                              status === 'absent' || status === 'a' ? 'Absent' : '';
+
+          return `
+            <select class="attendance-dropdown" data-column="${columnName}" data-id="${recordId}" onchange="updateAttendance(this)">
+              <option value="">-</option>
+              <option value="Present" ${currentValue === 'Present' ? 'selected' : ''}>Present</option>
+              <option value="Absent" ${currentValue === 'Absent' ? 'selected' : ''}>Absent</option>
+            </select>
+          `;
         };
 
         return `
@@ -2447,11 +2569,11 @@
           <td>
             <span class="level-badge">${item["Current Level"] || ''}</span>
           </td>
-          <td>${getAttendanceCell(item["Attendance 3rd"])}</td>
-          <td>${getAttendanceCell(item["Attendance 10th"])}</td>
-          <td>${getAttendanceCell(item["Attendance 17th"])}</td>
-          <td>${getAttendanceCell(item["Attendance 24th"])}</td>
-          <td style="display: none;">${getAttendanceCell(item["Attendance 29th"])}</td>
+          <td>${getAttendanceCell(item["Attendance 3rd"], "Attendance 3rd", item.id)}</td>
+          <td>${getAttendanceCell(item["Attendance 10th"], "Attendance 10th", item.id)}</td>
+          <td>${getAttendanceCell(item["Attendance 17th"], "Attendance 17th", item.id)}</td>
+          <td>${getAttendanceCell(item["Attendance 24th"], "Attendance 24th", item.id)}</td>
+          <td>${getAttendanceCell(item["Attendance 31st"], "Attendance 31st", item.id)}</td>
         </tr>
       `}).join('');
 
@@ -2469,6 +2591,28 @@
     function updateSelectedState() {
       const checkboxes = document.querySelectorAll('.record-checkbox:checked');
       const deleteBtn = document.getElementById('deleteMultipleBtn');
+      const bulkUpdateStatus = document.getElementById('bulkUpdateStatus');
+      const applyBtn = document.getElementById('applyBulkUpdateBtn');
+      const selectedCountElement = document.getElementById('selectedCount');
+
+      // Update the selected count display
+      if (selectedCountElement) {
+        selectedCountElement.textContent = checkboxes.length;
+        
+        // Add visual feedback based on selection count
+        const countDisplay = document.getElementById('selectedCountDisplay');
+        if (countDisplay) {
+          if (checkboxes.length > 0) {
+            countDisplay.style.background = '#f0f9ff';
+            countDisplay.style.border = '1px solid #bae6fd';
+            selectedCountElement.style.color = '#0369a1';
+          } else {
+            countDisplay.style.background = '#f1f5f9';
+            countDisplay.style.border = '1px solid #e2e8f0';
+            selectedCountElement.style.color = '#64748b';
+          }
+        }
+      }
 
       if (deleteBtn) {
         if (checkboxes.length > 0) {
@@ -2476,6 +2620,38 @@
           deleteBtn.style.display = 'inline-block';
         } else {
           deleteBtn.textContent = 'Delete Selected';
+        }
+      }
+
+      // Update bulk update status and button state
+      if (bulkUpdateStatus && applyBtn) {
+        const selectedCount = checkboxes.length;
+        const dateSelect = document.getElementById('bulkUpdateDateSelect');
+        const statusSelect = document.getElementById('bulkUpdateStatusSelect');
+        
+        if (selectedCount > 0) {
+          const selectedDate = dateSelect ? dateSelect.value : '';
+          const selectedStatus = statusSelect ? statusSelect.value : '';
+          
+          if (selectedDate && (selectedStatus !== null)) {
+            bulkUpdateStatus.textContent = `Ready to update ${selectedCount} member(s) for ${dateSelect.options[dateSelect.selectedIndex].text} with status: ${selectedStatus || 'Clear'}`;
+            bulkUpdateStatus.style.background = '#dcfce7';
+            bulkUpdateStatus.style.color = '#166534';
+            bulkUpdateStatus.style.border = '1px solid #bbf7d0';
+            applyBtn.disabled = false;
+          } else {
+            bulkUpdateStatus.textContent = `${selectedCount} member(s) selected - Please choose date and status`;
+            bulkUpdateStatus.style.background = '#fef3c7';
+            bulkUpdateStatus.style.color = '#d97706';
+            bulkUpdateStatus.style.border = '1px solid #fde68a';
+            applyBtn.disabled = true;
+          }
+        } else {
+          bulkUpdateStatus.textContent = 'Select members and choose date/status to begin';
+          bulkUpdateStatus.style.background = '#f8fafc';
+          bulkUpdateStatus.style.color = '#64748b';
+          bulkUpdateStatus.style.border = '1px solid #e2e8f0';
+          applyBtn.disabled = true;
         }
       }
     }
@@ -2604,7 +2780,7 @@
       // Get current month's attendance configuration
       const config = window.monthlyTabsManager ?
         window.monthlyTabsManager.getCurrentConfig() :
-        { attendanceDates: ['3rd', '10th', '17th', '24th'], attendanceColumns: ['Attendance 3rd', 'Attendance 10th', 'Attendance 17th', 'Attendance 24th'] };
+        { attendanceDates: ['3rd', '10th', '17th', '24th', '31st'], attendanceColumns: ['Attendance 3rd', 'Attendance 10th', 'Attendance 17th', 'Attendance 24th', 'Attendance 31st'] };
       
       const attendanceDates = config.attendanceDates;
       const attendanceColumns = config.attendanceColumns;
@@ -2758,7 +2934,7 @@
       // Use the correct column names from current month table
       const config = window.monthlyTabsManager ?
         window.monthlyTabsManager.getCurrentConfig() :
-        { attendanceColumns: ['Attendance 3rd', 'Attendance 10th', 'Attendance 17th', 'Attendance 24th'] };
+        { attendanceColumns: ['Attendance 3rd', 'Attendance 10th', 'Attendance 17th', 'Attendance 24th', 'Attendance 31st'] };
       
       const headers = [
         'Full Name', 'Gender', 'Phone Number', 'Age', 'Current Level',
@@ -3364,13 +3540,52 @@
       }
     }
 
+    // Function to update attendance when dropdown changes
+    async function updateAttendance(dropdown) {
+      const columnName = dropdown.dataset.column;
+      const recordId = dropdown.dataset.id;
+      const newValue = dropdown.value;
+
+      try {
+        const currentTable = window.monthlyTabsManager ?
+          window.monthlyTabsManager.getCurrentTable() :
+          'August_2025';
+
+        const updateData = {};
+        updateData[columnName] = newValue || null; // Use null for empty values
+
+        const { error } = await window.supabase
+          .from(currentTable)
+          .update(updateData)
+          .eq('id', recordId);
+
+        if (error) throw error;
+
+        // Update the local data
+        if (window.currentTableData) {
+          const record = window.currentTableData.find(item => item.id === recordId);
+          if (record) {
+            record[columnName] = newValue || null;
+            updateAttendanceSummary(window.currentTableData);
+          }
+        }
+
+        showToast("success", "Attendance updated successfully!");
+      } catch (error) {
+        console.error('Error updating attendance:', error);
+        showToast("error", "Failed to update attendance");
+        // Revert the dropdown on error
+        dropdown.value = dropdown.dataset.originalValue || '';
+      }
+    }
+
     // Function to toggle teen average display
     function toggleTeenAverage() {
       // Refresh the attendance summary to show/hide teen average
       if (window.currentTableData) {
         updateAttendanceSummary(window.currentTableData);
       }
-      
+
       // Save the preference to localStorage
       const toggle = document.getElementById('teenAverageToggle');
       if (toggle) {
@@ -3378,20 +3593,250 @@
       }
     }
 
-    // Add event listeners when DOM is loaded
-    document.addEventListener('DOMContentLoaded', function() {
-      // Date selection functionality
-      const selectAllBtn = document.getElementById('selectAllDatesBtn');
-      const clearAllBtn = document.getElementById('clearAllDatesBtn');
-      const clearSelectedBtn = document.getElementById('clearSelectedAttendanceBtn');
-      const markBtn = document.getElementById('markEmptyAsAbsentBtn');
-      const undoBtn = document.getElementById('undoLastActionBtn');
+    // Bulk Attendance Update Functions
+    function selectAllMembers() {
+      const checkboxes = document.querySelectorAll('.record-checkbox');
+      const selectAllCheckbox = document.getElementById('selectAllCheckbox');
       
-      if (selectAllBtn) selectAllBtn.addEventListener('click', selectAllDates);
-      if (clearAllBtn) clearAllBtn.addEventListener('click', clearAllDates);
-      if (clearSelectedBtn) clearSelectedBtn.addEventListener('click', clearSelectedAttendance);
-      if (markBtn) markBtn.addEventListener('click', markEmptyAsAbsent);
-      if (undoBtn) undoBtn.addEventListener('click', undoLastAction);
+      checkboxes.forEach(checkbox => {
+        checkbox.checked = true;
+      });
+      
+      if (selectAllCheckbox) {
+        selectAllCheckbox.checked = true;
+      }
+      
+      updateSelectedState();
+    }
+
+    function clearMemberSelection() {
+      const checkboxes = document.querySelectorAll('.record-checkbox');
+      const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+      
+      checkboxes.forEach(checkbox => {
+        checkbox.checked = false;
+      });
+      
+      if (selectAllCheckbox) {
+        selectAllCheckbox.checked = false;
+      }
+      
+      updateSelectedState();
+    }
+
+    async function applyBulkUpdate() {
+      const selectedCheckboxes = document.querySelectorAll('.record-checkbox:checked');
+      const dateSelect = document.getElementById('bulkUpdateDateSelect');
+      const statusSelect = document.getElementById('bulkUpdateStatusSelect');
+      
+      if (selectedCheckboxes.length === 0) {
+        showToast("error", "Please select at least one member");
+        return;
+      }
+      
+      if (!dateSelect || !dateSelect.value) {
+        showToast("error", "Please select a date");
+        return;
+      }
+      
+      if (!statusSelect || statusSelect.value === null) {
+        showToast("error", "Please select a status");
+        return;
+      }
+      
+      const selectedDate = dateSelect.value;
+      const selectedStatus = statusSelect.value || null; // null for empty/clear
+      const selectedIds = Array.from(selectedCheckboxes).map(cb => cb.dataset.id);
+      const dateName = dateSelect.options[dateSelect.selectedIndex].text;
+      const statusName = selectedStatus || 'Clear';
+      
+      // Show confirmation modal
+      showModernModal({
+        type: 'warning',
+        icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+                <path d="M9 16l2 2 4-4"/>
+               </svg>`,
+        title: 'Bulk Attendance Update',
+        description: `Are you sure you want to update attendance for ${selectedIds.length} member(s) on ${dateName} to "${statusName}"?`,
+        actions: [
+          {
+            text: 'Cancel',
+            type: 'secondary',
+            onClick: 'closeModal()'
+          },
+          {
+            text: 'Apply Update',
+            type: 'primary',
+            icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                     <path d="M9 11l3 3L22 4"/>
+                   </svg>`,
+            onClick: `performBulkUpdateWrapper('${selectedDate}', '${selectedStatus || ''}', '${dateName}', '${statusName}')`
+          }
+        ]
+      });
+    }
+
+    // Wrapper function to get current selected IDs when modal is confirmed
+    function performBulkUpdateWrapper(columnName, status, dateName, statusName) {
+      const selectedCheckboxes = document.querySelectorAll('.record-checkbox:checked');
+      const selectedIds = Array.from(selectedCheckboxes).map(cb => cb.dataset.id);
+      performBulkUpdate(columnName, status, selectedIds, dateName, statusName);
+    }
+
+    async function performBulkUpdate(columnName, status, selectedIds, dateName, statusName) {
+      closeModal();
+      
+      try {
+        // Store undo data
+        await storeUndoData('Bulk Attendance Update');
+        
+        const applyBtn = document.getElementById('applyBulkUpdateBtn');
+        const statusDisplay = document.getElementById('bulkUpdateStatus');
+        
+        // Update button to show progress
+        applyBtn.disabled = true;
+        applyBtn.innerHTML = `
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <div style="width: 16px; height: 16px; border: 2px solid #fff; border-top: 2px solid transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+            Updating...
+          </div>
+        `;
+        
+        statusDisplay.textContent = `Updating ${selectedIds.length} members...`;
+        statusDisplay.style.background = '#fef3c7';
+        statusDisplay.style.color = '#d97706';
+        
+        const currentTable = window.monthlyTabsManager ?
+          window.monthlyTabsManager.getCurrentTable() :
+          'August_2025';
+        
+        // Perform batch update
+        const updateData = {};
+        updateData[columnName] = status;
+        
+        let successCount = 0;
+        let errorCount = 0;
+        
+        // Process updates in smaller batches to avoid overwhelming the database
+        const batchSize = 10;
+        for (let i = 0; i < selectedIds.length; i += batchSize) {
+          const batch = selectedIds.slice(i, i + batchSize);
+          
+          try {
+            const { error } = await window.supabase
+              .from(currentTable)
+              .update(updateData)
+              .in('id', batch);
+            
+            if (error) throw error;
+            successCount += batch.length;
+            
+            // Update progress
+            statusDisplay.textContent = `Updated ${successCount}/${selectedIds.length} members...`;
+            
+          } catch (error) {
+            console.error(`Error updating batch ${i}:`, error);
+            errorCount += batch.length;
+          }
+        }
+        
+        // Update local data
+        if (window.currentTableData) {
+          window.currentTableData.forEach(record => {
+            if (selectedIds.includes(record.id)) {
+              record[columnName] = status;
+            }
+          });
+          updateAttendanceSummary(window.currentTableData);
+        }
+        
+        // Update dropdowns in the table
+        selectedIds.forEach(id => {
+          const dropdown = document.querySelector(`select[data-id="${id}"][data-column="${columnName}"]`);
+          if (dropdown) {
+            dropdown.value = status || '';
+          }
+        });
+        
+        // Clear selections
+        clearMemberSelection();
+        
+        // Reset form
+        document.getElementById('bulkUpdateDateSelect').value = '';
+        document.getElementById('bulkUpdateStatusSelect').value = '';
+        
+        if (errorCount === 0) {
+          showToast("success", `Successfully updated ${successCount} member(s) for ${dateName} to "${statusName}"!`);
+          statusDisplay.textContent = `✅ Successfully updated ${successCount} member(s)`;
+          statusDisplay.style.background = '#dcfce7';
+          statusDisplay.style.color = '#166534';
+        } else {
+          showToast("error", `Updated ${successCount} member(s), but ${errorCount} failed`);
+          statusDisplay.textContent = `⚠️ ${successCount} updated, ${errorCount} failed`;
+          statusDisplay.style.background = '#fef3c7';
+          statusDisplay.style.color = '#d97706';
+        }
+        
+      } catch (error) {
+        console.error('Error performing bulk update:', error);
+        showToast("error", "Failed to perform bulk update");
+        statusDisplay.textContent = 'Error occurred during update';
+        statusDisplay.style.background = '#fee2e2';
+        statusDisplay.style.color = '#991b1b';
+      } finally {
+        const applyBtn = document.getElementById('applyBulkUpdateBtn');
+        applyBtn.disabled = true;
+        applyBtn.innerHTML = `
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 11l3 3L22 4"/>
+          </svg>
+          Apply Bulk Update
+        `;
+        
+        // Reset status after a delay
+        setTimeout(() => {
+          updateSelectedState();
+        }, 3000);
+      }
+    }
+
+    // Add event listeners when DOM is loaded
+  document.addEventListener('DOMContentLoaded', function() {
+    // Date selection functionality
+    const selectAllBtn = document.getElementById('selectAllDatesBtn');
+    const clearAllBtn = document.getElementById('clearAllDatesBtn');
+    const clearSelectedBtn = document.getElementById('clearSelectedAttendanceBtn');
+    const markBtn = document.getElementById('markEmptyAsAbsentBtn');
+    const undoBtn = document.getElementById('undoLastActionBtn');
+    
+    if (selectAllBtn) selectAllBtn.addEventListener('click', selectAllDates);
+    if (clearAllBtn) clearAllBtn.addEventListener('click', clearAllDates);
+    if (clearSelectedBtn) clearSelectedBtn.addEventListener('click', clearSelectedAttendance);
+    if (markBtn) markBtn.addEventListener('click', markEmptyAsAbsent);
+    if (undoBtn) undoBtn.addEventListener('click', undoLastAction);
+
+    // Bulk attendance update functionality
+    const selectAllMembersBtn = document.getElementById('selectAllMembersBtn');
+    const clearSelectionBtn = document.getElementById('clearSelectionBtn');
+    const applyBulkUpdateBtn = document.getElementById('applyBulkUpdateBtn');
+    const bulkUpdateDateSelect = document.getElementById('bulkUpdateDateSelect');
+    const bulkUpdateStatusSelect = document.getElementById('bulkUpdateStatusSelect');
+    
+    if (selectAllMembersBtn) selectAllMembersBtn.addEventListener('click', selectAllMembers);
+    if (clearSelectionBtn) clearSelectionBtn.addEventListener('click', clearMemberSelection);
+    if (applyBulkUpdateBtn) applyBulkUpdateBtn.addEventListener('click', applyBulkUpdate);
+    
+    // Update status when dropdowns change
+    if (bulkUpdateDateSelect) {
+      bulkUpdateDateSelect.addEventListener('change', updateSelectedState);
+    }
+    if (bulkUpdateStatusSelect) {
+      bulkUpdateStatusSelect.addEventListener('change', updateSelectedState);
+    }
 
       // Add change listeners to date checkboxes
       document.querySelectorAll('.date-selection-checkbox').forEach(checkbox => {

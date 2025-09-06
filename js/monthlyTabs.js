@@ -11,8 +11,8 @@ class MonthlyTabsManager {
       'August_2025': {
         name: 'August 2025',
         table: 'August_2025',
-        attendanceDates: ['3rd', '10th', '17th', '24th'],
-        attendanceColumns: ['Attendance 3rd', 'Attendance 10th', 'Attendance 17th', 'Attendance 24th']
+        attendanceDates: ['3rd', '10th', '17th', '24th', '31st'],
+        attendanceColumns: ['Attendance 3rd', 'Attendance 10th', 'Attendance 17th', 'Attendance 24th', 'Attendance 31st']
       },
       'July_2025': {
         name: 'July 2025',

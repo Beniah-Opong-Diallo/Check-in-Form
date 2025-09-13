@@ -34,6 +34,7 @@ async function createMonthlyTable(month, year) {
           "Attendance 15th" text,
           "Attendance 22nd" text,
           "Attendance 29th" text,
+          "Attendance 29th" text,
           inserted_at timestamp with time zone DEFAULT now(),
           updated_at timestamp with time zone DEFAULT now()
         );

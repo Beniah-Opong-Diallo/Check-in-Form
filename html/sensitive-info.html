@@ -1609,6 +1609,10 @@
                 <input type="checkbox" id="select-date-31st" class="date-selection-checkbox" data-date="31st" data-column="Attendance 31st">
                 <span class="date-selection-label">31st</span>
               </label>
+              <label class="date-selection-option">
+                <input type="checkbox" id="select-date-31st" class="date-selection-checkbox" data-date="31st" data-column="Attendance 31st">
+                <span class="date-selection-label">31st</span>
+              </label>
             </div>
             
             <div class="date-selection-actions">
@@ -1644,10 +1648,11 @@
             
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
               <!-- Date Selector -->
-              <div>
-                <label style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: #374151;">Select Date:</label>
-                <select id="bulkUpdateDateSelect" class="filter-select modern" style="width: 100%; color: #374151; background: white; border: 2px solid #e2e8f0;">
-                  <option value="">Choose date...</option>
+                  <option value="Attendance 3rd">3rd</option>
+                  <option value="Attendance 10th">10th</option>
+                  <option value="Attendance 17th">17th</option>
+                  <option value="Attendance 24th">24th</option>
+                  <option value="Attendance 31st">31st</option>
                   <option value="Attendance 3rd">3rd</option>
                   <option value="Attendance 10th">10th</option>
                   <option value="Attendance 17th">17th</option>
@@ -2305,11 +2310,11 @@
         
       } catch (error) {
         console.error('Error setting default attendance date:', error);
-        // Even if there's an error, still set 3rd as default
-        globalActiveAttendanceDate = "3rd";
-        localStorage.setItem('globalActiveAttendanceDate', "3rd");
+        // Even if there's an error, still set 14th as default
+        globalActiveAttendanceDate = "14th";
+        localStorage.setItem('globalActiveAttendanceDate', "14th");
         
-        const checkbox = document.getElementById('global-date-3rd');
+        const checkbox = document.getElementById('global-date-14th');
         if (checkbox) {
           const allCheckboxes = document.querySelectorAll('.global-date-checkbox');
           allCheckboxes.forEach(cb => cb.checked = false);

@@ -469,10 +469,19 @@ function createInput(type, value, attributes = {}) {
   return input;
 }
 
-// Remove requestAnimationFrame from showToast
+// Improved showToast function with proper animation
 function showToast(type, message) {
   const toast =
     type === "success" ? elements.successToast : elements.errorToast;
+
+  // Clear any existing timeouts
+  if (window.toastTimeout) {
+    clearTimeout(window.toastTimeout);
+  }
+
+  // Hide all toasts first
+  elements.successToast.classList.remove("show");
+  elements.errorToast.classList.remove("show");
 
   // Update toast content with icon
   toast.innerHTML = `
@@ -486,11 +495,16 @@ function showToast(type, message) {
     <span>${message}</span>
   `;
 
+  // Force a reflow to ensure animation works
+  void toast.offsetWidth;
+  
   // Show toast with animation
   toast.classList.add("show");
-  setTimeout(() => {
+  
+  // Set timeout to hide toast - shorter duration
+  window.toastTimeout = setTimeout(() => {
     toast.classList.remove("show");
-  }, 3000); // Longer duration so user can see it
+  }, 1500); // 1.5 seconds duration - shorter for better UX
 }
 
 // Update the getItemHTML function to make fields directly editable
@@ -961,11 +975,11 @@ window.quickMarkAttendance = async function (id, value) {
   const item = (window.currentItems || []).find((i) => i.id == id);
   if (!item) return;
 
-  // Determine active attendance date (default to 7th for September)
+  // Determine active attendance date (default to 14th for September)
   const activeDate =
     window.globalActiveAttendanceDate ||
     localStorage.getItem("globalActiveAttendanceDate") ||
-    "7th";
+    "14th";
   const fieldName = `Attendance ${activeDate}`;
 
   try {
@@ -997,16 +1011,36 @@ window.quickMarkAttendance = async function (id, value) {
       if (btn) btn.classList.add("selected");
     }
 
-    // Update the displayed attendance values
+    // Update the item in the current items array
+    if (item) {
+      item[fieldName] = value;
+    }
+
+    // Update stats without refreshing the entire display
     searchCache.clear();
     await fetchAndDisplayStats();
 
-    // Refresh the current display
-    const currentSearch = elements.searchInput.value.trim();
-    if (currentSearch) {
-      await filterItems();
-    } else {
-      await loadInitialData();
+    // Update just the attendance display for this item if it has a detailed view
+    const resultItem = document.querySelector(`.result-item[data-id="${id}"]`);
+    if (resultItem) {
+      const detailedInfo = resultItem.querySelector('.detailed-info');
+      if (detailedInfo && detailedInfo.querySelector('.attendance-item')) {
+        // Find and update the specific attendance field for this date
+        const attendanceItems = detailedInfo.querySelectorAll('.attendance-item');
+        for (const attendanceItem of attendanceItems) {
+          const label = attendanceItem.querySelector('label');
+          if (label && label.textContent.includes(activeDate.replace('th', ''))) {
+            const select = attendanceItem.querySelector('select');
+            if (select) {
+              // Update the select value
+              select.value = value;
+              // Update the select class
+              select.className = `attendance-select ${value.toLowerCase()}`;
+            }
+            break;
+          }
+        }
+      }
     }
   } catch (error) {
     console.error("Error updating attendance:", error);
@@ -1200,8 +1234,8 @@ async function loadGlobalAttendanceDate() {
   try {
     console.log("Setting default attendance date for September 2025...");
 
-    // HARDCODED: Always set 7th as the default active date for September_2025
-    const defaultActiveDate = "7th";
+    // HARDCODED: Always set 14th as the default active date for September_2025
+    const defaultActiveDate = "14th";
 
     // Clear any old cached attendance date to force refresh
     localStorage.removeItem("globalActiveAttendanceDate");
@@ -1227,17 +1261,17 @@ async function loadGlobalAttendanceDate() {
           onConflict: "id",
         }
       );
-      console.log("Auto-saved 7th to database from main app for September 2025");
+      console.log("Auto-saved 14th to database from main app for September 2025");
     } catch (dbError) {
       console.error("Failed to auto-save to database from main app:", dbError);
     }
 
-    console.log("7th set as permanent default attendance date for September 2025");
+    console.log("14th set as permanent default attendance date for September 2025");
   } catch (error) {
     console.error("Error setting default attendance date:", error);
-    // Even if there's an error, still set 7th as default
-    window.globalActiveAttendanceDate = "7th";
-    localStorage.setItem("globalActiveAttendanceDate", "7th");
+    // Even if there's an error, still set 14th as default
+    window.globalActiveAttendanceDate = "14th";
+    localStorage.setItem("globalActiveAttendanceDate", "14th");
   }
 }
 

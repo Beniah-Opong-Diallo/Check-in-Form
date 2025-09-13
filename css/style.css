@@ -2,9 +2,6 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  transition: none !important;
-  animation: none !important;
-  box-shadow: none !important;
 }
 
 @keyframes gradientAnimation {
@@ -392,6 +389,8 @@ select {
   min-width: 300px;
   text-align: center;
   justify-content: center;
+  transition: opacity 0.3s ease, visibility 0.3s ease !important;
+  pointer-events: none;
 }
 
 .toast.success {

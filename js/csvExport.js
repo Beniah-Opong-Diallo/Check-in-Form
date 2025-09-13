@@ -29,6 +29,7 @@ async function downloadCSV() {
       { header: "Attendance 15th", key: "Attendance 15th" },
       { header: "Attendance 22nd", key: "Attendance 22nd" },
       { header: "Attendance 29th", key: "Attendance 29th" },
+      { header: "Attendance 29th", key: "Attendance 29th" },
     ];
 
     // Create CSV content

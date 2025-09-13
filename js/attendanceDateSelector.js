@@ -4,6 +4,7 @@ class AttendanceDateSelector {
     this.dateOptions = [
       { value: "3rd", label: "3rd" },
       { value: "10th", label: "10th" },
+      { value: "14th", label: "14th" },
       { value: "17th", label: "17th" },
       { value: "24th", label: "24th" },
     ];

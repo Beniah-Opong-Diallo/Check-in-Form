@@ -1311,8 +1311,12 @@ function updateStatsDisplay(data) {
 
 // Load initial data when page loads
 document.addEventListener("DOMContentLoaded", () => {
-  // Initialize UI immediately
+  // Initialize both theme systems immediately
   initializeThemeSwitcher();
+  initializeThemeToggle();
+  
+  // Initialize welcome screen
+  initializeWelcomeScreen();
   
   // Show loading indicator right away
   elements.cardsContainer.innerHTML = '<div class="loading-indicator">Loading data...</div>';
@@ -1499,6 +1503,67 @@ function initializeThemeSwitcher() {
     }
   });
 }
+
+// New Light/Dark Theme Toggle Functions
+function initializeThemeToggle() {
+  // Load saved theme preference, default to light
+  const savedTheme = localStorage.getItem('theme') || 'light';
+  
+  // Ensure light theme is the default if no preference is saved
+  if (!localStorage.getItem('theme')) {
+    localStorage.setItem('theme', 'light');
+  }
+  
+  // Apply theme immediately
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  
+  // Update icons
+  updateThemeIcons(savedTheme);
+  
+  // Debug logging
+  console.log('Theme initialized:', savedTheme);
+}
+
+function toggleTheme() {
+  const currentTheme = document.documentElement.getAttribute('data-theme');
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  
+  document.documentElement.setAttribute('data-theme', newTheme);
+  localStorage.setItem('theme', newTheme);
+  updateThemeIcons(newTheme);
+}
+
+function updateThemeIcons(theme) {
+  const lightIcon = document.getElementById('lightIcon');
+  const darkIcon = document.getElementById('darkIcon');
+  
+  if (lightIcon && darkIcon) {
+    // Add a subtle rotation animation during transition
+    const activeIcon = theme === 'light' ? lightIcon : darkIcon;
+    const inactiveIcon = theme === 'light' ? darkIcon : lightIcon;
+    
+    // Animate out the current icon
+    inactiveIcon.style.transform = 'rotate(180deg) scale(0.8)';
+    inactiveIcon.style.opacity = '0';
+    
+    setTimeout(() => {
+      inactiveIcon.style.display = 'none';
+      
+      // Animate in the new icon
+      activeIcon.style.display = 'block';
+      activeIcon.style.transform = 'rotate(-180deg) scale(0.8)';
+      activeIcon.style.opacity = '0';
+      
+      setTimeout(() => {
+        activeIcon.style.transform = 'rotate(0deg) scale(1)';
+        activeIcon.style.opacity = '1';
+      }, 50);
+    }, 200);
+  }
+}
+
+// Make toggleTheme globally available
+window.toggleTheme = toggleTheme;
 
 // Add this function to handle CSV download
 async function downloadCSV() {
@@ -1704,8 +1769,8 @@ function showDropdownEdit(element, field) {
   element.appendChild(container);
 }
 
-// Initialize app when DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
+// Initialize welcome screen functionality (moved to main DOMContentLoaded listener)
+function initializeWelcomeScreen() {
     // Hide stats and other elements on initial load
     document.querySelector('.stats-container').style.display = 'none';
     document.querySelector('.category-filter').style.display = 'none';
@@ -1738,4 +1803,4 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize the attendance date selector
     const attendanceDateSelector = new AttendanceDateSelector();
-});
+}

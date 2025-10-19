@@ -22,7 +22,7 @@ const COLUMN_MAPPINGS = {
 
 // Performance optimization constants
 const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes cache
-const DEBOUNCE_DELAY = 250; // Increased debounce delay
+const DEBOUNCE_DELAY = 50; // Reduced debounce delay for faster search
 const BATCH_SIZE = 20; // Reduced batch size for smoother rendering
 const VIRTUAL_SCROLL_BUFFER = 10; // Number of items to render above/below viewport
 const SCROLL_THROTTLE = 16; // ~60fps
@@ -158,12 +158,26 @@ const filterItems = debounce(async function () {
       return;
     }
 
-    // Use prefix match for more accurate and faster search
-    const { data, error } = await supabase
+    // Enhanced search for full names, surnames, middle names, and ages
+    let query = supabase
       .from(CURRENT_TABLE)
       .select("*")
-      .ilike("Full Name", `${searchTerm}%`)
       .order("Full Name", { ascending: true });
+    
+    // Check if search term is a number (potential age search)
+    if (!isNaN(searchTerm) && searchTerm.length <= 3) {
+      // Search by age
+      query = query.eq("Age", parseInt(searchTerm));
+    } else {
+      // Search by name with multiple patterns
+      query = query.or(
+        `Full Name.ilike.%${searchTerm}%,` +   // Full name contains term
+        `Full Name.ilike.${searchTerm}%,` +    // Starts with term (first name)
+        `Full Name.ilike.% ${searchTerm}%`     // Contains space + term (middle/last name)
+      );
+    }
+    
+    const { data, error } = await query;
 
     if (error) throw error;
 
@@ -175,14 +189,16 @@ const filterItems = debounce(async function () {
     elements.cardsContainer.innerHTML =
       '<p class="error-message">Error searching records</p>';
   }
-}, 100); // Faster debounce for more responsive search
+}, DEBOUNCE_DELAY); // Using the constant for consistent debounce timing
 
 // Add manual search trigger
-const searchActionButton = document.getElementById("searchActionButton");
-if (searchActionButton && elements.searchInput) {
-  searchActionButton.addEventListener("click", () => {
-    filterItems();
+// Set up automatic search as user types
+if (elements.searchInput) {
+  elements.searchInput.addEventListener("input", () => {
+    filterItems(); // Trigger search on every keystroke
   });
+  
+  // Keep Enter key functionality
   elements.searchInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
       filterItems();
@@ -1638,3 +1654,39 @@ function showDropdownEdit(element, field) {
   element.innerHTML = "";
   element.appendChild(container);
 }
+
+// Initialize app when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Hide stats and other elements on initial load
+    document.querySelector('.stats-container').style.display = 'none';
+    document.querySelector('.category-filter').style.display = 'none';
+    document.getElementById('downloadButton').style.display = 'none';
+    document.getElementById('adminLogout').style.display = 'none';
+    
+    // Show welcome container
+    const welcomeContainer = document.querySelector('.welcome-container');
+    if (welcomeContainer) {
+        welcomeContainer.style.display = 'block';
+    }
+    
+    // Add event listeners for welcome screen buttons
+    const quickStartBtn = document.getElementById('quickStartBtn');
+    const startSearchBtn = document.getElementById('startSearchBtn');
+    
+    if (quickStartBtn) {
+        quickStartBtn.addEventListener('click', function() {
+            alert('Welcome to TMHT Check-In System!\n\n1. Use the search bar to find students\n2. Mark attendance with Present/Absent buttons\n3. Use the date selector to change attendance date');
+        });
+    }
+    
+    if (startSearchBtn) {
+        startSearchBtn.addEventListener('click', function() {
+            document.querySelector('.welcome-container').style.display = 'none';
+            document.querySelector('.category-filter').style.display = 'flex';
+            document.getElementById('searchInput').focus();
+        });
+    }
+    
+    // Initialize the attendance date selector
+    const attendanceDateSelector = new AttendanceDateSelector();
+});

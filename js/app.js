@@ -4,20 +4,20 @@ const supabase = window.supabase.createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpudXhhaGRxeGVuY3F0c3Z4dmphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzc4MDQzNjUsImV4cCI6MjA1MzM4MDM2NX0.8evCXHMfkn1yhsVB8lQ62BL3b6-j4KZ_oszTuYLT6G0"
 );
 
-// Change current table to September_2025
-const CURRENT_TABLE = "September_2025";
+// Change current table to October_2025
+const CURRENT_TABLE = "October_2025";
 
-// Define column mappings to match September_2025 table's structure
+// Define column mappings to match October_2025 table's structure
 const COLUMN_MAPPINGS = {
   full_name: "Full Name",
   gender: "Gender",
   phone_number: "Phone Number",
   age: "Age",
   current_level: "Current Level",
-  attendance_7th: "Attendance 7th",
-  attendance_14th: "Attendance 14th",
-  attendance_21st: "Attendance 21st",
-  attendance_28th: "Attendance 28th",
+  attendance_5th: "Attendance 5th",
+  attendance_12th: "Attendance 12th",
+  attendance_19th: "Attendance 19th",
+  attendance_26th: "Attendance 26th",
 };
 
 // Performance optimization constants
@@ -40,10 +40,10 @@ const elements = {
   phoneInput: document.getElementById("phoneInput"),
   ageInput: document.getElementById("ageInput"),
   levelInput: document.getElementById("levelInput"),
-  attendance7th: document.getElementById("attendance7th"),
-  attendance14th: document.getElementById("attendance14th"),
-  attendance21st: document.getElementById("attendance21st"),
-  attendance28th: document.getElementById("attendance28th"),
+  attendance5th: document.getElementById("attendance5th"),
+  attendance12th: document.getElementById("attendance12th"),
+  attendance19th: document.getElementById("attendance19th"),
+  attendance26th: document.getElementById("attendance26th"),
   cancelButton: document.getElementById("cancelButton"),
   successToast: document.getElementById("successToast"),
   errorToast: document.getElementById("errorToast"),
@@ -723,14 +723,14 @@ function showModal(item = null, options = {}) {
     elements.phoneInput.value = item["Phone Number"] || "";
     elements.ageInput.value = item["Age"] || "";
     elements.levelInput.value = item["Current Level"] || "";
-    if (elements.attendance7th)
-      elements.attendance7th.value = item["Attendance 7th"] || "";
-    if (elements.attendance14th)
-      elements.attendance14th.value = item["Attendance 14th"] || "";
-    if (elements.attendance21st)
-      elements.attendance21st.value = item["Attendance 21st"] || "";
-    if (elements.attendance28th)
-      elements.attendance28th.value = item["Attendance 28th"] || "";
+    if (elements.attendance5th)
+      elements.attendance5th.value = item["Attendance 5th"] || "";
+    if (elements.attendance12th)
+      elements.attendance12th.value = item["Attendance 12th"] || "";
+    if (elements.attendance19th)
+      elements.attendance19th.value = item["Attendance 19th"] || "";
+    if (elements.attendance26th)
+      elements.attendance26th.value = item["Attendance 26th"] || "";
   }
 
   elements.modal.style.display = "block";
@@ -760,17 +760,17 @@ async function handleSubmit(e) {
       "Phone Number": elements.phoneInput.value.trim() || null,
       Age: elements.ageInput.value ? parseInt(elements.ageInput.value) : null,
       "Current Level": elements.levelInput.value || null,
-      "Attendance 7th": elements.attendance7th
-        ? elements.attendance7th.value
+      "Attendance 5th": elements.attendance5th
+        ? elements.attendance5th.value
         : null,
-      "Attendance 14th": elements.attendance14th
-        ? elements.attendance14th.value
+      "Attendance 12th": elements.attendance12th
+        ? elements.attendance12th.value
         : null,
-      "Attendance 21st": elements.attendance21st
-        ? elements.attendance21st.value
+      "Attendance 19th": elements.attendance19th
+        ? elements.attendance19th.value
         : null,
-      "Attendance 28th": elements.attendance28th
-        ? elements.attendance28th.value
+      "Attendance 26th": elements.attendance26th
+        ? elements.attendance26th.value
         : null,
     };
 
@@ -920,10 +920,10 @@ async function fixSwappedDataInDatabase(itemId, originalItem) {
 // Update the getAttendanceDisplay function to include checkboxes and conditional present/absent
 function getAttendanceDisplay(item) {
   const attendanceFields = [
-    { field: "Attendance 7th", display: "7th", dateKey: "7th" },
-    { field: "Attendance 14th", display: "14th", dateKey: "14th" },
-    { field: "Attendance 21st", display: "21st", dateKey: "21st" },
-    { field: "Attendance 28th", display: "28th", dateKey: "28th" },
+    { field: "Attendance 5th", display: "5th", dateKey: "5th" },
+    { field: "Attendance 12th", display: "12th", dateKey: "12th" },
+    { field: "Attendance 19th", display: "19th", dateKey: "19th" },
+    { field: "Attendance 26th", display: "26th", dateKey: "26th" },
   ];
 
   return attendanceFields
@@ -975,11 +975,11 @@ window.quickMarkAttendance = async function (id, value) {
   const item = (window.currentItems || []).find((i) => i.id == id);
   if (!item) return;
 
-  // Determine active attendance date (default to 14th for September)
+  // Determine active attendance date (default to 5th for October)
   const activeDate =
     window.globalActiveAttendanceDate ||
     localStorage.getItem("globalActiveAttendanceDate") ||
-    "14th";
+    "5th";
   const fieldName = `Attendance ${activeDate}`;
 
   try {
@@ -1232,10 +1232,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 // Function to load global attendance date from database
 async function loadGlobalAttendanceDate() {
   try {
-    console.log("Setting default attendance date for September 2025...");
+    console.log("Setting default attendance date for October 2025...");
 
-    // HARDCODED: Always set 14th as the default active date for September_2025
-    const defaultActiveDate = "14th";
+    // HARDCODED: Always set 5th as the default active date for October_2025
+    const defaultActiveDate = "5th";
 
     // Clear any old cached attendance date to force refresh
     localStorage.removeItem("globalActiveAttendanceDate");
@@ -1261,17 +1261,17 @@ async function loadGlobalAttendanceDate() {
           onConflict: "id",
         }
       );
-      console.log("Auto-saved 14th to database from main app for September 2025");
+      console.log("Auto-saved 5th to database from main app for October 2025");
     } catch (dbError) {
       console.error("Failed to auto-save to database from main app:", dbError);
     }
 
-    console.log("14th set as permanent default attendance date for September 2025");
+    console.log("5th set as permanent default attendance date for October 2025");
   } catch (error) {
     console.error("Error setting default attendance date:", error);
-    // Even if there's an error, still set 14th as default
-    window.globalActiveAttendanceDate = "14th";
-    localStorage.setItem("globalActiveAttendanceDate", "14th");
+    // Even if there's an error, still set 5th as default
+    window.globalActiveAttendanceDate = "5th";
+    localStorage.setItem("globalActiveAttendanceDate", "5th");
   }
 }
 

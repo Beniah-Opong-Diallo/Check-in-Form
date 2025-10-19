@@ -822,7 +822,7 @@
     async function loadMemberData() {
       try {
         const { data, error } = await window.supabase
-          .from('September_2025')
+          .from('October_2025')
           .select('*')
           .order('Full Name');
 
@@ -1108,7 +1108,7 @@
           });
 
           return await window.supabase
-            .from('September_2025')
+            .from('October_2025')
             .update(updateData)
             .eq('id', memberId);
         });

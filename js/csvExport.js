@@ -10,7 +10,7 @@ async function downloadCSV() {
 
     // Fetch all data from Supabase
     const { data, error } = await supabase
-      .from("June_2025")
+      .from("October_2025")
       .select("*")
       .order("Full Name");
 

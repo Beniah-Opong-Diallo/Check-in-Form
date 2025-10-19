@@ -2075,7 +2075,7 @@
           // Get current table from monthly tabs manager
           const currentTable = window.monthlyTabsManager ?
             window.monthlyTabsManager.getCurrentTable() :
-            'June_2025';
+            'October_2025';
           
           // Save to database for global access across all devices
           const { data, error } = await window.supabase
@@ -2152,7 +2152,7 @@
 
         // Save to database for global access across all devices
         const { data, error } = await window.supabase
-          .from('August_2025')
+          .from('October_2025')
           .upsert({
             id: 'global_attendance_date',
             'Full Name': 'SYSTEM_SETTING_ACTIVE_ATTENDANCE_DATE',
@@ -2212,7 +2212,7 @@
         // Get current table from monthly tabs manager
         const currentTable = window.monthlyTabsManager ?
           window.monthlyTabsManager.getCurrentTable() :
-          'August_2025';
+          'October_2025';
         
         console.log('Loading global attendance date from database...');
         
@@ -2344,7 +2344,7 @@
         // Get current table from monthly tabs manager
         const currentTable = window.monthlyTabsManager ?
           window.monthlyTabsManager.getCurrentTable() :
-          'August_2025';
+          'October_2025';
         
         let query = window.supabase.from(currentTable).select('*').order('Full Name');
         if (category && category !== 'all') {
@@ -2724,7 +2724,7 @@
         // Delete all selected records in parallel
         const currentTable = window.monthlyTabsManager ?
           window.monthlyTabsManager.getCurrentTable() :
-          'August_2025';
+          'October_2025';
         const { error } = await window.supabase.from(currentTable).delete().in('id', ids);
         if (error) throw error;
 
@@ -3027,7 +3027,7 @@
         btn.style.opacity = '0.6';
         const currentTable = window.monthlyTabsManager ?
           window.monthlyTabsManager.getCurrentTable() :
-          'August_2025';
+          'October_2025';
         window.supabase
           .from(currentTable)
           .delete()
@@ -3092,7 +3092,7 @@
         // Prepare query
         const currentTable = window.monthlyTabsManager ?
           window.monthlyTabsManager.getCurrentTable() :
-          'August_2025';
+          'October_2025';
         let query = window.supabase.from(currentTable).select('*').order('Full Name');
 
         // Apply name filter if any
@@ -3201,7 +3201,7 @@
       try {
         const currentTable = window.monthlyTabsManager ?
           window.monthlyTabsManager.getCurrentTable() :
-          'August_2025';
+          'October_2025';
         const { data, error } = await window.supabase
           .from(currentTable)
           .select('*');
@@ -3289,7 +3289,7 @@
 
         const currentTable = window.monthlyTabsManager ?
           window.monthlyTabsManager.getCurrentTable() :
-          'August_2025';
+          'October_2025';
         const { error } = await window.supabase
           .from(currentTable)
           .update(updates)
@@ -3376,7 +3376,7 @@
         // Get all current data
         const currentTable = window.monthlyTabsManager ?
           window.monthlyTabsManager.getCurrentTable() :
-          'August_2025';
+          'October_2025';
         const { data: allRecords, error: fetchError } = await window.supabase
           .from(currentTable)
           .select('*');
@@ -3406,7 +3406,7 @@
             console.log(`Updating record ${record.id} with:`, updates);
             const currentTable = window.monthlyTabsManager ?
               window.monthlyTabsManager.getCurrentTable() :
-              'August_2025';
+              'October_2025';
             return window.supabase
               .from(currentTable)
               .update(updates)
@@ -3504,7 +3504,7 @@
           console.log(`Restoring record ${id} with data:`, updateData);
           const currentTable = window.monthlyTabsManager ?
             window.monthlyTabsManager.getCurrentTable() :
-            'August_2025';
+            'October_2025';
           return window.supabase
             .from(currentTable)
             .update(updateData)
@@ -3554,7 +3554,7 @@
       try {
         const currentTable = window.monthlyTabsManager ?
           window.monthlyTabsManager.getCurrentTable() :
-          'August_2025';
+          'October_2025';
 
         const updateData = {};
         updateData[columnName] = newValue || null; // Use null for empty values
@@ -3717,7 +3717,7 @@
         
         const currentTable = window.monthlyTabsManager ?
           window.monthlyTabsManager.getCurrentTable() :
-          'August_2025';
+          'October_2025';
         
         // Perform batch update
         const updateData = {};

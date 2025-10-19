@@ -5,9 +5,21 @@
 
 class MonthlyTabsManager {
   constructor() {
-    this.currentMonth = 'August_2025'; // Default month
+    this.currentMonth = 'October_2025'; // Default month
     this.availableTables = {}; // Will store only existing tables
     this.monthsConfig = {
+      'October_2025': {
+        name: 'October 2025',
+        table: 'October_2025',
+        attendanceDates: ['5th', '12th', '19th', '26th'],
+        attendanceColumns: ['Attendance 5th', 'Attendance 12th', 'Attendance 19th', 'Attendance 26th']
+      },
+      'September_2025': {
+        name: 'September 2025',
+        table: 'September_2025',
+        attendanceDates: ['7th', '14th', '21st', '28th'],
+        attendanceColumns: ['Attendance 7th', 'Attendance 14th', 'Attendance 21st', 'Attendance 28th']
+      },
       'August_2025': {
         name: 'August 2025',
         table: 'August_2025',
@@ -503,7 +515,7 @@ class MonthlyTabsManager {
    */
   getCurrentTable() {
     const config = this.availableTables[this.currentMonth] || this.monthsConfig[this.currentMonth];
-    return config?.table || 'August_2025';
+    return config?.table || 'October_2025';
   }
 
   /**

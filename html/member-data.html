@@ -656,27 +656,27 @@
 
         <!-- Date Selection -->
         <div class="date-selector">
-          <label class="control-label">September 2025 - Sunday Attendance Dates</label>
+          <label class="control-label">October 2025 - Sunday Attendance Dates</label>
           <div class="date-options" id="dateOptions">
             <label class="date-option">
-              <input type="checkbox" value="7th" data-column="Attendance 7th">
-              <span class="date-label">Sep 7th</span>
-              <span class="present-count" id="present-count-7th">0 present</span>
+              <input type="checkbox" value="5th" data-column="Attendance 5th">
+              <span class="date-label">Oct 5th</span>
+              <span class="present-count" id="present-count-5th">0 present</span>
             </label>
             <label class="date-option">
-              <input type="checkbox" value="14th" data-column="Attendance 14th">
-              <span class="date-label">Sep 14th</span>
-              <span class="present-count" id="present-count-14th">0 present</span>
+              <input type="checkbox" value="12th" data-column="Attendance 12th">
+              <span class="date-label">Oct 12th</span>
+              <span class="present-count" id="present-count-12th">0 present</span>
             </label>
             <label class="date-option">
-              <input type="checkbox" value="21st" data-column="Attendance 21st">
-              <span class="date-label">Sep 21st</span>
-              <span class="present-count" id="present-count-21st">0 present</span>
+              <input type="checkbox" value="19th" data-column="Attendance 19th">
+              <span class="date-label">Oct 19th</span>
+              <span class="present-count" id="present-count-19th">0 present</span>
             </label>
             <label class="date-option">
-              <input type="checkbox" value="28th" data-column="Attendance 28th">
-              <span class="date-label">Sep 28th</span>
-              <span class="present-count" id="present-count-28th">0 present</span>
+              <input type="checkbox" value="26th" data-column="Attendance 26th">
+              <span class="date-label">Oct 26th</span>
+              <span class="present-count" id="present-count-26th">0 present</span>
             </label>
           </div>
         </div>
@@ -890,8 +890,8 @@
 
     // Update present counts for each date
     function updatePresentCounts() {
-      const dates = ['7th', '14th', '21st', '28th'];
-      const columns = ['Attendance 7th', 'Attendance 14th', 'Attendance 21st', 'Attendance 28th'];
+      const dates = ['5th', '12th', '19th', '26th'];
+      const columns = ['Attendance 5th', 'Attendance 12th', 'Attendance 19th', 'Attendance 26th'];
       
       dates.forEach((date, index) => {
         const column = columns[index];
@@ -1149,7 +1149,7 @@
         return;
       }
 
-      const headers = ['Full Name', 'Gender', 'Phone Number', 'Age', 'Current Level', 'Attendance 7th', 'Attendance 14th', 'Attendance 21st', 'Attendance 28th'];
+      const headers = ['Full Name', 'Gender', 'Phone Number', 'Age', 'Current Level', 'Attendance 5th', 'Attendance 12th', 'Attendance 19th', 'Attendance 26th'];
       
       let csvContent = headers.join(',') + '\n';
       csvContent += filteredMembers.map(member => [
@@ -1158,10 +1158,10 @@
         member['Phone Number'] || '',
         member['Age'] || '',
         member['Current Level'] || '',
-        member['Attendance 7th'] || '',
-        member['Attendance 14th'] || '',
-        member['Attendance 21st'] || '',
-        member['Attendance 28th'] || ''
+        member['Attendance 5th'] || '',
+        member['Attendance 12th'] || '',
+        member['Attendance 19th'] || '',
+        member['Attendance 26th'] || ''
       ].map(cell => {
         const cellStr = cell.toString().replace(/"/g, '""');
         return cellStr.includes(',') ? `"${cellStr}"` : cellStr;

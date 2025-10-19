@@ -25,10 +25,10 @@ class AttendanceDateSelector {
     // Create modal HTML
     const modalHTML = `
             <div id="dateSelectModal" class="modal" style="display: none;">
-                <div class="modal-content rounded-tr-2xl rounded-br-2xl shadow-2xl p-8 max-w-md mx-auto relative border border-gray-700"
-                     style="background-color: #232532;">
-                    <h2 class="text-2xl font-bold mb-6 text-center text-white">Select Attendance Date</h2>
-                    <div class="form-actions absolute top-4 right-4">
+                <div class="modal-content rounded-tr-2xl rounded-br-2xl shadow-2xl p-4 max-w-md mx-auto relative border border-gray-700"
+                     style="background-color: #232532; max-height: 450px;">
+                    <h2 class="text-2xl font-bold mb-2 text-center text-white">Select Attendance Date</h2>
+                    <div class="form-actions absolute top-2 right-2">
                         <button type="button" id="closeDateModalBtn" title="Close"
                                 class="cancel-button p-2 rounded-full bg-gray-600 hover:bg-gray-700 transition text-white">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
@@ -37,8 +37,8 @@ class AttendanceDateSelector {
                             </svg>
                         </button>
                     </div>
-                    <div class="space-y-4 mt-8">
-                        <p class="text-white text-center mb-4">Select which date's attendance you want to mark:</p>
+                    <div class="space-y-2 mt-2">
+                        <p class="text-white text-center mb-2">Select which date's attendance you want to mark:</p>
                         <div class="date-options-grid">
                             ${this.dateOptions
                               .map(
@@ -60,7 +60,7 @@ class AttendanceDateSelector {
                               )
                               .join("")}
                         </div>
-                        <div class="current-selection mt-6 p-4 bg-gray-700 rounded-lg">
+                        <div class="current-selection mt-2 p-2 bg-gray-700 rounded-lg">
                             <p class="text-white text-center">
                                 <strong>Currently Selected:</strong> 
                                 <span id="currentDateDisplay">${
@@ -69,7 +69,7 @@ class AttendanceDateSelector {
                             </p>
                         </div>
                         <button id="applyDateSelection" 
-                                class="w-full py-3 bg-[#357d39] hover:bg-[#285c2c] text-white font-semibold rounded-lg transition mt-4">
+                                class="w-full py-2 bg-[#357d39] hover:bg-[#285c2c] text-white font-semibold rounded-lg transition mt-2">
                             Apply Selection
                         </button>
                     </div>
@@ -173,12 +173,15 @@ class AttendanceDateSelector {
       dateBtn.addEventListener("click", () => this.showModal());
     }
 
-    // Close modal button
-    document.addEventListener("click", (e) => {
-      if (e.target.id === "closeDateModalBtn") {
+    // Close modal button - using direct event listener instead of delegation
+    const closeBtn = document.getElementById("closeDateModalBtn");
+    if (closeBtn) {
+      closeBtn.addEventListener("click", () => {
         this.hideModal();
-      }
-    });
+        // Force hide the modal with inline style
+        document.getElementById("dateSelectModal").style.display = "none";
+      });
+    }
 
     // Date option selection
     document.addEventListener("click", (e) => {

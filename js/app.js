@@ -196,8 +196,51 @@ elements.addRectButton.addEventListener("click", () =>
 );
 elements.cancelButton.addEventListener("click", handleCloseClick);
 document.addEventListener("DOMContentLoaded", () => {
+  // Add direct event listener for the date modal close button
+  const closeDateModalBtn = document.getElementById("closeDateModalBtn");
+  if (closeDateModalBtn) {
+    closeDateModalBtn.addEventListener("click", () => {
+      const dateSelectModal = document.getElementById("dateSelectModal");
+      if (dateSelectModal) {
+        dateSelectModal.style.display = "none";
+      }
+    });
+  }
+  
   if (elements.infoForm) {
     elements.infoForm.addEventListener("submit", handleSubmit);
+  }
+  
+  // Add event listener for the new Create Month button
+  const createMonthBtn = document.getElementById("createMonthBtn");
+  if (createMonthBtn) {
+    createMonthBtn.addEventListener("click", () => {
+      document.getElementById("monthlyExportModal").style.display = "flex";
+    });
+  }
+  
+  // Add event listener for the close button in monthly export modal
+  const closeMonthlyModalBtn = document.getElementById("closeMonthlyModalBtn");
+  if (closeMonthlyModalBtn) {
+    closeMonthlyModalBtn.addEventListener("click", () => {
+      document.getElementById("monthlyExportModal").style.display = "none";
+    });
+  }
+  
+  // Override the dateSelectorBtn to only show date selection
+  const dateSelectorBtn = document.getElementById("dateSelectorBtn");
+  if (dateSelectorBtn) {
+    // Remove any existing event listeners by cloning and replacing the element
+    const newDateSelectorBtn = dateSelectorBtn.cloneNode(true);
+    dateSelectorBtn.parentNode.replaceChild(newDateSelectorBtn, dateSelectorBtn);
+    
+    // Add the correct event listener for date selection only
+    newDateSelectorBtn.addEventListener("click", () => {
+      const dateSelectModal = document.getElementById("dateSelectModal");
+      if (dateSelectModal) {
+        dateSelectModal.style.display = "flex";
+      }
+    });
   }
 });
 elements.modal.addEventListener("click", (e) => {
@@ -774,22 +817,10 @@ async function handleSubmit(e) {
         : null,
     };
 
-    // Remove null values
-    Object.keys(formData).forEach((key) => {
-      if (
-        formData[key] === null &&
-        !["Full Name", "Gender", "Current Level"].includes(key)
-      ) {
-        delete formData[key];
-      }
-    });
+    // Keep all fields, even if null
+    // All fields are now optional
 
-    if (!formData["Full Name"]) {
-      showToast("error", "Full name is required.");
-      elements.nameInput.focus();
-      submitButton.disabled = false;
-      return;
-    }
+    // All fields are now optional
 
     elements.infoForm.reset();
 

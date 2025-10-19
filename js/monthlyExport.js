@@ -77,7 +77,7 @@ async function createMonthlyTable(month, year) {
 // Event listener for the Create Table button
 document.getElementById("createMonthlyTableBtn").onclick = async function () {
   const month = document.getElementById("monthSelect").value;
-  const year = document.getElementById("yearSelect").value;
+  const year = document.getElementById("yearInput").value;
 
   if (!month || !year) {
     document.getElementById("monthlyExportError").textContent =
@@ -86,4 +86,24 @@ document.getElementById("createMonthlyTableBtn").onclick = async function () {
   }
 
   await createMonthlyTable(month, year);
+};
+
+// Event listener for the Select Date button
+document.getElementById("selectDateBtn").onclick = function() {
+  const month = document.getElementById("monthSelect").value;
+  const year = document.getElementById("yearInput").value;
+
+  if (!month || !year) {
+    document.getElementById("monthlyExportError").textContent =
+      "Please select both month and year.";
+    return;
+  }
+  
+  // Close the monthly export modal
+  document.getElementById("monthlyExportModal").style.display = "none";
+  
+  // Open the date selector modal
+  if (window.attendanceDateSelector) {
+    window.attendanceDateSelector.openModal();
+  }
 };

@@ -1189,9 +1189,18 @@ async function loadInitialData() {
     // Set the select element to match the URL parameter
     elements.categoryFilter.value = category;
 
-    // Filter by the category from URL
-    await filterByCategory(category);
-    await fetchAndDisplayStats();
+    // Show loading indicator immediately
+    elements.cardsContainer.innerHTML = '<div class="loading-indicator">Loading data...</div>';
+    
+    // Start both operations in parallel
+    const categoryPromise = filterByCategory(category);
+    const statsPromise = fetchAndDisplayStats();
+    
+    // Wait for the category data to load first (most important)
+    await categoryPromise;
+    
+    // Let stats load in background
+    statsPromise.catch(err => console.error("Stats loading error:", err));
   } catch (error) {
     console.error("Error loading data:", error);
     elements.cardsContainer.innerHTML =
@@ -1199,80 +1208,117 @@ async function loadInitialData() {
   }
 }
 
+// Cache for statistics to avoid repeated calculations
+const statsCache = {
+  data: null,
+  timestamp: 0,
+  CACHE_DURATION: 60000 // 1 minute cache
+};
+
 // Function to fetch and display statistics
 async function fetchAndDisplayStats() {
   try {
+    // Check if we have cached stats that are still valid
+    const now = Date.now();
+    if (statsCache.data && (now - statsCache.timestamp < statsCache.CACHE_DURATION)) {
+      // Use cached data
+      updateStatsDisplay(statsCache.data);
+      return;
+    }
+    
+    // Set placeholder values immediately
+    document.getElementById("totalPeople").textContent = "...";
+    document.getElementById("totalBoys").textContent = "...";
+    document.getElementById("totalGirls").textContent = "...";
+    
+    // Fetch new data
     const { data, error } = await supabase.from(CURRENT_TABLE).select("*");
 
     if (error) throw error;
-
-    // Update total count
-    document.getElementById("totalPeople").textContent = data.length;
-
-    // Update gender counts - use correct column names
-    const genderCounts = data.reduce(
-      (acc, item) => {
-        const gender = item["Gender"]?.toLowerCase() || "";
-        if (gender === "male") acc.boys++;
-        if (gender === "female") acc.girls++;
-        return acc;
-      },
-      { boys: 0, girls: 0 }
-    );
-
-    document.getElementById("totalBoys").textContent = genderCounts.boys;
-    document.getElementById("totalGirls").textContent = genderCounts.girls;
-
-    // Define the order of levels with shortened names
-    const levelOrder = [
-      "SHS1",
-      "SHS2",
-      "SHS3",
-      "JHS1",
-      "JHS2",
-      "JHS3",
-      "COMPLETED",
-      "UNIVERSITY",
-    ];
-
-    // Initialize counts for all levels
-    const levelCounts = levelOrder.reduce((acc, level) => {
-      acc[level] = 0;
-      return acc;
-    }, {});
-
-    // Count students in each level - use correct column name
-    data.forEach((item) => {
-      let level = item["Current Level"]?.toUpperCase() || "UNKNOWN";
-      if (level === "COMPLETED") level = "COMPLETED";
-      if (level === "UNIVERSITY") level = "UNIVERSITY";
-      if (levelCounts.hasOwnProperty(level)) {
-        levelCounts[level]++;
-      }
-    });
-
-    // Generate HTML for level stats in the specified order
-    const levelStatsHtml = levelOrder
-      .map((level) => {
-        const count = levelCounts[level];
-        return `
-                    <div class="level-stat">
-                        <span class="level-name">${level}</span>
-                        <span class="level-count">${count}</span>
-                    </div>`;
-      })
-      .join("");
-
-    document.getElementById("levelStats").innerHTML = levelStatsHtml;
+    
+    // Cache the data
+    statsCache.data = data;
+    statsCache.timestamp = now;
+    
+    // Update the display
+    updateStatsDisplay(data);
   } catch (error) {
     console.error("Error fetching stats:", error);
   }
 }
 
+// Separate function to update stats display
+function updateStatsDisplay(data) {
+  // Update total count
+  document.getElementById("totalPeople").textContent = data.length;
+
+  // Update gender counts - use correct column names
+  const genderCounts = data.reduce(
+    (acc, item) => {
+      const gender = item["Gender"]?.toLowerCase() || "";
+      if (gender === "male") acc.boys++;
+      if (gender === "female") acc.girls++;
+      return acc;
+    },
+    { boys: 0, girls: 0 }
+  );
+
+  document.getElementById("totalBoys").textContent = genderCounts.boys;
+  document.getElementById("totalGirls").textContent = genderCounts.girls;
+
+  // Define the order of levels with shortened names
+  const levelOrder = [
+    "SHS1",
+    "SHS2",
+    "SHS3",
+    "JHS1",
+    "JHS2",
+    "JHS3",
+    "COMPLETED",
+    "UNIVERSITY",
+  ];
+
+  // Initialize counts for all levels
+  const levelCounts = levelOrder.reduce((acc, level) => {
+    acc[level] = 0;
+    return acc;
+  }, {});
+
+  // Count students in each level - use correct column name
+  data.forEach((item) => {
+    let level = item["Current Level"]?.toUpperCase() || "UNKNOWN";
+    if (level === "COMPLETED") level = "COMPLETED";
+    if (level === "UNIVERSITY") level = "UNIVERSITY";
+    if (levelCounts.hasOwnProperty(level)) {
+      levelCounts[level]++;
+    }
+  });
+
+  // Generate HTML for level stats in the specified order
+  const levelStatsHtml = levelOrder
+    .map((level) => {
+      const count = levelCounts[level];
+      return `
+                  <div class="level-stat">
+                      <span class="level-name">${level}</span>
+                      <span class="level-count">${count}</span>
+                  </div>`;
+    })
+    .join("");
+
+  document.getElementById("levelStats").innerHTML = levelStatsHtml;
+}
+
 // Load initial data when page loads
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", () => {
+  // Initialize UI immediately
   initializeThemeSwitcher();
-  await loadGlobalAttendanceDate();
+  
+  // Show loading indicator right away
+  elements.cardsContainer.innerHTML = '<div class="loading-indicator">Loading data...</div>';
+  
+  // Start data loading processes in parallel without awaiting
+  loadGlobalAttendanceDate().catch(err => console.error("Error loading attendance date:", err));
   loadInitialData();
 });
 
@@ -1339,6 +1385,17 @@ function toggleStatContent(header) {
 // Add this function to handle category filtering
 async function filterByCategory(category) {
   try {
+    // Check cache first
+    const cacheKey = `category_${category}`;
+    const cachedData = searchCache.get(cacheKey);
+    
+    if (cachedData) {
+      // Use cached data immediately
+      displayItems(cachedData);
+      return;
+    }
+    
+    // No cache hit, query database
     let query = supabase.from(CURRENT_TABLE).select("*").order("Full Name");
 
     if (category !== "all") {
@@ -1359,19 +1416,11 @@ async function filterByCategory(category) {
 
     if (error) throw error;
 
-    // Animate out old items
-    const oldItems = elements.cardsContainer.children;
-    Array.from(oldItems).forEach((item, index) => {
-      item.style.transition = "all 0.2s ease";
-      item.style.opacity = "0";
-      item.style.transform = "scale(0.95)";
-    });
-
-    // Wait for animation
-    await new Promise((resolve) => setTimeout(resolve, 200));
-
-    // Display new items with animation
+    // Skip animation for faster display
     displayItems(data || []);
+    
+    // Cache the results
+    searchCache.set(cacheKey, data || []);
 
     // Update the URL to reflect the current filter
     const urlParams = new URLSearchParams(window.location.search);

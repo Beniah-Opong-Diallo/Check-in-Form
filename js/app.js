@@ -586,12 +586,12 @@ function getItemHTML(item) {
     itemData = "";
   }
   return `
-    <div class="name-row" style="display: flex; align-items: center; gap: 0.5rem;">
-      <h3 class="name-text editable-field" style="flex:1; margin:0; cursor:pointer;">
+    <div class="name-row" style="display: flex; align-items: center; gap: 0.3rem;">
+      <h3 class="name-text editable-field" style="flex:1; margin:0; cursor:pointer; font-size: 0.9rem;">
         ${escapeHtml(correctedItem["Full Name"] || "")}
       </h3>
-      <button class="edit-pen-btn" title="Show Details" onclick="window.toggleDetailedInfo(this)" data-item="${itemData}" style="background: none; border: none; cursor: pointer; padding: 0.3rem; display: flex; align-items: center;">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#357d39" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <button class="edit-pen-btn" title="Show Details" onclick="window.toggleDetailedInfo(this)" data-item="${itemData}" style="background: none; border: none; cursor: pointer; padding: 0.2rem; display: flex; align-items: center;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#357d39" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M12 20h9"/>
           <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19.5 3 21l1.5-4L16.5 3.5z"/>
         </svg>
@@ -599,17 +599,17 @@ function getItemHTML(item) {
     </div>
     <div class="quick-attendance-buttons" data-id="${
       item.id
-    }" style="display: flex; gap: 0.5rem; margin: 0.5rem 0; flex-wrap: wrap;">
+    }" style="display: flex; gap: 0.3rem; margin: 0.3rem 0; flex-wrap: wrap;">
       <button class="quick-present-btn" onclick="quickMarkAttendance('${
         item.id
       }', 'Present')" style="
         background: #22c55e;
         color: white;
         border: none;
-        padding: 0.4rem 0.8rem;
-        border-radius: 4px;
+        padding: 0.25rem 0.5rem;
+        border-radius: 3px;
         cursor: pointer;
-        font-size: 0.875rem;
+        font-size: 0.75rem;
         font-weight: 500;
         transition: all 0.2s;
       ">Present</button>
@@ -619,10 +619,10 @@ function getItemHTML(item) {
         background: #ef4444;
         color: white;
         border: none;
-        padding: 0.4rem 0.8rem;
-        border-radius: 4px;
+        padding: 0.25rem 0.5rem;
+        border-radius: 3px;
         cursor: pointer;
-        font-size: 0.875rem;
+        font-size: 0.75rem;
         font-weight: 500;
         transition: all 0.2s;
       ">Absent</button>

@@ -170,8 +170,12 @@ body {
   padding: 10px;
   min-height: 100vh;
   overflow-y: auto;
+  overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   transition: background-color 0.5s ease, color 0.5s ease, background 0.5s ease;
+  /* Fix for mobile browsers */
+  width: 100%;
+  max-width: 100%;
 }
 
 @media (min-width: 640px) {
@@ -1107,10 +1111,13 @@ select {
 /* Base responsive container */
 .container {
   width: 100%;
+  max-width: 100%;
   padding-right: var(--spacing-sm);
   padding-left: var(--spacing-sm);
   margin-right: auto;
   margin-left: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 /* Enhanced Mobile Responsiveness */
@@ -2114,6 +2121,85 @@ html, body {
 
 .animated-search:focus::placeholder {
   opacity: 0.5;
+}
+
+/* Mobile Browser Compatibility Fixes */
+/* Fix for viewport units on mobile browsers */
+@supports (-webkit-touch-callout: none) {
+  /* iOS Safari specific fixes */
+  body {
+    background-attachment: scroll; /* Fixed backgrounds can cause issues on iOS */
+  }
+}
+
+/* Fix for Android browsers */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  body {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+  }
+}
+
+/* Prevent horizontal scrolling on all mobile devices */
+html, body {
+  overflow-x: hidden !important;
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+/* Fix for elements using 100vw */
+.full-width-container {
+  width: 100% !important;
+  max-width: 100% !important;
+  left: 0 !important;
+  transform: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* Mobile touch improvements */
+@media (max-width: 768px) {
+  /* Improve touch targets */
+  button, .button, input[type="button"], input[type="submit"] {
+    min-height: 44px;
+    min-width: 44px;
+    touch-action: manipulation;
+  }
+  
+  /* Fix for fixed positioning on mobile */
+  .fixed-element {
+    position: -webkit-sticky;
+    position: sticky;
+  }
+  
+  /* Improve scrolling performance */
+  .scrollable {
+    -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch;
+  }
+}
+
+/* Cross-browser compatibility */
+/* Webkit browsers (Chrome, Safari, Edge) */
+@supports (-webkit-appearance: none) {
+  input, textarea, select {
+    -webkit-appearance: none;
+    -webkit-border-radius: 0;
+  }
+}
+
+/* Firefox specific fixes */
+@-moz-document url-prefix() {
+  body {
+    scrollbar-width: thin;
+  }
+}
+
+/* Edge/IE specific fixes */
+@supports (-ms-ime-align: auto) {
+  body {
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+  }
 }
 
 /* Ensure search bar container can accommodate expansion */

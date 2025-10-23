@@ -3,7 +3,11 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="format-detection" content="telephone=no">
     <title>Data Search</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="css/style.css">
@@ -18,8 +22,8 @@
 </head>
 
 <body>
-    <div class="container"
-        style="width:100vw;max-width:100vw;margin:0;padding:0;position:relative;left:50%;transform:translateX(-50%);">
+    <div class="container full-width-container"
+        style="width:100%;max-width:100%;margin:0;padding:0;position:relative;">
         <!-- Theme Switcher -->
         <div class="theme-switcher-container">
             <div class="theme-preview-box">
@@ -31,8 +35,8 @@
         </div>
 
         <!-- Cards Container -->
-        <div class="relative bg-white/10 mb-4"
-            style="width:100vw;max-width:100vw;margin:0;border-radius:0;position:relative;left:50%;transform:translateX(-50%);">
+        <div class="relative bg-white/10 mb-4 full-width-container"
+            style="width:100%;max-width:100%;margin:0;border-radius:0;position:relative;">
             <div id="cardsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 
                 overflow-y-auto overscroll-contain 
                 max-h-[300px] sm:max-h-[400px] md:max-h-[500px] 
@@ -332,12 +336,12 @@
     </div>
 
     <!-- Search Bar at Bottom (fixed) -->
-    <div class="search-bar-container" id="searchBarContainer"
-        style="width:100vw;max-width:100vw;position:fixed;left:0;right:0;bottom:0;margin:0;padding:0 2vw 1.1rem 2vw;z-index:1001;">
+    <div class="search-bar-container full-width-container" id="searchBarContainer"
+        style="width:100%;max-width:100%;position:fixed;left:0;right:0;bottom:0;margin:0;padding:0 2vw 1.1rem 2vw;z-index:1001;">
         <div class="search-section fixed-search-bar"
-            style="width:100%;max-width:100vw;margin:0;padding:0;border-radius:0;box-shadow:none;">
+            style="width:100%;max-width:100%;margin:0;padding:0;border-radius:0;box-shadow:none;">
             <div class="search-bar-flex"
-                style="display:flex;align-items:center;justify-content:center;width:100%;max-width:100vw;padding:0.5rem 0;gap:0;">
+                style="display:flex;align-items:center;justify-content:center;width:100%;max-width:100%;padding:0.5rem 0;gap:0;">
                 <button type="button" class="add-person-btn" id="addPersonBtn" title="Add New Person">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus">
                         <line x1="12" y1="5" x2="12" y2="19"></line>

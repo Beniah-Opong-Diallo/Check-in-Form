@@ -24,13 +24,15 @@ const COLUMN_MAPPINGS = {
 const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes cache
 const DEBOUNCE_DELAY = 50; // Reduced debounce delay for faster search
 const BATCH_SIZE = 20; // Reduced batch size for smoother rendering
-const VIRTUAL_SCROLL_BUFFER = 10; // Number of items to render above/below viewport
 const SCROLL_THROTTLE = 16; // ~60fps
 
 // Cache DOM elements
 const elements = {
   searchInput: document.getElementById("searchInput"),
-  addRectButton: document.getElementById("addRectButton"),
+  fabButton: document.getElementById("fabMainButton"),
+  fabMenu: document.getElementById("fabMenu"),
+  searchBarContainer: document.getElementById("searchBarContainer"),
+  addPersonBtn: document.getElementById("addPersonBtn"),
   cardsContainer: document.getElementById("cardsContainer"),
   modal: document.getElementById("modal"),
   modalTitle: document.getElementById("modalTitle"),
@@ -206,10 +208,180 @@ if (elements.searchInput) {
   });
 }
 
-// Optimized event listeners with delegation
-elements.addRectButton.addEventListener("click", () =>
-  showModal(null, { addMode: true })
-);
+if (elements.addPersonBtn) {
+  elements.addPersonBtn.addEventListener("click", () => {
+    showModal(null, { addMode: true });
+  });
+}
+
+// Enhanced search bar animation functionality
+function initializeAnimatedSearchBar() {
+  const searchInput = elements.searchInput;
+  if (!searchInput) return;
+
+  let isExpanded = false;
+  let expandTimeout;
+  let collapseTimeout;
+
+  // Add click event for tap-to-expand functionality
+  searchInput.addEventListener('click', function(e) {
+    if (!isExpanded) {
+      expandSearchBar();
+    }
+  });
+
+  // Handle focus events
+  searchInput.addEventListener('focus', function(e) {
+    expandSearchBar();
+  });
+
+  // Handle blur events with delay to allow for re-focusing
+  searchInput.addEventListener('blur', function(e) {
+    // Clear any existing collapse timeout
+    clearTimeout(collapseTimeout);
+    
+    // Delay collapse to allow for re-focusing or interaction
+    collapseTimeout = setTimeout(() => {
+      if (document.activeElement !== searchInput && searchInput.value.trim() === '') {
+        collapseSearchBar();
+      }
+    }, 150);
+  });
+
+  // Handle keyboard navigation
+  searchInput.addEventListener('keydown', function(e) {
+    // Expand on any key press if not already expanded
+    if (!isExpanded) {
+      expandSearchBar();
+    }
+    
+    // Collapse on Escape key
+    if (e.key === 'Escape') {
+      searchInput.blur();
+      collapseSearchBar();
+    }
+  });
+
+  // Prevent collapse when clicking inside the search input
+  searchInput.addEventListener('mousedown', function(e) {
+    clearTimeout(collapseTimeout);
+  });
+
+  // Handle outside clicks to collapse
+  document.addEventListener('click', function(e) {
+    if (!searchInput.contains(e.target) && isExpanded && searchInput.value.trim() === '') {
+      collapseSearchBar();
+    }
+  });
+
+  function expandSearchBar() {
+    if (isExpanded) return;
+    
+    clearTimeout(collapseTimeout);
+    clearTimeout(expandTimeout);
+    
+    isExpanded = true;
+    searchInput.classList.add('expanded');
+    
+    // Add ARIA attributes for accessibility
+    searchInput.setAttribute('aria-expanded', 'true');
+    
+    // Focus the input if not already focused
+    if (document.activeElement !== searchInput) {
+      expandTimeout = setTimeout(() => {
+        searchInput.focus();
+      }, 100);
+    }
+  }
+
+  function collapseSearchBar() {
+    if (!isExpanded) return;
+    
+    clearTimeout(expandTimeout);
+    clearTimeout(collapseTimeout);
+    
+    isExpanded = false;
+    searchInput.classList.remove('expanded');
+    
+    // Update ARIA attributes
+    searchInput.setAttribute('aria-expanded', 'false');
+    
+    // Clear the input if it's empty (optional)
+    if (searchInput.value.trim() === '') {
+      searchInput.value = '';
+    }
+  }
+
+  // Initialize ARIA attributes
+  searchInput.setAttribute('aria-expanded', 'false');
+  searchInput.setAttribute('role', 'searchbox');
+  searchInput.setAttribute('aria-label', 'Search for people');
+}
+
+// FAB Menu functionality
+let fabMenuOpen = false;
+
+// Toggle FAB menu
+if (elements.fabButton) {
+  elements.fabButton.addEventListener("click", (e) => {
+    e.stopPropagation();
+    toggleFabMenu();
+  });
+}
+
+// Close FAB menu when clicking outside
+document.addEventListener("click", (e) => {
+  if (fabMenuOpen && elements.fabButton && elements.fabMenu && 
+      !elements.fabButton.contains(e.target) && !elements.fabMenu.contains(e.target)) {
+    closeFabMenu();
+  }
+});
+
+function toggleFabMenu() {
+  if (!elements.fabButton || !elements.fabMenu) return;
+  fabMenuOpen = !fabMenuOpen;
+  elements.fabButton.classList.toggle("active", fabMenuOpen);
+  elements.fabMenu.classList.toggle("active", fabMenuOpen);
+}
+
+function closeFabMenu() {
+  fabMenuOpen = false;
+  if (elements.fabButton) elements.fabButton.classList.remove("active");
+  if (elements.fabMenu) elements.fabMenu.classList.remove("active");
+}
+
+// FAB menu item actions
+if (elements.fabMenu) {
+  elements.fabMenu.addEventListener("click", (e) => {
+    const target = e.target.closest(".fab-menu-item");
+    if (!target) return;
+
+    const action = target.dataset.action;
+    closeFabMenu();
+
+    switch (action) {
+      case "add-person":
+        showModal(null, { addMode: true });
+        break;
+      case "sensitive-info":
+        window.location.href = "html/sensitive-info.html";
+        break;
+      case "create-month":
+        if (typeof showMonthlyExportModal === "function") {
+          showMonthlyExportModal();
+        }
+        break;
+      case "date-selector":
+        if (window.attendanceDateSelector) {
+          window.attendanceDateSelector.openModal();
+        }
+        break;
+      case "theme-toggle":
+        toggleTheme();
+        break;
+    }
+  });
+}
 elements.cancelButton.addEventListener("click", handleCloseClick);
 document.addEventListener("DOMContentLoaded", () => {
   // Add direct event listener for the date modal close button
@@ -226,6 +398,9 @@ document.addEventListener("DOMContentLoaded", () => {
   if (elements.infoForm) {
     elements.infoForm.addEventListener("submit", handleSubmit);
   }
+  
+  // Initialize animated search bar
+  initializeAnimatedSearchBar();
   
   // Add event listener for the new Create Month button
   const createMonthBtn = document.getElementById("createMonthBtn");
@@ -284,21 +459,12 @@ function handleCloseClick(e) {
 }
 
 // Optimized modal hide
-function hideModal(buttonToEnable) {
-  // Hide modal instantly and reset state
+function hideModal() {
   elements.modal.style.display = "none";
-  elements.modal.classList.remove("closing");
-  elements.infoForm.reset();
-  editingId = null;
-  // Restore all UI elements
-  elements.cancelButton.style.display = "";
-  elements.searchInput.style.display = "";
-  elements.addRectButton.style.display = "";
-  if (elements.searchBarContainer)
+  // Restore search bar container visibility when modal is closed
+  if (elements.searchBarContainer) {
     elements.searchBarContainer.style.display = "";
-  elements._addModeActive = false;
-  // Re-enable the button after modal is hidden
-  if (buttonToEnable) buttonToEnable.disabled = false;
+  }
 }
 
 // Remove button press animation (no requestAnimationFrame)
@@ -586,133 +752,117 @@ function getItemHTML(item) {
     itemData = "";
   }
   return `
-    <div class="name-row" style="display: flex; align-items: center; gap: 0.3rem;">
-      <h3 class="name-text editable-field" style="flex:1; margin:0; cursor:pointer; font-size: 0.9rem;">
+    <div class="name-pill" style="display:flex; align-items:center; justify-content:space-between; gap:0.4rem; background: var(--card-bg); border: 2px solid var(--card-border); border-radius: 9999px; padding: 0.35rem 0.5rem;">
+      <h3 class="name-text editable-field" style="flex:1; margin:0; cursor:pointer; font-size: 0.9rem; background: transparent; padding: 0; text-align: left;">
         ${escapeHtml(correctedItem["Full Name"] || "")}
       </h3>
-      <button class="edit-pen-btn" title="Show Details" onclick="window.toggleDetailedInfo(this)" data-item="${itemData}" style="background: none; border: none; cursor: pointer; padding: 0.2rem; display: flex; align-items: center;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#357d39" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 20h9"/>
-          <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19.5 3 21l1.5-4L16.5 3.5z"/>
-        </svg>
-      </button>
-    </div>
-    <div class="quick-attendance-buttons" data-id="${
-      item.id
-    }" style="display: flex; gap: 0.3rem; margin: 0.3rem 0; flex-wrap: wrap;">
-      <button class="quick-present-btn" onclick="quickMarkAttendance('${
-        item.id
-      }', 'Present')" style="
-        background: #22c55e;
-        color: white;
-        border: none;
-        padding: 0.25rem 0.5rem;
-        border-radius: 3px;
-        cursor: pointer;
-        font-size: 0.75rem;
-        font-weight: 500;
-        transition: all 0.2s;
-      ">Present</button>
-      <button class="quick-absent-btn" onclick="quickMarkAttendance('${
-        item.id
-      }', 'Absent')" style="
-        background: #ef4444;
-        color: white;
-        border: none;
-        padding: 0.25rem 0.5rem;
-        border-radius: 3px;
-        cursor: pointer;
-        font-size: 0.75rem;
-        font-weight: 500;
-        transition: all 0.2s;
-      ">Absent</button>
+      <div class="pill-actions" style="display:flex; align-items:center; gap:0.25rem;">
+        <button class="pill-btn present" title="Mark Present" onclick="quickMarkAttendance('${item.id}', 'Present')" style="display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:9999px; border:none; background:#22c55e; color:white; cursor:pointer;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+            <path d="M5 13l4 4L19 7"></path>
+          </svg>
+        </button>
+        <button class="pill-btn absent" title="Mark Absent" onclick="quickMarkAttendance('${item.id}', 'Absent')" style="display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:9999px; border:none; background:#ef4444; color:white; cursor:pointer;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+            <path d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+        <button class="pill-btn toggle" title="More Details" onclick="window.toggleDetailedInfo(this)" data-item="${itemData}" style="display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:9999px; border:none; background: var(--bg-secondary); color: var(--text-secondary); cursor:pointer;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+            <path d="M6 9l6 6 6-6" />
+          </svg>
+        </button>
+      </div>
     </div>
     <div class="detailed-info" style="display: none;">
-        <div class="info-item">
-            <span>Gender:</span>
-            <select class="info-select ${
-              correctedItem["Gender"]?.toLowerCase() === "male"
-                ? "male"
-                : correctedItem["Gender"]?.toLowerCase() === "female"
-                ? "female"
-                : ""
-            }"
-                    onchange="updateField(this, 'Gender', this.value, '${
-                      item.id
-                    }')">
-                <option value="" disabled ${
-                  !correctedItem["Gender"] ? "selected" : ""
-                }>Select Gender</option>
-                <option value="Male" ${
-                  correctedItem["Gender"] === "Male" ? "selected" : ""
-                }>Male</option>
-                <option value="Female" ${
-                  correctedItem["Gender"] === "Female" ? "selected" : ""
-                }>Female</option>
-            </select>
-        </div>
-        <div class="info-item">
-            <span>Current Level:</span>
-            <select class="info-select ${
-              correctedItem["Current Level"] ? "has-value" : ""
-            }"
-                    onchange="updateField(this, 'Current Level', this.value, '${
-                      item.id
-                    }')">
-                <option value="" disabled ${
-                  !correctedItem["Current Level"] ? "selected" : ""
-                }>Select Current Level</option>
-                <option value="SHS1" ${
-                  correctedItem["Current Level"] === "SHS1" ? "selected" : ""
-                }>SHS1</option>
-                <option value="SHS2" ${
-                  correctedItem["Current Level"] === "SHS2" ? "selected" : ""
-                }>SHS2</option>
-                <option value="SHS3" ${
-                  correctedItem["Current Level"] === "SHS3" ? "selected" : ""
-                }>SHS3</option>
-                <option value="JHS1" ${
-                  correctedItem["Current Level"] === "JHS1" ? "selected" : ""
-                }>JHS1</option>
-                <option value="JHS2" ${
-                  correctedItem["Current Level"] === "JHS2" ? "selected" : ""
-                }>JHS2</option>
-                <option value="JHS3" ${
-                  correctedItem["Current Level"] === "JHS3" ? "selected" : ""
-                }>JHS3</option>
-                <option value="COMPLETED" ${
-                  correctedItem["Current Level"] === "COMPLETED"
-                    ? "selected"
+        <div class="personal-info-section">
+            <h4 class="personal-info-heading">Personal Information</h4>
+            <div class="info-item">
+                <span>Gender:</span>
+                <select class="info-select ${
+                  correctedItem["Gender"]?.toLowerCase() === "male"
+                    ? "male"
+                    : correctedItem["Gender"]?.toLowerCase() === "female"
+                    ? "female"
                     : ""
-                }>COMPLETED</option>
-                <option value="UNIVERSITY" ${
-                  correctedItem["Current Level"] === "UNIVERSITY"
-                    ? "selected"
-                    : ""
-                }>UNIVERSITY</option>
-            </select>
-        </div>
-        <div class="info-item">
-            <span>Phone Number:</span>
-            <input type="tel" class="editable-field" value="${escapeHtml(
-              correctedItem["Phone Number"] || ""
-            )}"
-                   style="width: 150px; background-color: transparent; color: white; border: 1px solid rgba(255, 255, 255, 0.3); padding: 2px 4px; border-radius: 4px;"
-                   placeholder="Enter phone number"
-                   onchange="updateField(this, 'Phone Number', this.value, '${
-                     item.id
-                   }')" />
-        </div>
-        <div class="info-item">
-            <span>Age:</span>
-            <input type="number" class="editable-field" value="${
-              correctedItem["Age"] || ""
-            }"
-                   min="0" max="100" style="width: 60px;"
-                   placeholder="Age"
-                   onchange="updateField(this, 'Age', this.value, '${
-                     item.id
-                   }')" />
+                }"
+                        onchange="updateField(this, 'Gender', this.value, '${
+                          item.id
+                        }')">
+                    <option value="" disabled ${
+                      !correctedItem["Gender"] ? "selected" : ""
+                    }>Select Gender</option>
+                    <option value="Male" ${
+                      correctedItem["Gender"] === "Male" ? "selected" : ""
+                    }>Male</option>
+                    <option value="Female" ${
+                      correctedItem["Gender"] === "Female" ? "selected" : ""
+                    }>Female</option>
+                </select>
+            </div>
+            <div class="info-item">
+                <span>Current Level:</span>
+                <select class="info-select ${
+                  correctedItem["Current Level"] ? "has-value" : ""
+                }"
+                        onchange="updateField(this, 'Current Level', this.value, '${
+                          item.id
+                        }')">
+                    <option value="" disabled ${
+                      !correctedItem["Current Level"] ? "selected" : ""
+                    }>Select Current Level</option>
+                    <option value="SHS1" ${
+                      correctedItem["Current Level"] === "SHS1" ? "selected" : ""
+                    }>SHS1</option>
+                    <option value="SHS2" ${
+                      correctedItem["Current Level"] === "SHS2" ? "selected" : ""
+                    }>SHS2</option>
+                    <option value="SHS3" ${
+                      correctedItem["Current Level"] === "SHS3" ? "selected" : ""
+                    }>SHS3</option>
+                    <option value="JHS1" ${
+                      correctedItem["Current Level"] === "JHS1" ? "selected" : ""
+                    }>JHS1</option>
+                    <option value="JHS2" ${
+                      correctedItem["Current Level"] === "JHS2" ? "selected" : ""
+                    }>JHS2</option>
+                    <option value="JHS3" ${
+                      correctedItem["Current Level"] === "JHS3" ? "selected" : ""
+                    }>JHS3</option>
+                    <option value="COMPLETED" ${
+                      correctedItem["Current Level"] === "COMPLETED"
+                        ? "selected"
+                        : ""
+                    }>COMPLETED</option>
+                    <option value="UNIVERSITY" ${
+                      correctedItem["Current Level"] === "UNIVERSITY"
+                        ? "selected"
+                        : ""
+                    }>UNIVERSITY</option>
+                </select>
+            </div>
+            <div class="info-item">
+                <span>Phone Number:</span>
+                <input type="tel" class="editable-field" value="${escapeHtml(
+                  correctedItem["Phone Number"] || ""
+                )}"
+                       style="width: 150px; background-color: transparent; color: white; border: 1px solid rgba(255, 255, 255, 0.3); padding: 2px 4px; border-radius: 4px;"
+                       placeholder="Enter phone number"
+                       onchange="updateField(this, 'Phone Number', this.value, '${
+                         item.id
+                       }')" />
+            </div>
+            <div class="info-item">
+                <span>Age:</span>
+                <input type="number" class="editable-field" value="${
+                  correctedItem["Age"] || ""
+                }"
+                       min="0" max="100" style="width: 60px;"
+                       placeholder="Age"
+                       onchange="updateField(this, 'Age', this.value, '${
+                         item.id
+                       }')" />
+            </div>
         </div>
         <div class="attendance-section">
             <strong>Attendance:</strong><br>
@@ -762,18 +912,16 @@ function showModal(item = null, options = {}) {
   elements.infoForm.reset();
 
   if (options.addMode) {
-    elements.cancelButton.style.display = "";
-    elements.addRectButton.style.display = "none";
-    elements._addModeActive = true;
-    if (elements.searchBarContainer)
-      elements.searchBarContainer.style.display = "none";
-  } else {
-    elements.cancelButton.style.display = "";
-    elements.addRectButton.style.display = "";
-    elements._addModeActive = false;
-    if (elements.searchBarContainer)
-      elements.searchBarContainer.style.display = "";
-  }
+        elements.cancelButton.style.display = "";
+        elements._addModeActive = true;
+        if (elements.searchBarContainer)
+          elements.searchBarContainer.style.display = "none";
+      } else {
+        elements.cancelButton.style.display = "";
+        elements._addModeActive = false;
+        if (elements.searchBarContainer)
+          elements.searchBarContainer.style.display = "";
+      }
 
   if (item) {
     // Updated to use proper column names from June_2025 table
@@ -794,7 +942,7 @@ function showModal(item = null, options = {}) {
 
   elements.modal.style.display = "block";
   elements.nameInput.focus();
-  elements.addRectButton.style.display = "none";
+
   if (elements.searchBarContainer)
     elements.searchBarContainer.style.display = "none";
   // Ensure submit handler is attached every time modal is shown
@@ -1315,8 +1463,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initializeThemeSwitcher();
   initializeThemeToggle();
   
-  // Initialize welcome screen
-  initializeWelcomeScreen();
+
   
   // Show loading indicator right away
   elements.cardsContainer.innerHTML = '<div class="loading-indicator">Loading data...</div>';
@@ -1444,8 +1591,6 @@ async function filterByCategory(category) {
 function initializeThemeSwitcher() {
   const themeSwitcher = document.querySelector(".theme-switcher");
   const greenTheme = document.querySelector(".green-theme");
-  const purpleTheme = document.querySelector(".purple-theme");
-  const blueTheme = document.querySelector(".blue-theme");
   const adminTheme = document.querySelector(".admin-theme");
 
   // Initialize admin features
@@ -1471,7 +1616,7 @@ function initializeThemeSwitcher() {
     localStorage.setItem("selectedTheme", themeName);
 
     // Update button states
-    [greenTheme, purpleTheme, blueTheme, adminTheme].forEach((btn) =>
+    [greenTheme, adminTheme].forEach((btn) =>
       btn.classList.remove("active")
     );
     button.classList.add("active");
@@ -1487,10 +1632,6 @@ function initializeThemeSwitcher() {
   greenTheme.addEventListener("click", () =>
     setTheme("theme-green", greenTheme)
   );
-  purpleTheme.addEventListener("click", () =>
-    setTheme("theme-purple", purpleTheme)
-  );
-  blueTheme.addEventListener("click", () => setTheme("theme-blue", blueTheme));
   adminTheme.addEventListener("click", () => {
     if (!adminAuth || !adminAuth.isAuthenticated) {
       if (adminAuth && adminAuth.showModal) {
@@ -1649,158 +1790,7 @@ async function downloadCSV() {
   }
 }
 
-// Update the showDropdownEdit function with the new button-based design
-function showDropdownEdit(element, field) {
-  // Get the item ID from the closest result-item parent
-  const resultItem = element.closest(".result-item");
-  if (!resultItem) {
-    console.error("Could not find parent result item");
-    return;
-  }
 
-  const itemId = resultItem.getAttribute("data-id");
-  if (!itemId) {
-    console.error("No item ID found");
-    return;
-  }
 
-  const currentValue =
-    element.textContent.split(": ")[1]?.trim() || element.textContent.trim();
-  const container = document.createElement("div");
-  container.className = "selection-container";
-
-  let options;
-  if (field === "gender") {
-    options = ["Male", "Female"];
-  } else if (field === "level") {
-    options = [
-      "SHS1",
-      "SHS2",
-      "SHS3",
-      "JHS1",
-      "JHS2",
-      "JHS3",
-      "COMPLETED",
-      "UNIVERSITY",
-    ];
-  }
-
-  // Create buttons for each option
-  options.forEach((opt) => {
-    const button = document.createElement("button");
-    button.className = "selection-button";
-    if (opt === currentValue) {
-      button.classList.add("selected");
-    }
-    button.textContent = opt;
-
-    button.addEventListener("click", async () => {
-      try {
-        // Show loading state
-        button.disabled = true;
-        const originalText = button.textContent;
-        button.textContent = "Updating...";
-
-        // Prepare update data
-        const updateData = {};
-        if (field === "gender") {
-          updateData.gender = opt;
-        } else if (field === "level") {
-          updateData.current_level = opt;
-        }
-
-        console.log("Updating item:", itemId, "with data:", updateData);
-
-        // Perform the update
-        const { data, error } = await supabase
-          .from(CURRENT_TABLE)
-          .update(updateData)
-          .eq("id", itemId)
-          .select();
-
-        if (error) {
-          throw error;
-        }
-
-        // Update the display
-        const label = field.charAt(0).toUpperCase() + field.slice(1);
-        element.innerHTML = `<strong>${label}:</strong> ${opt}`;
-
-        // Show success message
-        alert("Update successful");
-        showToast("success", "Updated successfully");
-
-        // Clear cache and update stats
-        searchCache.clear();
-        await fetchAndDisplayStats();
-      } catch (error) {
-        console.error("Error updating:", error);
-        alert("Failed to update");
-        showToast("error", "Failed to update");
-
-        // Restore original content
-        const label = field.charAt(0).toUpperCase() + field.slice(1);
-        element.innerHTML = `<strong>${label}:</strong> ${currentValue}`;
-      } finally {
-        // Reset button state
-        button.disabled = false;
-        button.textContent = originalText;
-      }
-    });
-
-    container.appendChild(button);
-  });
-
-  // Add a cancel button
-  const cancelButton = document.createElement("button");
-  cancelButton.className = "selection-button cancel";
-  cancelButton.textContent = "Cancel";
-  cancelButton.addEventListener("click", () => {
-    container.classList.add("closing");
-    setTimeout(() => {
-      const label = field.charAt(0).toUpperCase() + field.slice(1);
-      element.innerHTML = `<strong>${label}:</strong> ${currentValue}`;
-    }, 200);
-  });
-  container.appendChild(cancelButton);
-
-  // Replace content with selection interface
-  element.innerHTML = "";
-  element.appendChild(container);
-}
-
-// Initialize welcome screen functionality (moved to main DOMContentLoaded listener)
-function initializeWelcomeScreen() {
-    // Hide stats and other elements on initial load
-    document.querySelector('.stats-container').style.display = 'none';
-    document.querySelector('.category-filter').style.display = 'none';
-    document.getElementById('downloadButton').style.display = 'none';
-    document.getElementById('adminLogout').style.display = 'none';
-    
-    // Show welcome container
-    const welcomeContainer = document.querySelector('.welcome-container');
-    if (welcomeContainer) {
-        welcomeContainer.style.display = 'block';
-    }
-    
-    // Add event listeners for welcome screen buttons
-    const quickStartBtn = document.getElementById('quickStartBtn');
-    const startSearchBtn = document.getElementById('startSearchBtn');
-    
-    if (quickStartBtn) {
-        quickStartBtn.addEventListener('click', function() {
-            alert('Welcome to TMHT Check-In System!\n\n1. Use the search bar to find students\n2. Mark attendance with Present/Absent buttons\n3. Use the date selector to change attendance date');
-        });
-    }
-    
-    if (startSearchBtn) {
-        startSearchBtn.addEventListener('click', function() {
-            document.querySelector('.welcome-container').style.display = 'none';
-            document.querySelector('.category-filter').style.display = 'flex';
-            document.getElementById('searchInput').focus();
-        });
-    }
-    
-    // Initialize the attendance date selector
-    const attendanceDateSelector = new AttendanceDateSelector();
-}
+// Initialize the attendance date selector
+const attendanceDateSelector = new AttendanceDateSelector();

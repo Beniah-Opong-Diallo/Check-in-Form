@@ -4,19 +4,21 @@
 const SENSITIVE_REDIRECT_URL = "html/sensitive-info.html"; // Path to sensitive info page
 
 // Direct redirect when shield icon is clicked - restoring original behavior
-document
-  .getElementById("sensitiveInfoBtn")
-  .addEventListener("click", function () {
+const sensitiveInfoBtn = document.getElementById("sensitiveInfoBtn");
+if (sensitiveInfoBtn) {
+  sensitiveInfoBtn.addEventListener("click", function () {
     window.location.href = SENSITIVE_REDIRECT_URL;
   });
+}
 
 // When calendar icon is clicked, show the Monthly Export Modal
-document
-  .getElementById("dateSelectorBtn")
-  .addEventListener("click", function () {
+const dateSelectorBtn = document.getElementById("dateSelectorBtn");
+if (dateSelectorBtn) {
+  dateSelectorBtn.addEventListener("click", function () {
     // Show the Monthly Export Modal
     showMonthlyExportModal();
   });
+}
 
 // Function to show the Monthly Export Modal
 function showMonthlyExportModal() {
@@ -55,6 +57,9 @@ function showMonthlyExportModal() {
     modal.style.display = "flex";
   }
 }
+
+// Make function globally available
+window.showMonthlyExportModal = showMonthlyExportModal;
 
 // Close button for Monthly Export Modal
 document

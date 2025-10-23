@@ -20,58 +20,12 @@
 <body>
     <div class="container"
         style="width:100vw;max-width:100vw;margin:0;padding:0;position:relative;left:50%;transform:translateX(-50%);">
-        <!-- Title Section -->
-        <div class="data-search-header" style="padding: 10px; height: auto; display: flex; align-items: center;">
-            <h1 class="text-2xl font-bold text-white text-center mb-0 data-search-title" style="margin: 0 10px 0 0;">Data Search</h1>
-            <button id="sensitiveInfoBtn" class="sensitive-shield-btn-flat" title="Sensitive Info" style="margin: 0 5px;">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#357d39" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                    <path d="M9 12v-1a3 3 0 1 1 6 0v1" />
-                </svg> 
-            </button>
-            <button id="createMonthBtn" class="sensitive-shield-btn-flat" title="Create New Month" style="margin: 0 5px;">
-                <svg width="20" height="20" fill="none" stroke="#357d39" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round" viewBox="0 0 24 24">
-                    <rect x="3" y="4" width="18" height="18" rx="2" />
-                    <line x1="12" y1="8" x2="12" y2="16" />
-                    <line x1="8" y1="12" x2="16" y2="12" />
-                </svg>
-            </button>
-            <button id="dateSelectorBtn" class="attendance-date-btn" title="Select Attendance Date" style="margin: 0 5px;">
-                <svg width="20" height="20" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round" viewBox="0 0 24 24">
-                    <rect x="3" y="4" width="18" height="18" rx="2" />
-                    <path d="M16 2v4M8 2v4M3 10h18" />
-                </svg>
-            </button>
-            <button id="themeToggle" class="theme-toggle-btn" onclick="toggleTheme()" title="Toggle Light/Dark Mode" style="margin: 0 5px;">
-                <svg id="lightIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="5"></circle>
-                    <line x1="12" y1="1" x2="12" y2="3"></line>
-                    <line x1="12" y1="21" x2="12" y2="23"></line>
-                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                    <line x1="1" y1="12" x2="3" y2="12"></line>
-                    <line x1="21" y1="12" x2="23" y2="12"></line>
-                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                </svg>
-                <svg id="darkIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
-                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                </svg>
-            </button>
-        </div>
-
         <!-- Theme Switcher -->
         <div class="theme-switcher-container">
             <div class="theme-preview-box">
                 <div class="theme-buttons">
                     <button class="theme-button green-theme active" title="Green Theme"></button>
-                    <button class="theme-button purple-theme" title="Purple & Black Theme"></button>
-                    <button class="theme-button blue-theme" title="Blue & Gold Theme"></button>
                     <button class="theme-button admin-theme" title="Admin View"></button>
-                    <!-- Removed old circular add button -->
                 </div>
             </div>
         </div>
@@ -381,13 +335,84 @@
     <div class="search-bar-container" id="searchBarContainer"
         style="width:100vw;max-width:100vw;position:fixed;left:0;right:0;bottom:0;margin:0;padding:0 2vw 1.1rem 2vw;z-index:1001;">
         <div class="search-section fixed-search-bar"
-            style="width:100%;max-width:100vw;margin:0;padding:0;background:rgba(255,255,255,0.18);border-radius:0;box-shadow:none;">
+            style="width:100%;max-width:100vw;margin:0;padding:0;border-radius:0;box-shadow:none;">
             <div class="search-bar-flex"
                 style="display:flex;align-items:center;justify-content:center;width:100%;max-width:100vw;padding:0.5rem 0;gap:0;">
-                <input type="text" id="searchInput" placeholder="Start typing to search names..." class="search-input"
-                    style="flex:1;max-width:600px;margin:0 0.5rem;height:44px;border-radius:12px;">
-                <button type="button" class="add-rect-button" id="addRectButton"
-                    style="width:44px;height:44px;border-radius:0 12px 12px 0;margin:0 0.5rem 0 0;display:flex;align-items:center;justify-content:center;font-size:1.5rem;background:#357d39;color:#fff;">+</button>
+                <button type="button" class="add-person-btn" id="addPersonBtn" title="Add New Person">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                </button>
+                <input type="text" id="searchInput" placeholder="Search" class="search-input animated-search">
+                <!-- Floating Action Button Menu -->
+                <div class="fab-container" id="fabContainer">
+                    <button type="button" class="fab-main" id="fabMainButton">
+                        <svg class="fab-icon fab-plus" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
+                        <svg class="fab-icon fab-close" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                    
+                    <div class="fab-menu" id="fabMenu">
+                        
+                        <div class="fab-menu-item" data-action="sensitive-info">
+                            <button class="fab-item-btn" title="Sensitive Info">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                                    <path d="M9 12v-1a3 3 0 1 1 6 0v1" />
+                                </svg>
+                            </button>
+                            <span class="fab-item-label">Sensitive Info</span>
+                        </div>
+                        
+                        <div class="fab-menu-item" data-action="create-month">
+                            <button class="fab-item-btn" title="Create New Month">
+                                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                                    <line x1="12" y1="8" x2="12" y2="16" />
+                                    <line x1="8" y1="12" x2="16" y2="12" />
+                                </svg>
+                            </button>
+                            <span class="fab-item-label">Create Month</span>
+                        </div>
+                        
+                        <div class="fab-menu-item" data-action="date-selector">
+                            <button class="fab-item-btn" title="Select Date">
+                                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                                    <path d="M16 2v4M8 2v4M3 10h18" />
+                                </svg>
+                            </button>
+                            <span class="fab-item-label">Select Date</span>
+                        </div>
+                        
+                        <div class="fab-menu-item" data-action="theme-toggle">
+                            <button class="fab-item-btn" title="Toggle Theme">
+                                <svg class="theme-light-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="5"></circle>
+                                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                                </svg>
+                                <svg class="theme-dark-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                                </svg>
+                            </button>
+                            <span class="fab-item-label">Toggle Theme</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

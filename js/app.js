@@ -318,6 +318,109 @@ function initializeAnimatedSearchBar() {
   searchInput.setAttribute('aria-label', 'Search for people');
 }
 
+/**
+ * Bottom buttons scroll animation: shrink on scroll down, enlarge on scroll up.
+ * Listens to the main page scroll, cards container scroll, and wheel/touch.
+ * Optimized for performance with throttling and reduced DOM operations.
+ */
+function setupBottomButtonsScrollAnimation() {
+  const container = elements.searchBarContainer;
+  const addBtn = elements.addPersonBtn;
+  const searchInput = elements.searchInput;
+  const fabBtn = elements.fabButton;
+  const cards = elements.cardsContainer;
+  
+  // Early return if no valid targets
+  if (!container || (!addBtn && !searchInput && !fabBtn)) return;
+
+  const targets = [addBtn, searchInput, fabBtn].filter(Boolean);
+  
+  // Performance optimization: Pre-set transitions in CSS instead of JS
+  // CSS already handles transitions via our optimized transition rules
+
+  let lastWindowY = window.scrollY || document.documentElement.scrollTop || 0;
+  let lastCardsY = cards ? cards.scrollTop : 0;
+  let raf = null;
+  let lastScale = 1;
+  let lastProcessedTime = 0;
+  const THROTTLE_MS = 32; // ~30fps throttle for scroll events
+
+  function applyScale(scale) {
+    // Only update if scale actually changed
+    if (Math.abs(scale - lastScale) > 0.01) {
+      targets.forEach((el) => {
+        el.style.transform = `scale(${scale})`;
+      });
+      lastScale = scale;
+    }
+  }
+
+  function handleDirection(dy) {
+    const now = Date.now();
+    // Throttle processing to reduce CPU usage
+    if (now - lastProcessedTime < THROTTLE_MS) return;
+    
+    lastProcessedTime = now;
+    
+    if (dy > 2) {
+      applyScale(0.86);
+    } else if (dy < -2) {
+      applyScale(1);
+    }
+  }
+
+  function onWindowScroll() {
+    if (raf) return;
+    raf = requestAnimationFrame(() => {
+      const y = window.scrollY || document.documentElement.scrollTop || 0;
+      handleDirection(y - lastWindowY);
+      lastWindowY = y;
+      raf = null;
+    });
+  }
+
+  function onCardsScroll() {
+    if (!cards) return;
+    if (raf) return;
+    raf = requestAnimationFrame(() => {
+      const y = cards.scrollTop;
+      handleDirection(y - lastCardsY);
+      lastCardsY = y;
+      raf = null;
+    });
+  }
+
+  function onWheel(e) {
+    const dy = e.deltaY;
+    handleDirection(dy);
+  }
+
+  function onTouchMove(e) {
+    // Best-effort: rely on scroll listeners to compute dy.
+    // This keeps touch smooth without heavy processing.
+  }
+
+  // Use passive event listeners for better scrolling performance
+  window.addEventListener('scroll', onWindowScroll, { passive: true });
+  window.addEventListener('wheel', onWheel, { passive: true });
+  if (cards) {
+    cards.addEventListener('scroll', onCardsScroll, { passive: true });
+    cards.addEventListener('wheel', onWheel, { passive: true });
+    cards.addEventListener('touchmove', onTouchMove, { passive: true });
+  }
+  
+  // Cleanup function to remove event listeners if needed
+  return function cleanup() {
+    window.removeEventListener('scroll', onWindowScroll);
+    window.removeEventListener('wheel', onWheel);
+    if (cards) {
+      cards.removeEventListener('scroll', onCardsScroll);
+      cards.removeEventListener('wheel', onWheel);
+      cards.removeEventListener('touchmove', onTouchMove);
+    }
+  };
+}
+
 // FAB Menu functionality
 let fabMenuOpen = false;
 
@@ -342,11 +445,19 @@ function toggleFabMenu() {
   fabMenuOpen = !fabMenuOpen;
   elements.fabButton.classList.toggle("active", fabMenuOpen);
   elements.fabMenu.classList.toggle("active", fabMenuOpen);
+  
+  // Reset any scale transformations from scroll animation
+  if (elements.fabButton) {
+    elements.fabButton.style.transform = "none";
+  }
 }
 
 function closeFabMenu() {
   fabMenuOpen = false;
-  if (elements.fabButton) elements.fabButton.classList.remove("active");
+  if (elements.fabButton) {
+    elements.fabButton.classList.remove("active");
+    elements.fabButton.style.transform = "none";
+  }
   if (elements.fabMenu) elements.fabMenu.classList.remove("active");
 }
 
@@ -382,8 +493,11 @@ if (elements.fabMenu) {
     }
   });
 }
-elements.cancelButton.addEventListener("click", handleCloseClick);
 document.addEventListener("DOMContentLoaded", () => {
+  // Add event listener for cancel button
+  if (elements.cancelButton) {
+    elements.cancelButton.addEventListener("click", handleCloseClick);
+  }
   // Add direct event listener for the date modal close button
   const closeDateModalBtn = document.getElementById("closeDateModalBtn");
   if (closeDateModalBtn) {
@@ -401,6 +515,9 @@ document.addEventListener("DOMContentLoaded", () => {
   
   // Initialize animated search bar
   initializeAnimatedSearchBar();
+
+  // Smooth shrink/enlarge for bottom buttons on scroll
+  setupBottomButtonsScrollAnimation();
   
   // Add event listener for the new Create Month button
   const createMonthBtn = document.getElementById("createMonthBtn");
@@ -408,6 +525,11 @@ document.addEventListener("DOMContentLoaded", () => {
     createMonthBtn.addEventListener("click", () => {
       document.getElementById("monthlyExportModal").style.display = "flex";
     });
+  }
+  
+  // Ensure modal is hidden on page load
+  if (elements.modal) {
+    elements.modal.style.display = "none";
   }
   
   // Add event listener for the close button in monthly export modal
@@ -476,8 +598,16 @@ function addButtonPressAnimation(button) {
 // Optimized display function using requestAnimationFrame and batching
 function displayItems(items) {
   if (!Array.isArray(items) || items.length === 0) {
-    elements.cardsContainer.innerHTML =
-      '<p class="error-message">No records found.</p>';
+    elements.cardsContainer.innerHTML = `
+      <div class="notification-container empty-notification">
+        <svg class="notification-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="M21 21l-4.35-4.35"/>
+        </svg>
+        <div class="notification-title">No records found</div>
+        <div class="notification-subtitle">Try adjusting your search criteria</div>
+      </div>
+    `;
     window.currentItems = [];
     return;
   }
@@ -1350,8 +1480,17 @@ async function loadInitialData() {
     // Set the select element to match the URL parameter
     elements.categoryFilter.value = category;
 
-    // Show loading indicator immediately
-    elements.cardsContainer.innerHTML = '<div class="loading-indicator">Loading data...</div>';
+    // Show modern loading notification immediately
+    elements.cardsContainer.innerHTML = `
+      <div class="notification-container loading-notification">
+        <svg class="notification-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <path d="M12 6v6l4 2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+        </svg>
+        <div class="notification-title">Loading data...</div>
+        <div class="notification-subtitle">Please wait while we fetch your records</div>
+      </div>
+    `;
     
     // Start both operations in parallel
     const categoryPromise = filterByCategory(category);
@@ -1478,8 +1617,17 @@ document.addEventListener("DOMContentLoaded", () => {
   
 
   
-  // Show loading indicator right away
-  elements.cardsContainer.innerHTML = '<div class="loading-indicator">Loading data...</div>';
+  // Show modern loading notification right away
+  elements.cardsContainer.innerHTML = `
+    <div class="notification-container loading-notification">
+      <svg class="notification-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5" fill="none"/>
+        <path d="M12 6v6l4 2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+      </svg>
+      <div class="notification-title">Loading data...</div>
+      <div class="notification-subtitle">Please wait while we fetch your records</div>
+    </div>
+  `;
   
   // Start data loading processes in parallel without awaiting
   loadGlobalAttendanceDate().catch(err => console.error("Error loading attendance date:", err));
@@ -1603,20 +1751,24 @@ async function filterByCategory(category) {
 // Update the theme switcher initialization
 function initializeThemeSwitcher() {
   const themeSwitcher = document.querySelector(".theme-switcher");
-  const greenTheme = document.querySelector(".green-theme");
-  const adminTheme = document.querySelector(".admin-theme");
+  const adminTheme = document.querySelector(".admin-theme"); // may be null
 
   // Initialize admin features
   adminFeatures.init();
 
-  // Load saved theme preferences
-  const savedColorTheme =
-    localStorage.getItem("selectedTheme") || "theme-green";
+  // Load saved theme preferences - default to no theme class
+  let savedColorTheme = localStorage.getItem("selectedTheme") || "";
 
-  // Apply color theme
+  // Fallback if admin theme was saved but the button doesn't exist anymore
+  if (savedColorTheme === "theme-admin" && !adminTheme) {
+    savedColorTheme = "";
+    localStorage.setItem("selectedTheme", "");
+  }
+
+  // Apply color theme (empty string removes any theme class)
   document.body.className = savedColorTheme;
 
-  // Activate the correct theme button
+  // Activate the correct theme button (if present)
   const activeButton = document.querySelector(
     `.${savedColorTheme.replace("theme-", "")}-theme`
   );
@@ -1628,11 +1780,11 @@ function initializeThemeSwitcher() {
 
     localStorage.setItem("selectedTheme", themeName);
 
-    // Update button states
-    [greenTheme, adminTheme].forEach((btn) =>
+    // Update button states (skip nulls)
+    [adminTheme].filter(Boolean).forEach((btn) =>
       btn.classList.remove("active")
     );
-    button.classList.add("active");
+    if (button) button.classList.add("active");
 
     // Handle admin sections visibility
     if (themeName === "theme-admin") {
@@ -1642,20 +1794,11 @@ function initializeThemeSwitcher() {
     }
   }
 
-  greenTheme.addEventListener("click", () =>
-    setTheme("theme-green", greenTheme)
-  );
-  adminTheme.addEventListener("click", () => {
-    if (!adminAuth || !adminAuth.isAuthenticated) {
-      if (adminAuth && adminAuth.showModal) {
-        adminAuth.showModal();
-      } else {
-        console.error("Admin authentication not initialized");
-      }
-    } else {
+  if (adminTheme) {
+    adminTheme.addEventListener("click", () => {
       setTheme("theme-admin", adminTheme);
-    }
-  });
+    });
+  }
 }
 
 // New Light/Dark Theme Toggle Functions

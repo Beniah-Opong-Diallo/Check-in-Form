@@ -775,93 +775,106 @@ function getItemHTML(item) {
       </div>
     </div>
     <div class="detailed-info" style="display: none;">
-        <div class="personal-info-section">
-            <h4 class="personal-info-heading">Personal Information</h4>
-            <div class="info-item">
-                <span>Gender:</span>
-                <select class="info-select ${
-                  correctedItem["Gender"]?.toLowerCase() === "male"
-                    ? "male"
-                    : correctedItem["Gender"]?.toLowerCase() === "female"
-                    ? "female"
-                    : ""
-                }"
-                        onchange="updateField(this, 'Gender', this.value, '${
-                          item.id
-                        }')">
-                    <option value="" disabled ${
-                      !correctedItem["Gender"] ? "selected" : ""
-                    }>Select Gender</option>
-                    <option value="Male" ${
-                      correctedItem["Gender"] === "Male" ? "selected" : ""
-                    }>Male</option>
-                    <option value="Female" ${
-                      correctedItem["Gender"] === "Female" ? "selected" : ""
-                    }>Female</option>
-                </select>
-            </div>
-            <div class="info-item">
-                <span>Current Level:</span>
-                <select class="info-select ${
-                  correctedItem["Current Level"] ? "has-value" : ""
-                }"
-                        onchange="updateField(this, 'Current Level', this.value, '${
-                          item.id
-                        }')">
-                    <option value="" disabled ${
-                      !correctedItem["Current Level"] ? "selected" : ""
-                    }>Select Current Level</option>
-                    <option value="SHS1" ${
-                      correctedItem["Current Level"] === "SHS1" ? "selected" : ""
-                    }>SHS1</option>
-                    <option value="SHS2" ${
-                      correctedItem["Current Level"] === "SHS2" ? "selected" : ""
-                    }>SHS2</option>
-                    <option value="SHS3" ${
-                      correctedItem["Current Level"] === "SHS3" ? "selected" : ""
-                    }>SHS3</option>
-                    <option value="JHS1" ${
-                      correctedItem["Current Level"] === "JHS1" ? "selected" : ""
-                    }>JHS1</option>
-                    <option value="JHS2" ${
-                      correctedItem["Current Level"] === "JHS2" ? "selected" : ""
-                    }>JHS2</option>
-                    <option value="JHS3" ${
-                      correctedItem["Current Level"] === "JHS3" ? "selected" : ""
-                    }>JHS3</option>
-                    <option value="COMPLETED" ${
-                      correctedItem["Current Level"] === "COMPLETED"
-                        ? "selected"
+        <div class="attendance-section">
+            <strong>Personal Information:</strong><br>
+            <div class="attendance-grid">
+                <div class="attendance-item">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                        <label style="font-weight: bold;">
+                            Gender:
+                        </label>
+                    </div>
+                    <select class="attendance-select ${
+                      correctedItem["Gender"]?.toLowerCase() === "male"
+                        ? "male"
+                        : correctedItem["Gender"]?.toLowerCase() === "female"
+                        ? "female"
                         : ""
-                    }>COMPLETED</option>
-                    <option value="UNIVERSITY" ${
-                      correctedItem["Current Level"] === "UNIVERSITY"
-                        ? "selected"
-                        : ""
-                    }>UNIVERSITY</option>
-                </select>
-            </div>
-            <div class="info-item">
-                <span>Phone Number:</span>
-                <input type="tel" class="editable-field" value="${escapeHtml(
-                  correctedItem["Phone Number"] || ""
-                )}"
-                       style="width: 150px; background-color: transparent; color: white; border: 1px solid rgba(255, 255, 255, 0.3); padding: 2px 4px; border-radius: 4px;"
-                       placeholder="Enter phone number"
-                       onchange="updateField(this, 'Phone Number', this.value, '${
-                         item.id
-                       }')" />
-            </div>
-            <div class="info-item">
-                <span>Age:</span>
-                <input type="number" class="editable-field" value="${
-                  correctedItem["Age"] || ""
-                }"
-                       min="0" max="100" style="width: 60px;"
-                       placeholder="Age"
-                       onchange="updateField(this, 'Age', this.value, '${
-                         item.id
-                       }')" />
+                    }"
+                            onchange="updateField(this, 'Gender', this.value, '${
+                              item.id
+                            }')">
+                        <option value="">Select</option>
+                        <option value="Male" ${
+                          correctedItem["Gender"] === "Male" ? "selected" : ""
+                        }>Male</option>
+                        <option value="Female" ${
+                          correctedItem["Gender"] === "Female" ? "selected" : ""
+                        }>Female</option>
+                    </select>
+                </div>
+                <div class="attendance-item">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                        <label style="font-weight: bold;">
+                            Current Level:
+                        </label>
+                    </div>
+                    <select class="attendance-select ${
+                      correctedItem["Current Level"] ? "has-value" : ""
+                    }"
+                            onchange="updateField(this, 'Current Level', this.value, '${
+                              item.id
+                            }')">
+                        <option value="">Select</option>
+                        <option value="SHS1" ${
+                          correctedItem["Current Level"] === "SHS1" ? "selected" : ""
+                        }>SHS1</option>
+                        <option value="SHS2" ${
+                          correctedItem["Current Level"] === "SHS2" ? "selected" : ""
+                        }>SHS2</option>
+                        <option value="SHS3" ${
+                          correctedItem["Current Level"] === "SHS3" ? "selected" : ""
+                        }>SHS3</option>
+                        <option value="JHS1" ${
+                          correctedItem["Current Level"] === "JHS1" ? "selected" : ""
+                        }>JHS1</option>
+                        <option value="JHS2" ${
+                          correctedItem["Current Level"] === "JHS2" ? "selected" : ""
+                        }>JHS2</option>
+                        <option value="JHS3" ${
+                          correctedItem["Current Level"] === "JHS3" ? "selected" : ""
+                        }>JHS3</option>
+                        <option value="COMPLETED" ${
+                          correctedItem["Current Level"] === "COMPLETED"
+                            ? "selected"
+                            : ""
+                        }>COMPLETED</option>
+                        <option value="UNIVERSITY" ${
+                          correctedItem["Current Level"] === "UNIVERSITY"
+                            ? "selected"
+                            : ""
+                        }>UNIVERSITY</option>
+                    </select>
+                </div>
+                <div class="attendance-item">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                        <label style="font-weight: bold;">
+                            Phone Number:
+                        </label>
+                    </div>
+                    <input type="tel" class="attendance-select" value="${escapeHtml(
+                      correctedItem["Phone Number"] || ""
+                    )}"
+                           placeholder="Enter phone number"
+                           onchange="updateField(this, 'Phone Number', this.value, '${
+                             item.id
+                           }')" />
+                </div>
+                <div class="attendance-item">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                        <label style="font-weight: bold;">
+                            Age:
+                        </label>
+                    </div>
+                    <input type="number" class="attendance-select" value="${
+                      correctedItem["Age"] || ""
+                    }"
+                           min="0" max="100"
+                           placeholder="Age"
+                           onchange="updateField(this, 'Age', this.value, '${
+                             item.id
+                           }')" />
+                </div>
             </div>
         </div>
         <div class="attendance-section">

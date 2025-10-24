@@ -167,7 +167,7 @@ body {
   background-size: cover;
   color: var(--text-primary);
   margin: 0;
-  padding: 10px;
+  padding: 5px;
   min-height: 100vh;
   overflow-y: auto;
   overflow-x: hidden;
@@ -181,6 +181,26 @@ body {
 @media (min-width: 640px) {
   body {
     padding: 20px;
+  }
+}
+
+/* Mobile-specific adjustments for full screen usage */
+@media (max-width: 640px) {
+  body {
+    padding: 2px;
+    padding-bottom: 110px; /* Keep space for fixed search bar */
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+  }
+  
+  .container {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+  
+  .full-width-container {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
   }
 }
 
@@ -199,6 +219,15 @@ body {
   .search-section {
     padding: 1.5rem;
     margin-bottom: 1.5rem;
+  }
+}
+
+/* Mobile-specific search section adjustments */
+@media (max-width: 640px) {
+  .search-section {
+    padding: 0.75rem;
+    margin: 0 0 0.5rem 0;
+    border-radius: 20px;
   }
 }
 
@@ -563,6 +592,24 @@ body {
   transition: background 0.3s ease, border-color 0.3s ease;
 }
 
+/* Mobile-specific cards container adjustments */
+@media (max-width: 640px) {
+  #cardsContainer {
+    border-radius: 8px;
+    gap: 0.5rem;
+    grid-template-columns: 1fr;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+  
+  /* Ensure the cards container parent has no spacing */
+  .relative.bg-white\/10 {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+}
+
 .result-item {
   background: transparent !important;
   border: none !important;
@@ -881,6 +928,16 @@ select {
   margin-right: auto;
 }
 
+/* Mobile-specific stats container adjustments */
+@media (max-width: 640px) {
+  .stats-container {
+    margin-top: 0.25rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 8px;
+  }
+}
+
 .stats-outer-container {
   width: 100%;
 }
@@ -972,11 +1029,72 @@ select {
 
 /* Attendance section styles */
 .attendance-section {
-  background: var(--attendance-bg) !important;
-  color: var(--text-primary) !important;
-  padding: 0.75rem;
-  border-radius: 12px;
-  border: 1px solid var(--border-color);
+  background: rgb(40, 41, 41);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.attendance-section strong {
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 0.75rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  display: block;
+}
+
+/* Light mode styling for attendance section */
+[data-theme="light"] .attendance-section {
+  background: rgb(249, 251, 252);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .attendance-section strong {
+  color: #1f2937;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .attendance-item {
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .attendance-item span,
+[data-theme="light"] .attendance-item label {
+  color: #1f2937;
+}
+
+[data-theme="light"] .attendance-item select {
+  color: #1f2937;
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%231F2937'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px;
+}
+
+[data-theme="light"] .attendance-select.present {
+  background-color: rgba(34, 197, 94, 0.1);
+  border-color: #22c55e;
+  color: #22c55e;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2322C55E'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px;
+}
+
+[data-theme="light"] .attendance-select.absent {
+  background-color: rgba(239, 68, 68, 0.1);
+  border-color: #ef4444;
+  color: #ef4444;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23EF4444'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px;
 }
 
 .attendance-grid {
@@ -987,8 +1105,7 @@ select {
 }
 
 .attendance-item {
-  background: var(--attendance-item-bg) !important;
-  color: var(--text-primary) !important;
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -996,27 +1113,27 @@ select {
   gap: 0.75rem;
   font-size: 0.95rem;
   padding: 0.5rem 0.75rem;
-  border: 1px solid var(--border-color);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .attendance-item span,
 .attendance-item label {
-  color: var(--text-primary) !important;
+  color: white;
 }
 
 .attendance-item select {
-  color: var(--text-primary) !important;
-  background: var(--input-bg) !important;
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
   flex: 1;
   padding: 6px 12px;
   border-radius: 6px;
-  border: 1px solid var(--border-color);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
   max-width: 120px;
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236B7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23FFFFFF'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 8px center;
   background-size: 16px;
@@ -1024,17 +1141,17 @@ select {
 }
 
 .attendance-select.present {
-  background-color: rgba(5, 150, 105, 0.1);
-  border-color: #059669;
-  color: #059669;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23059669'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-color: rgba(34, 197, 94, 0.15);
+  border-color: #22c55e;
+  color: #22c55e;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2322C55E'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
 }
 
 .attendance-select.absent {
-  background-color: rgba(220, 38, 38, 0.1);
-  border-color: #dc2626;
-  color: #dc2626;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23DC2626'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-color: rgba(239, 68, 68, 0.15);
+  border-color: #ef4444;
+  color: #ef4444;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23EF4444'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
 }
 
 .attendance-date-btn {
@@ -1078,6 +1195,52 @@ select {
   border-color: #f87171;
   color: #f87171;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23F87171'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+}
+
+/* Light mode for personal information fields */
+.attendance-section:first-child .attendance-select,
+.attendance-section:first-child .attendance-item input {
+  background-color: rgb(253, 253, 253) !important;
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
+  color: #333 !important;
+  padding: 6px 12px !important;
+  border-radius: 6px !important;
+  font-size: 0.9rem !important;
+  font-weight: 500 !important;
+  max-width: 120px !important;
+  flex: 1 !important;
+  cursor: pointer !important;
+}
+
+/* Dark mode for personal information fields */
+[data-theme="dark"] .attendance-section:first-child .attendance-select,
+[data-theme="dark"] .attendance-section:first-child .attendance-item input,
+body.dark-mode .attendance-section:first-child .attendance-select,
+body.dark-mode .attendance-section:first-child .attendance-item input,
+.dark-mode .attendance-section:first-child .attendance-select,
+.dark-mode .attendance-section:first-child .attendance-item input {
+  background-color: rgb(72, 73, 73) !important;
+  border: 1px solid rgba(156, 163, 175, 0.4) !important;
+  color: white !important;
+  padding: 6px 12px !important;
+  border-radius: 6px !important;
+  font-size: 0.9rem !important;
+  font-weight: 500 !important;
+  max-width: 120px !important;
+  flex: 1 !important;
+  cursor: pointer !important;
+  background-image: none !important;
+}
+
+/* Remove number input spinner arrows */
+.attendance-section:first-child .attendance-item input[type="number"]::-webkit-outer-spin-button,
+.attendance-section:first-child .attendance-item input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0 !important;
+}
+
+.attendance-section:first-child .attendance-item input[type="number"] {
+  -moz-appearance: textfield !important;
 }
 
 
@@ -1497,28 +1660,31 @@ body::-webkit-scrollbar { width: 0; height: 0; display: none; }
 .info-item select,
 .info-item input[type="number"],
 .info-item input[type="text"] {
-  background: var(--input-bg) !important;
+  background: rgb(72, 73, 73) !important;
   color: var(--text-primary) !important;
   border: 1.5px solid var(--border-color) !important;
 }
 
+[data-theme="dark"] .info-item select,
+[data-theme="dark"] .info-item input[type="number"],
+[data-theme="dark"] .info-item input[type="text"],
 .dark-mode .info-item select,
 .dark-mode .info-item input[type="number"],
 .dark-mode .info-item input[type="text"] {
-  background: #1e2936 !important;
+  background: rgb(72, 73, 73) !important;
   color: var(--text-primary) !important;
   border: 1.5px solid var(--border-color) !important;
 }
 
 .info-item input[type="text"]#phoneInput {
-  background: rgba(5, 150, 105, 0.1) !important;
+  background: rgb(51, 52, 52) !important;
   color: #059669 !important;
   border: none !important;
   box-shadow: none !important;
 }
 
 .dark-mode .info-item input[type="text"]#phoneInput {
-  background: rgba(52, 211, 153, 0.1) !important;
+  background: rgb(51, 52, 52) !important;
   color: #34d399 !important;
   border: none !important;
   box-shadow: none !important;
@@ -1541,7 +1707,7 @@ body::-webkit-scrollbar { width: 0; height: 0; display: none; }
   padding: 6px 12px;
   border-radius: 6px;
   border: none;
-  background-color: rgba(5, 150, 105, 0.1);
+  background-color: rgb(51, 52, 52);
   border-color: #059669;
   color: #059669;
   font-size: 0.9rem;
@@ -1557,21 +1723,21 @@ body::-webkit-scrollbar { width: 0; height: 0; display: none; }
 }
 
 .info-select.male {
-  background-color: rgba(5, 150, 105, 0.1);
+  background-color: rgb(51, 52, 52);
   border-color: #059669;
   color: #059669;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23059669'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
 }
 
 .info-select.female {
-  background-color: rgba(5, 150, 105, 0.1);
+  background-color: rgb(51, 52, 52); 
   border-color: #059669;
   color: #059669;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23059669'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
 }
 
 .info-select.has-value {
-  background-color: rgba(5, 150, 105, 0.1);
+  background-color: rgb(51, 52, 52);
   border-color: #059669;
   color: #059669;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23059669'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
@@ -2200,6 +2366,26 @@ html, body {
   body {
     -ms-overflow-style: -ms-autohiding-scrollbar;
   }
+}
+
+/* Attendance Date Fields Styling */
+/* Light mode styling for attendance date fields */
+#attendance5th, #attendance12th, #attendance19th, #attendance26th {
+  background-color: rgb(253, 253, 253) !important;
+  color: #333 !important;
+  border-color: rgba(0, 0, 0, 0.15) !important;
+  background-image: none !important;
+}
+
+/* Dark mode styling for attendance date fields */
+body.dark-mode #attendance5th, 
+body.dark-mode #attendance12th, 
+body.dark-mode #attendance19th, 
+body.dark-mode #attendance26th {
+  background-color: rgb(72, 73, 73) !important;
+  color: white !important;
+  border-color: rgba(156, 163, 175, 0.4) !important;
+  background-image: none !important;
 }
 
 /* Ensure search bar container can accommodate expansion */

@@ -349,7 +349,14 @@ function setupBottomButtonsScrollAnimation() {
     // Only update if scale actually changed
     if (Math.abs(scale - lastScale) > 0.01) {
       targets.forEach((el) => {
-        el.style.transform = `scale(${scale})`;
+        // Use CSS classes for smooth transitions instead of direct style manipulation
+        if (scale < 1) {
+          el.classList.add('scaled-down');
+          el.classList.remove('scaled-normal');
+        } else {
+          el.classList.add('scaled-normal');
+          el.classList.remove('scaled-down');
+        }
       });
       lastScale = scale;
     }

@@ -2863,14 +2863,13 @@ html, body {
   /* Prevent zoom on input focus in iOS Safari */
   .search-input {
     font-size: 16px !important; /* Prevent iOS zoom */
-    transform: scale(1); /* Ensure no scaling */
     max-height: 44px; /* Standard touch target height */
   }
   
-  /* Specifically target the animated search input */
+  /* Specifically target the animated search input - allow JavaScript scaling */
   .animated-search {
     font-size: 16px !important;
-    transform: scale(1) !important;
+    /* transform: scale(1) !important; REMOVED to allow JavaScript scaling */
   }
 }
 
@@ -2879,7 +2878,6 @@ html, body {
   .search-input,
   .animated-search {
     font-size: 16px !important; /* Prevent zoom on focus */
-    transform: scale(1) !important; /* Ensure no scaling */
     max-height: 44px; /* Standard touch target height */
   }
   
@@ -2888,7 +2886,6 @@ html, body {
     .search-input:focus,
     .animated-search:focus,
     .animated-search.expanded {
-      transform: scale(1) !important;
       font-size: 16px !important;
     }
   }
@@ -2983,10 +2980,23 @@ html, body {
   perspective: 1000px;
 }
 
-/* Ensure search bar scaling works properly in Brave */
-.search-input.animated-search {
+/* Smooth scaling animations for bottom buttons */
+.search-input.animated-search,
+.add-person-btn,
+.fab-main {
   transform-origin: center bottom;
   will-change: transform;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Scaled down state for smooth animation */
+.scaled-down {
+  transform: scale(0.86) !important;
+}
+
+/* Normal scale state for smooth animation */
+.scaled-normal {
+  transform: scale(1) !important;
 }
 
 /* Brave: Optimize blur performance */

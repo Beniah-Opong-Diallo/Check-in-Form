@@ -2859,6 +2859,39 @@ html, body {
   body {
     background-attachment: scroll; /* Fixed backgrounds can cause issues on iOS */
   }
+  
+  /* Prevent zoom on input focus in iOS Safari */
+  .search-input {
+    font-size: 16px !important; /* Prevent iOS zoom */
+    transform: scale(1); /* Ensure no scaling */
+    max-height: 44px; /* Standard touch target height */
+  }
+  
+  /* Specifically target the animated search input */
+  .animated-search {
+    font-size: 16px !important;
+    transform: scale(1) !important;
+  }
+}
+
+/* Prevent zoom on input focus for all mobile browsers */
+@media screen and (max-width: 768px) {
+  .search-input,
+  .animated-search {
+    font-size: 16px !important; /* Prevent zoom on focus */
+    transform: scale(1) !important; /* Ensure no scaling */
+    max-height: 44px; /* Standard touch target height */
+  }
+  
+  /* Additional iOS-specific fixes to prevent zoom */
+  @supports (-webkit-touch-callout: none) {
+    .search-input:focus,
+    .animated-search:focus,
+    .animated-search.expanded {
+      transform: scale(1) !important;
+      font-size: 16px !important;
+    }
+  }
 }
 
 /* Fix for Android browsers */
@@ -2928,6 +2961,41 @@ html, body {
 @supports (-ms-ime-align: auto) {
   body {
     -ms-overflow-style: -ms-autohiding-scrollbar;
+  }
+}
+
+/* Brave browser optimizations */
+/* Ensure smooth scrolling and performance in Brave */
+@supports (scroll-behavior: smooth) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Brave-specific hardware acceleration optimizations */
+.search-bar-container,
+.search-input,
+.add-person-btn,
+.fab-main,
+.fab-menu {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Ensure search bar scaling works properly in Brave */
+.search-input.animated-search {
+  transform-origin: center bottom;
+  will-change: transform;
+}
+
+/* Brave: Optimize blur performance */
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+  .search-input,
+  .add-person-btn,
+  .fab-main,
+  .fab-menu {
+    isolation: isolate;
   }
 }
 

@@ -363,8 +363,10 @@ function setupBottomButtonsScrollAnimation() {
     lastProcessedTime = now;
     
     if (dy > 2) {
+      // Scroll down - shrink all buttons including search bar
       applyScale(0.86);
     } else if (dy < -2) {
+      // Scroll up - return to normal size
       applyScale(1);
     }
   }

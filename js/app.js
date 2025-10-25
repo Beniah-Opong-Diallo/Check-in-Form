@@ -620,8 +620,12 @@ function displayItems(items) {
     window.currentItems = [];
     return;
   }
+  
+  // Limit results to 20 items
+  const limitedItems = items.slice(0, 20);
+  
   let htmlString = "";
-  for (const item of items) {
+  for (const item of limitedItems) {
     try {
       htmlString += `<div class="result-item" data-id="${
         item.id

@@ -779,6 +779,91 @@ body {
   transition: background 0.3s ease, border-color 0.3s ease;
 }
 
+/* Large screen centered container */
+@media (min-width: 1024px) {
+  #cardsContainer {
+    max-width: 1100px;
+    margin: 3rem auto !important;
+    padding: 3rem !important;
+    min-height: calc(100vh - 6rem);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    border-radius: 24px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  }
+  
+  #cardsContainer .result-item {
+    width: 100%;
+    max-width: 300px;
+    margin: 0.75rem 0;
+  }
+  
+  /* Grid layout for large screens */
+  #cardsContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    justify-content: center;
+    align-content: flex-start;
+    gap: 1.5rem;
+    padding: 3rem !important;
+    border-radius: 24px;
+  }
+  
+  /* Center the grid container */
+  .relative.bg-white\/10 {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 3rem !important;
+    margin: 2rem !important;
+  }
+}
+
+/* Extra large screens */
+@media (min-width: 1440px) {
+  #cardsContainer {
+    max-width: 1300px;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+    padding: 3.5rem !important;
+    margin: 4rem auto !important;
+    border-radius: 28px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+  }
+  
+  #cardsContainer .result-item {
+    max-width: 320px;
+    margin: 1rem 0;
+  }
+  
+  .relative.bg-white\/10 {
+    padding: 3rem !important;
+    margin: 2.5rem !important;
+  }
+}
+
+/* Medium screens */
+@media (min-width: 768px) and (max-width: 1023px) {
+  #cardsContainer {
+    margin: 2.5rem auto !important;
+    padding: 2.5rem !important;
+    max-width: 90%;
+    border-radius: 20px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+  }
+  
+  .relative.bg-white\/10 {
+    padding: 2rem !important;
+    margin: 1.5rem !important;
+  }
+  
+  #cardsContainer .result-item {
+    margin: 0.5rem 0;
+  }
+}
+
 /* Special handling for notification-only content */
 #cardsContainer:has(> .notification-container) {
   display: flex !important;

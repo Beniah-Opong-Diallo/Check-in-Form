@@ -1079,6 +1079,12 @@ function showModal(item = null, options = {}) {
           elements.searchBarContainer.style.display = "";
       }
 
+  // Always re-enable Cancel button when opening the modal
+  if (elements.cancelButton) {
+    elements.cancelButton.disabled = false;
+    elements.cancelButton.classList.remove("button-press");
+  }
+
   if (item) {
     // Updated to use proper column names from June_2025 table
     elements.nameInput.value = item["Full Name"] || "";
@@ -1330,7 +1336,7 @@ window.quickMarkAttendance = async function (id, value) {
   const activeDate =
     window.globalActiveAttendanceDate ||
     localStorage.getItem("globalActiveAttendanceDate") ||
-    "19th";
+    "26th";
   const fieldName = `Attendance ${activeDate}`;
 
   try {
@@ -1653,7 +1659,7 @@ async function loadGlobalAttendanceDate() {
     console.log("Setting default attendance date for October 2025...");
 
     // HARDCODED: Always set 19th as the default active date for October_2025
-    const defaultActiveDate = "19th";
+    const defaultActiveDate = "26th";
 
     // Clear any old cached attendance date to force refresh
     localStorage.removeItem("globalActiveAttendanceDate");
@@ -1679,17 +1685,17 @@ async function loadGlobalAttendanceDate() {
           onConflict: "id",
         }
       );
-      console.log("Auto-saved 19th to database from main app for October 2025");
+      console.log("Auto-saved 26th to database from main app for October 2025");
     } catch (dbError) {
       console.error("Failed to auto-save to database from main app:", dbError);
     }
 
-    console.log("19th set as permanent default attendance date for October 2025");
+    console.log("26th set as permanent default attendance date for October 2025");
   } catch (error) {
     console.error("Error setting default attendance date:", error);
-    // Even if there's an error, still set 19th as default
-    window.globalActiveAttendanceDate = "19th";
-    localStorage.setItem("globalActiveAttendanceDate", "19th");
+    // Even if there's an error, still set 26th as default
+    window.globalActiveAttendanceDate = "26th";
+    localStorage.setItem("globalActiveAttendanceDate", "26th");
   }
 }
 

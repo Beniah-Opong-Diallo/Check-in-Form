@@ -49,25 +49,46 @@ body,
 
 [data-theme="dark"] {
   /* Dark theme */
-  --bg-primary: linear-gradient(135deg, #282929, #282929);
-  --bg-secondary: rgb(40, 41, 41);
+  --bg-primary: linear-gradient(135deg, rgb(51, 52, 52), rgb(51, 52, 52));
+  --bg-secondary: rgb(51, 52, 52);
   --bg-tertiary: rgba(22, 33, 62, 0.8);
   --text-primary: #ffffff;
   --text-secondary: #ffffff;
   --text-light: #ffffff; /* Dark mode text color */
   --input-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); /* Dark mode input shadow */
   --border-color: rgba(255, 255, 255, 0.2);
-  --card-bg: rgb(40, 41, 41);
+  --card-bg: rgb(51, 52, 52);
   --card-border: rgba(255, 255, 255, 0.1);
   --input-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.08));
   --attendance-bg: #191b2e;
   --attendance-item-bg: #7c22c5;
   --gradient-primary: linear-gradient(135deg, #4ade80, #22c55e);
-  --gradient-secondary: linear-gradient(135deg, rgba(26, 26, 46, 0.8), rgba(22, 33, 62, 0.9));
+  --gradient-secondary: linear-gradient(135deg, rgba(51, 52, 52, 0.88), rgba(51, 52, 52, 0.98));
   --gradient-cards: linear-gradient(135deg, rgba(0, 0, 0, 0.7) );
 }
 
 /* Dark theme body styles are now handled by CSS variables in the main body rule */
+/* Native control darkening for selects in dark theme */
+[data-theme="dark"],
+body.dark-mode {
+  color-scheme: dark;
+}
+
+/* Dark dropdown menu styling for select options */
+[data-theme="dark"] select option,
+body.dark-mode select option,
+[data-theme="dark"] select optgroup,
+body.dark-mode select optgroup {
+  background-color: rgb(51, 52, 52);
+  color: #ffffff;
+}
+
+/* Ensure the select itself uses dark text and border when open */
+[data-theme="dark"] select,
+body.dark-mode select {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.25);
+}
 
 /* Theme toggle button styling */
 .theme-toggle-btn {
@@ -935,6 +956,7 @@ body {
 
 input[type="text"],
 input[type="number"],
+input[type="tel"],
 select {
   width: 100%;
   padding: 0.75rem;
@@ -1061,8 +1083,8 @@ select {
 }
 
 .toast.success {
-  background: linear-gradient(135deg, rgba(69, 160, 73, 0.95), rgba(53, 125, 57, 0.95));
-  color: white;
+  background: var(--gradient-secondary);
+  color: var(--text-primary);
 }
 
 .toast.error {
@@ -1074,12 +1096,19 @@ select {
   opacity: 1;
   visibility: visible;
   transform: translate(-50%, -50%) scale(1.02);
+  animation: toastPop 220ms ease-out forwards;
 }
 
 .toast svg {
   width: 24px;
   height: 24px;
   flex-shrink: 0;
+}
+
+@keyframes toastPop {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.92); }
+  60% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+  100% { opacity: 1; transform: translate(-50%, -50%) scale(1.02); }
 }
 
 /* Dark mode toast adjustments */
@@ -1089,7 +1118,7 @@ select {
 }
 
 [data-theme="dark"] .toast.success {
-  background: linear-gradient(135deg, rgba(74, 222, 128, 0.95), rgba(34, 197, 94, 0.95));
+  background: var(--gradient-secondary);
 }
 
 [data-theme="dark"] .toast.error {
@@ -2040,15 +2069,18 @@ body.dark-mode .attendance-section:first-child .attendance-item input,
   }
   
   .toast {
-    background: linear-gradient(135deg, rgba(69, 160, 73, 0.98), rgba(53, 125, 57, 0.98)) !important;
+    background: var(--gradient-secondary) !important;
+    color: var(--text-primary) !important;
   }
   
   .toast.error {
     background: linear-gradient(135deg, rgba(239, 68, 68, 0.98), rgba(220, 38, 38, 0.98)) !important;
+    color: white !important;
   }
   
   [data-theme="dark"] .toast.success {
-    background: linear-gradient(135deg, rgba(74, 222, 128, 0.98), rgba(34, 197, 94, 0.98)) !important;
+    background: var(--gradient-secondary) !important;
+    color: var(--text-primary) !important;
   }
   
   [data-theme="dark"] .toast.error {
@@ -2287,7 +2319,8 @@ body::-webkit-scrollbar { width: 0; height: 0; display: none; }
 
 .info-item select,
 .info-item input[type="number"],
-.info-item input[type="text"] {
+.info-item input[type="text"],
+.info-item input[type="tel"] {
   background: rgb(72, 73, 73) !important;
   color: var(--text-primary) !important;
   border: 1.5px solid var(--border-color) !important;
@@ -2296,22 +2329,26 @@ body::-webkit-scrollbar { width: 0; height: 0; display: none; }
 [data-theme="dark"] .info-item select,
 [data-theme="dark"] .info-item input[type="number"],
 [data-theme="dark"] .info-item input[type="text"],
+[data-theme="dark"] .info-item input[type="tel"],
 .dark-mode .info-item select,
 .dark-mode .info-item input[type="number"],
-.dark-mode .info-item input[type="text"] {
+.dark-mode .info-item input[type="text"],
+.dark-mode .info-item input[type="tel"] {
   background: rgb(72, 73, 73) !important;
   color: var(--text-primary) !important;
   border: 1.5px solid var(--border-color) !important;
 }
 
-.info-item input[type="text"]#phoneInput {
+.info-item input[type="text"]#phoneInput,
+.info-item input[type="tel"]#phoneInput {
   background: rgb(253, 253, 253) !important;
   color: #059669 !important;
-  border: 1.5px solid rgba(0, 0, 0, 0.15) !important;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1) !important;
+  border: 1.5px solid rgba(0, 0, 0, 0.18) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18) !important;
 }
 
-.dark-mode .info-item input[type="text"]#phoneInput {
+.dark-mode .info-item input[type="text"]#phoneInput,
+.dark-mode .info-item input[type="tel"]#phoneInput {
   background: rgb(51, 52, 52) !important;
   color: #34d399 !important;
   border: 1.5px solid rgba(255, 255, 255, 0.2) !important;
@@ -2413,7 +2450,8 @@ body::-webkit-scrollbar { width: 0; height: 0; display: none; }
 
 [data-theme="light"] .info-item select,
 [data-theme="light"] .info-item input[type="number"],
-[data-theme="light"] .info-item input[type="text"] {
+[data-theme="light"] .info-item input[type="text"],
+[data-theme="light"] .info-item input[type="tel"] {
   background: rgb(253, 253, 253) !important;
   color: #1f2937 !important;
   border: 1.5px solid rgba(0, 0, 0, 0.15) !important;
@@ -3096,22 +3134,27 @@ html, body {
 
 /* Attendance Date Fields Styling */
 /* Light mode styling for attendance date fields */
-#attendance5th, #attendance12th, #attendance19th, #attendance26th {
-  background-color: rgb(253, 253, 253) !important;
+[data-theme="light"] #attendance5th, 
+[data-theme="light"] #attendance12th, 
+[data-theme="light"] #attendance19th, 
+[data-theme="light"] #attendance26th {
+  background: var(--gradient-secondary) !important;
   color: #333 !important;
   border-color: rgba(0, 0, 0, 0.15) !important;
-  background-image: none !important;
 }
 
-/* Dark mode styling for attendance date fields */
+/* Dark mode styling for attendance date fields (supports both attribute and class) */
+[data-theme="dark"] #attendance5th, 
+[data-theme="dark"] #attendance12th, 
+[data-theme="dark"] #attendance19th, 
+[data-theme="dark"] #attendance26th,
 body.dark-mode #attendance5th, 
 body.dark-mode #attendance12th, 
 body.dark-mode #attendance19th, 
 body.dark-mode #attendance26th {
-  background-color: rgb(72, 73, 73) !important;
-  color: white !important;
-  border-color: rgba(156, 163, 175, 0.4) !important;
-  background-image: none !important;
+  background: var(--input-bg) !important; /* match input gradient used across dark theme */
+  color: var(--text-light) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
 }
 
 /* Ensure search bar container can accommodate expansion */

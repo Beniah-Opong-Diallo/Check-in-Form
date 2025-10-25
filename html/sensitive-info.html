@@ -1858,16 +1858,14 @@
     </section>
   <div class="fixed-buttons"></div>
 
-  <!-- Add toast notifications -->
-  <div id="successToast" class="toast success"
-    style="position:fixed;bottom:20px;left:50%;transform:translateX(-50%);padding:12px 20px;border-radius:8px;background:#22c55e;color:white;display:flex;align-items:center;gap:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9999;opacity:0;transition:opacity 0.3s ease;max-width:400px;">
+  <!-- Add toast notifications (theme-aware, no inline styles) -->
+  <div id="successToast" class="toast success">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
     </svg>
     <span>Updated successfully</span>
   </div>
-  <div id="errorToast" class="toast error"
-    style="position:fixed;bottom:20px;left:50%;transform:translateX(-50%);padding:12px 20px;border-radius:8px;background:#ef4444;color:white;display:flex;align-items:center;gap:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9999;opacity:0;transition:opacity 0.3s ease;max-width:400px;">
+  <div id="errorToast" class="toast error">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
     </svg>

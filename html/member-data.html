@@ -656,27 +656,32 @@
 
         <!-- Date Selection -->
         <div class="date-selector">
-          <label class="control-label">October 2025 - Sunday Attendance Dates</label>
+          <label class="control-label">November 2025 - Sunday Attendance Dates</label>
           <div class="date-options" id="dateOptions">
             <label class="date-option">
-              <input type="checkbox" value="5th" data-column="Attendance 5th">
-              <span class="date-label">Oct 5th</span>
-              <span class="present-count" id="present-count-5th">0 present</span>
+              <input type="checkbox" value="2nd" data-column="Attendance 2nd">
+              <span class="date-label">Nov 2nd</span>
+              <span class="present-count" id="present-count-2nd">0 present</span>
             </label>
             <label class="date-option">
-              <input type="checkbox" value="12th" data-column="Attendance 12th">
-              <span class="date-label">Oct 12th</span>
-              <span class="present-count" id="present-count-12th">0 present</span>
+              <input type="checkbox" value="9th" data-column="Attendance 9th">
+              <span class="date-label">Nov 9th</span>
+              <span class="present-count" id="present-count-9th">0 present</span>
             </label>
             <label class="date-option">
-              <input type="checkbox" value="19th" data-column="Attendance 19th">
-              <span class="date-label">Oct 19th</span>
-              <span class="present-count" id="present-count-19th">0 present</span>
+              <input type="checkbox" value="16th" data-column="Attendance 16th">
+              <span class="date-label">Nov 16th</span>
+              <span class="present-count" id="present-count-16th">0 present</span>
             </label>
             <label class="date-option">
-              <input type="checkbox" value="26th" data-column="Attendance 26th">
-              <span class="date-label">Oct 26th</span>
-              <span class="present-count" id="present-count-26th">0 present</span>
+              <input type="checkbox" value="23rd" data-column="Attendance 23rd">
+              <span class="date-label">Nov 23rd</span>
+              <span class="present-count" id="present-count-23rd">0 present</span>
+            </label>
+            <label class="date-option">
+              <input type="checkbox" value="30th" data-column="Attendance 30th">
+              <span class="date-label">Nov 30th</span>
+              <span class="present-count" id="present-count-30th">0 present</span>
             </label>
           </div>
         </div>
@@ -822,7 +827,7 @@
     async function loadMemberData() {
       try {
         const { data, error } = await window.supabase
-          .from('October_2025')
+          .from('Nov_2025_2')
           .select('*')
           .order('Full Name');
 
@@ -890,8 +895,8 @@
 
     // Update present counts for each date
     function updatePresentCounts() {
-      const dates = ['5th', '12th', '19th', '26th'];
-      const columns = ['Attendance 5th', 'Attendance 12th', 'Attendance 19th', 'Attendance 26th'];
+      const dates = ['2nd', '9th', '16th', '23rd', '30th'];
+      const columns = ['Attendance 2nd', 'Attendance 9th', 'Attendance 16th', 'Attendance 23rd', 'Attendance 30th'];
       
       dates.forEach((date, index) => {
         const column = columns[index];
@@ -1108,7 +1113,7 @@
           });
 
           return await window.supabase
-            .from('October_2025')
+            .from('Nov_2025_2')
             .update(updateData)
             .eq('id', memberId);
         });
@@ -1149,7 +1154,7 @@
         return;
       }
 
-      const headers = ['Full Name', 'Gender', 'Phone Number', 'Age', 'Current Level', 'Attendance 5th', 'Attendance 12th', 'Attendance 19th', 'Attendance 26th'];
+      const headers = ['Full Name', 'Gender', 'Phone Number', 'Age', 'Current Level', 'Attendance 2nd', 'Attendance 9th', 'Attendance 16th', 'Attendance 23rd', 'Attendance 30th'];
       
       let csvContent = headers.join(',') + '\n';
       csvContent += filteredMembers.map(member => [
@@ -1158,10 +1163,11 @@
         member['Phone Number'] || '',
         member['Age'] || '',
         member['Current Level'] || '',
-        member['Attendance 5th'] || '',
-        member['Attendance 12th'] || '',
-        member['Attendance 19th'] || '',
-        member['Attendance 26th'] || ''
+        member['Attendance 2nd'] || '',
+        member['Attendance 9th'] || '',
+        member['Attendance 16th'] || '',
+        member['Attendance 23rd'] || '',
+        member['Attendance 30th'] || ''
       ].map(cell => {
         const cellStr = cell.toString().replace(/"/g, '""');
         return cellStr.includes(',') ? `"${cellStr}"` : cellStr;

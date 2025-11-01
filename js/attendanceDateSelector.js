@@ -2,16 +2,17 @@
 class AttendanceDateSelector {
   constructor() {
     this.dateOptions = [
-      { value: "5th", label: "5th" },
-      { value: "12th", label: "12th" },
-      { value: "19th", label: "19th" },
-      { value: "26th", label: "26th" },
+      { value: "2nd", label: "2nd" },
+      { value: "9th", label: "9th" },
+      { value: "16th", label: "16th" },
+      { value: "23rd", label: "23rd" },
+      { value: "30th", label: "30th" },
     ];
 
     this.currentSelectedDate =
       window.globalActiveAttendanceDate ||
       localStorage.getItem("globalActiveAttendanceDate") ||
-      "26th";
+      "2nd";
     this.init();
   }
 

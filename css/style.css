@@ -2339,9 +2339,9 @@ body::-webkit-scrollbar { width: 0; height: 0; display: none; }
   border: 1.5px solid var(--border-color) !important;
 }
 
-.info-item input[type="text"]#phoneInput,
-.info-item input[type="tel"]#phoneInput {
-  background: rgb(253, 253, 253) !important;
+[data-theme="light"] .info-item input[type="text"]#phoneInput,
+[data-theme="light"] .info-item input[type="tel"]#phoneInput {
+  background: #fbfbfb !important;
   color: #059669 !important;
   border: 1.5px solid rgba(0, 0, 0, 0.18) !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18) !important;
@@ -2444,7 +2444,7 @@ body::-webkit-scrollbar { width: 0; height: 0; display: none; }
 
 /* Light mode styling for form fields */
 [data-theme="light"] .info-item {
-  background: rgb(253, 253, 253) !important;
+  background: #fbfbfb !important;
   border: 1px solid rgba(0, 0, 0, 0.1) !important;
 }
 
@@ -2452,13 +2452,13 @@ body::-webkit-scrollbar { width: 0; height: 0; display: none; }
 [data-theme="light"] .info-item input[type="number"],
 [data-theme="light"] .info-item input[type="text"],
 [data-theme="light"] .info-item input[type="tel"] {
-  background: rgb(253, 253, 253) !important;
+  background: #fbfbfb !important;
   color: #1f2937 !important;
   border: 1.5px solid rgba(0, 0, 0, 0.15) !important;
 }
 
 [data-theme="light"] .info-select {
-  background-color: rgb(253, 253, 253) !important;
+  background-color: #fbfbfb !important;
   color: #059669 !important;
   border: 1.5px solid rgba(0, 0, 0, 0.15) !important;
 }
